@@ -1,4 +1,4 @@
-
+<%@page import="org.opencps.util.WebKeys"%>
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -118,6 +118,12 @@
 		name="showBackToListButton" 
 		value="<%= showBackToListButton %>"
 	/>
+	
+	<aui:select name="orderDossierFileByDossierFileDate">
+		<aui:option label="orderDossierFileByDossierFileDateDefault" value="default"/>
+		<aui:option label="orderDossierFileByDossierFileDateAsc" value="<%=WebKeys.ORDER_BY_ASC %>"/>
+		<aui:option label="orderDossierFileByDossierFileDateDesc" value="<%=WebKeys.ORDER_BY_DESC %>"/>
+	</aui:select>
 	
 	<aui:button type="submit" name="Save" value="save"></aui:button>
 

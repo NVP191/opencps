@@ -39,5 +39,7 @@
 	boolean showVersionItem = GetterUtil.getBoolean(preferences.getValue("showVersionItem", "true"), true);
 	
 	boolean showBackToListButton = GetterUtil.getBoolean(preferences.getValue("showBackToListButton", "true"), true);
+	
+	String orderDossierFileByDossierFileDate = preferences.getValue("orderDossierFileByDossierFileDate", "default");
 %>
 

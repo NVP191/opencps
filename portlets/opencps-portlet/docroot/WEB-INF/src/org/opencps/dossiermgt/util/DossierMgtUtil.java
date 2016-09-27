@@ -24,12 +24,14 @@ import java.util.Stack;
 
 import org.opencps.dossiermgt.comparator.DossierTemplateNameComparator;
 import org.opencps.dossiermgt.comparator.DossierTemplateNoComparator;
+import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.search.DossierTemplateDisplayTerms;
 import org.opencps.dossiermgt.service.DossierPartLocalServiceUtil;
 import org.opencps.servicemgt.model.TemplateFile;
 import org.opencps.servicemgt.service.TemplateFileLocalServiceUtil;
 import org.opencps.util.PortletConstants;
+import org.opencps.util.WebKeys;
 
 import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
@@ -102,6 +104,38 @@ public class DossierMgtUtil {
 		}
 
 		return orderByComparator;
+	}
+	
+	public static List<DossierFile> orderDossierFileByDossierFileDate(String orderByType, List<DossierFile> dossierFiles) {
+		int value = 0;
+		DossierFile dossierFileTemp = null;
+		if(orderByType.equals(WebKeys.ORDER_BY_ASC)) {
+			for(int i=0; i<dossierFiles.size()-1; i++) {
+				for(int j=i+1; i<dossierFiles.size(); j++) {
+					value = dossierFiles.get(i).getDossierFileDate().compareTo(dossierFiles.get(j).getDossierFileDate());
+					if(value >= 0) {
+						dossierFileTemp = dossierFiles.get(i);
+						dossierFiles.set(j, dossierFiles.get(i));
+						dossierFiles.set(i, dossierFileTemp);
+					}
+				}
+			}
+			return dossierFiles;
+		} else if (orderByType.equals(WebKeys.ORDER_BY_DESC)){
+			for(int i=0; i<dossierFiles.size()-1; i++) {
+				for(int j=i+1; i<dossierFiles.size(); j++) {
+					value = dossierFiles.get(i).getDossierFileDate().compareTo(dossierFiles.get(j).getDossierFileDate());
+					if(value < 0) {
+						dossierFileTemp = dossierFiles.get(i);
+						dossierFiles.set(j, dossierFiles.get(i));
+						dossierFiles.set(i, dossierFileTemp);
+					}
+				}
+			}
+			return dossierFiles;
+		}
+		
+		return dossierFiles;
 	}
 
 	/**

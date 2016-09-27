@@ -266,42 +266,139 @@
 				<label class="bold uppercase">
 					<liferay-ui:message key="dossier-file-result"/>
 				</label>
-				<%
-					int count = 1;
-					for (DossierPart dossierPartLevel1 : dossierPartsLevel1){
-						
-						int partType = dossierPartLevel1.getPartType();
-					
-						List<DossierPart> dossierParts = DossierMgtUtil.getTreeDossierPart(dossierPartLevel1.getDossierpartId());
-						
-						if(dossierParts != null){
-							for(DossierPart dossierPart : dossierParts){
-								DossierFile dossierFile = null;
-								try{
-									dossierFile = DossierFileLocalServiceUtil.getDossierFileInUse(dossier.getDossierId(), dossierPart.getDossierpartId());
-								}catch(Exception e){
-									continue;
-								}
+				<c:choose>
+					<c:when test="<%= orderDossierFileByDossierFileDate.equals("default") %>">
+						<%
+							int count = 1;
+							for (DossierPart dossierPartLevel1 : dossierPartsLevel1){
 								
-								if(dossierFile.getFileEntryId() <= 0 || dossierFile.getSyncStatus() != PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS){
-									continue;
-								}
+								int partType = dossierPartLevel1.getPartType();
+							
+								List<DossierPart> dossierParts = DossierMgtUtil.getTreeDossierPart(dossierPartLevel1.getDossierpartId());
 								
-								
-								String fileURL = StringPool.BLANK;
-								
-								try{
-									FileEntry fileEntry = DLFileEntryUtil.getFileEntry(dossierFile.getFileEntryId());
-									if(fileEntry != null){
-										fileURL = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), 
-												themeDisplay, StringPool.BLANK);
+								if(dossierParts != null){
+									for(DossierPart dossierPart : dossierParts){
+										DossierFile dossierFile = null;
+										try{
+											dossierFile = DossierFileLocalServiceUtil.getDossierFileInUse(dossier.getDossierId(), dossierPart.getDossierpartId());
+										}catch(Exception e){
+											continue;
+										}
+										
+										if(dossierFile.getFileEntryId() <= 0 || dossierFile.getSyncStatus() != PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS){
+											continue;
+										}
+										
+										
+										String fileURL = StringPool.BLANK;
+										
+										try{
+											FileEntry fileEntry = DLFileEntryUtil.getFileEntry(dossierFile.getFileEntryId());
+											if(fileEntry != null){
+												fileURL = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), 
+														themeDisplay, StringPool.BLANK);
+											}
+										}catch(Exception e){
+											continue;
+											
+										}
+		
+										%>
+											<aui:row cssClass='<%=count > 1 ? "top-line pd_b20 pd_t20" : "pd_b20 pd_t20" %>'>
+												<aui:col width="50">
+													<aui:row>
+														<aui:col width="50">
+															<span class="span1">
+																<i class="fa fa-circle blue sx10"></i>
+															</span>
+															<span class="span2">
+																<%=count %>
+															</span>
+															<span class="span9">
+																<%=
+																	Validator.isNotNull(dossierFile.getDossierFileDate()) ? 
+																	DateTimeUtil.convertDateToString(dossierFile.getDossierFileDate(), DateTimeUtil._VN_DATE_TIME_FORMAT) : 
+																	DateTimeUtil._EMPTY_DATE_TIME
+																%>
+															</span>
+														</aui:col>
+														<aui:col width="50">
+															<span class="span5 bold">
+																<liferay-ui:message key="dossier-file-no"/>
+															</span>
+															<span class="span7">
+																<%=Validator.isNotNull(dossierFile.getDossierFileNo()) ? dossierFile.getDossierFileNo() : StringPool.DASH %>
+															</span>
+														</aui:col>
+													</aui:row>
+												</aui:col>
+												<aui:col width="50">
+													<span class="span3 bold">
+														<liferay-ui:message key="dossier-file-name"/>
+													</span>
+													<span class="span6">
+														<a class="blue" href="<%=fileURL%>" target="_blank">
+															<%=Validator.isNotNull(dossierFile.getDisplayName()) ? dossierFile.getDisplayName() : StringPool.BLANK  %>
+														</a>
+													</span>
+													<span class="span3">
+														
+													</span>
+												</aui:col>
+											</aui:row>
+											
+										<%
+										
+										count++;
 									}
-								}catch(Exception e){
-									continue;
-									
 								}
-
+							}
+						%>
+					</c:when>
+					<c:otherwise>
+						<%
+							//array lis
+							List<DossierFile> dossierFiles = new ArrayList<DossierFile>();
+							int count = 1;
+							for (DossierPart dossierPartLevel1 : dossierPartsLevel1){
+								List<DossierPart> dossierParts = DossierMgtUtil.getTreeDossierPart(dossierPartLevel1.getDossierpartId());
+								if(dossierParts != null){
+									for(DossierPart dossierPart : dossierParts){
+										DossierFile dossierFile = null;
+										try{
+											dossierFile = DossierFileLocalServiceUtil.getDossierFileInUse(dossier.getDossierId(), dossierPart.getDossierpartId());
+										}catch(Exception e){
+											continue;
+										}
+										//add rr
+										dossierFiles.add(dossierFile);
+									}
+								}
+									
+							}
+							if(orderDossierFileByDossierFileDate.equals(WebKeys.ORDER_BY_ASC)) {
+								dossierFiles = DossierMgtUtil.orderDossierFileByDossierFileDate(WebKeys.ORDER_BY_ASC ,dossierFiles);
+							} else if (orderDossierFileByDossierFileDate.equals(WebKeys.ORDER_BY_DESC)) {
+								dossierFiles = DossierMgtUtil.orderDossierFileByDossierFileDate(WebKeys.ORDER_BY_DESC ,dossierFiles);
+							}
+							
+							for(DossierFile dossierFile : dossierFiles) {
+								
+									String fileURL = StringPool.BLANK;
+									
+									try{
+										FileEntry fileEntry = DLFileEntryUtil.getFileEntry(dossierFile.getFileEntryId());
+										if(fileEntry != null){
+											fileURL = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), 
+													themeDisplay, StringPool.BLANK);
+										}
+									}catch(Exception e){
+										continue;
+										
+									}
+								
 								%>
+								
 									<aui:row cssClass='<%=count > 1 ? "top-line pd_b20 pd_t20" : "pd_b20 pd_t20" %>'>
 										<aui:col width="50">
 											<aui:row>
@@ -344,14 +441,15 @@
 											</span>
 										</aui:col>
 									</aui:row>
-									
-								<%
 								
-								count++;
+								<%
+								count ++;
 							}
-						}
-					}
-				%>
+							
+						
+						%>	
+					</c:otherwise>
+				</c:choose>
 			</aui:row>
 		</c:if>
 		

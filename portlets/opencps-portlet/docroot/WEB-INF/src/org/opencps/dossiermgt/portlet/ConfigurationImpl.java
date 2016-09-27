@@ -67,6 +67,8 @@ public class ConfigurationImpl implements ConfigurationAction{
 		
 		boolean showBackToListButton = ParamUtil.getBoolean(actionRequest, "showBackToListButton");
 		
+		String orderDossierFileByDossierFileDate = ParamUtil.getString(actionRequest, "orderDossierFileByDossierFileDate");
+		
 		PortletURL redirectURL =
 		    PortletURLFactoryUtil.create(
 		        PortalUtil.getHttpServletRequest(actionRequest),
@@ -94,6 +96,8 @@ public class ConfigurationImpl implements ConfigurationAction{
 		preferences.setValue("showVersionItem", String.valueOf(showVersionItem));
 		
 		preferences.setValue("showBackToListButton", String.valueOf(showBackToListButton));
+		
+		preferences.setValue("orderDossierFileByDossierFileDate", orderDossierFileByDossierFileDate);
 		
 		preferences.store();
 

@@ -58,7 +58,11 @@ public class ConfigurationImpl implements ConfigurationAction{
 		long timeToReLoad = ParamUtil.getLong(actionRequest, "timeToReLoad", 0);
 		
 		String templatesToDisplay = ParamUtil.getString(actionRequest, "templatesToDisplay", "default");
-
+		
+		String orderFieldDossierFile = ParamUtil.getString(actionRequest, "orderFieldDossierFile");
+		
+		String orderBydDossierFile = ParamUtil.getString(actionRequest, "orderBydDossierFile");
+		
 		boolean displayDossierNo = ParamUtil.getBoolean(actionRequest, "displayDossierNo");
 		
 		boolean displayRecentlyResultWhenSearch = ParamUtil.getBoolean(actionRequest, "displayRecentlyResultWhenSearch");
@@ -68,6 +72,8 @@ public class ConfigurationImpl implements ConfigurationAction{
 		boolean showBackToListButton = ParamUtil.getBoolean(actionRequest, "showBackToListButton");
 		
 		String orderDossierFileByDossierFileDate = ParamUtil.getString(actionRequest, "orderDossierFileByDossierFileDate");
+
+		boolean showServiceDomainIdTree = ParamUtil.getBoolean(actionRequest, "showServiceDomainIdTree");
 		
 		PortletURL redirectURL =
 		    PortletURLFactoryUtil.create(
@@ -98,6 +104,12 @@ public class ConfigurationImpl implements ConfigurationAction{
 		preferences.setValue("showBackToListButton", String.valueOf(showBackToListButton));
 		
 		preferences.setValue("orderDossierFileByDossierFileDate", orderDossierFileByDossierFileDate);
+
+		preferences.setValue("orderFieldDossierFile", orderFieldDossierFile);
+		
+		preferences.setValue("orderBydDossierFile", orderBydDossierFile);
+		
+		preferences.setValue("showServiceDomainIdTree", String.valueOf(showServiceDomainIdTree));
 		
 		preferences.store();
 

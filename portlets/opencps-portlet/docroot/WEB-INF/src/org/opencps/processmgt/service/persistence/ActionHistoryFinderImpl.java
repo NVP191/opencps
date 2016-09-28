@@ -19,18 +19,21 @@ import org.opencps.processmgt.model.ActionHistory;
 import org.opencps.processmgt.model.impl.ActionHistoryImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryPos;
-import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
+import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
-import com.liferay.portal.kernel.util.StringPool;
-import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.util.dao.orm.CustomSQLUtil;
 
-public class ActionHistoryFinderImpl extends BasePersistenceImpl<ActionHistory> implements ActionHistoryFinder {
+public class ActionHistoryFinderImpl extends BasePersistenceImpl<ActionHistory>
+    implements ActionHistoryFinder {
+
 	public final static String SQL_SEARCH_ACTION_HISTORY_BY_DOSSIERID =
-					ActionHistoryFinder.class.getName() + ".searchActionHistoryByDossierId";
+	    ActionHistoryFinder.class.getName() + ".searchActionHistoryByDossierId";
+
+	public final static String SQL_SEARCH_ACTION_HISTORY_RECENT =
+	    ActionHistoryFinder.class.getName() + ".getActHisRecent";
 
 	/**
 	 * Search action history with width dossierId
@@ -46,6 +49,12 @@ public class ActionHistoryFinderImpl extends BasePersistenceImpl<ActionHistory> 
 
 	}
 
+	public List<ActionHistory> searchActionHistoryrecent(
+	    long processOrderId, long preProcessStepId)
+	    throws PortalException, SystemException {
+		return _searchActionHistoryRecent(processOrderId, preProcessStepId);
+	}
+
 	private List<ActionHistory> _searchActionHistoryByDossierId(
 
 	long groupId, long dossierId) {
@@ -54,7 +63,8 @@ public class ActionHistoryFinderImpl extends BasePersistenceImpl<ActionHistory> 
 		try {
 			session = openSession();
 
-			String sql = CustomSQLUtil.get(SQL_SEARCH_ACTION_HISTORY_BY_DOSSIERID);
+			String sql =
+			    CustomSQLUtil.get(SQL_SEARCH_ACTION_HISTORY_BY_DOSSIERID);
 
 			SQLQuery q = session.createSQLQuery(sql);
 
@@ -66,7 +76,7 @@ public class ActionHistoryFinderImpl extends BasePersistenceImpl<ActionHistory> 
 
 			qPos.add(groupId);
 			qPos.add(dossierId);
-			
+
 			return (List<ActionHistory>) q.list();
 		}
 		catch (Exception e) {
@@ -84,5 +94,52 @@ public class ActionHistoryFinderImpl extends BasePersistenceImpl<ActionHistory> 
 		return null;
 
 	}
-	
+
+	/**
+	 * @param processOrderId
+	 * @param preProcessStepId
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	private List<ActionHistory> _searchActionHistoryRecent(
+
+	long processOrderId, long preProcessStepId)
+	    throws PortalException, SystemException {
+
+		Session session = null;
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(SQL_SEARCH_ACTION_HISTORY_RECENT);
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			q.setCacheable(false);
+
+			q.addEntity("ActionHistory", ActionHistoryImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(processOrderId);
+			qPos.add(preProcessStepId);
+
+			return (List<ActionHistory>) q.list();
+		}
+		catch (Exception e) {
+			try {
+				throw new SystemException(e);
+			}
+			catch (SystemException se) {
+				se.printStackTrace();
+			}
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return null;
+
+	}
+
 }

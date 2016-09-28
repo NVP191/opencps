@@ -67,3 +67,5 @@ a.ui-button:active,
 .dialog-iframe-popup .ui-helper-hidden-accessible{
   display: none !important;
 }
+
+.ui-autocomplete.ui-front {background: white; height: 150px; overflow: auto; width: 512px}

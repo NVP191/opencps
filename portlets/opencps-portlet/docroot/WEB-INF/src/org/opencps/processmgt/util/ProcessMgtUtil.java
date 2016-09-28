@@ -16,7 +16,11 @@
 */
 package org.opencps.processmgt.util;
 
+import java.util.List;
+
+import org.opencps.processmgt.model.ActionHistory;
 import org.opencps.processmgt.model.ProcessWorkflow;
+import org.opencps.processmgt.service.ActionHistoryLocalServiceUtil;
 import org.opencps.processmgt.service.ProcessWorkflowLocalServiceUtil;
 
 public class ProcessMgtUtil {
@@ -38,20 +42,40 @@ public class ProcessMgtUtil {
 	 * @param processWorkflowId
 	 * @return
 	 */
-	public static long getAssignUser(long processWorkflowId) {
+	public static long getAssignUser(
+	    long processWorkflowId, long processOrderId, long preProcessStepId) {
+
 		long userId = 0;
-		
+
 		try {
 			if (processWorkflowId > 0) {
-				ProcessWorkflow processWorkflow = ProcessWorkflowLocalServiceUtil.getProcessWorkflow(processWorkflowId);
-				
+				ProcessWorkflow processWorkflow =
+				    ProcessWorkflowLocalServiceUtil.getProcessWorkflow(processWorkflowId);
+
 				userId = processWorkflow.getActionUserId();
+
+				if (userId == 0) {
+					List<ActionHistory> actionList =
+					    ActionHistoryLocalServiceUtil.getActionHistoryRecent(
+					        processOrderId, preProcessStepId);
+					
+					System.out.println("######ACTIONLISSSSSSSSSSSSSS" + actionList.size());
+					
+					for (ActionHistory actionHis : actionList) {
+						System.out.println("######ACTIONLISSSSSSSSSSSSSS" + actionHis.getActionUserId() + "_" + actionHis.getActionDatetime());
+
+					}
+					
+					if (actionList.size() != 0) {
+						userId = actionList.get(0).getActionUserId();
+					}
+				}
 			}
-        }
-        catch (Exception e) {
-	        userId = 0;
-        }
-		
+		}
+		catch (Exception e) {
+			userId = 0;
+		}
+
 		return userId;
 	}
 	

@@ -31,12 +31,6 @@ import com.liferay.portal.kernel.util.StringUtil;
  */
 public class DossierNoGenerator {
 	
-	public static void main(String[] args) {
-
-	    String numberString = genaratorNoReception("{%-BCT%}-{nnnnnn}/{yyyy}", 1);
-	    
-	    System.out.println(numberString);
-    }
 	
 	
 	/**

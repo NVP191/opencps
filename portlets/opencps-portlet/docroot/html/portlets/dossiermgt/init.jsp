@@ -32,6 +32,10 @@
 	
 	String redirectPaymentURL = preferences.getValue("redirectPaymentURL",StringPool.BLANK);
 	
+	String orderFieldDossierFile = preferences.getValue("orderFieldDossierFile",StringPool.BLANK);
+	
+	String orderBydDossierFile = preferences.getValue("orderBydDossierFile",StringPool.BLANK);
+	
 	boolean displayRecentlyResultWhenSearch = GetterUtil.getBoolean(preferences.getValue("displayRecentlyResultWhenSearch", "false"), false);
 	
 	boolean displayDossierNo =  GetterUtil.getBoolean(preferences.getValue("displayDossierNo", "false"), false);
@@ -41,5 +45,7 @@
 	boolean showBackToListButton = GetterUtil.getBoolean(preferences.getValue("showBackToListButton", "true"), true);
 	
 	String orderDossierFileByDossierFileDate = preferences.getValue("orderDossierFileByDossierFileDate", "default");
+
+	boolean showServiceDomainIdTree = GetterUtil.getBoolean(preferences.getValue("showServiceDomainIdTree", "true"), true);
 %>
 

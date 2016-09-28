@@ -66,7 +66,11 @@
 	String[] dossierSections = dossier != null ? 
 		new String[]{"dossier_part", "dossier_info", "result", "history"} : 
 		new String[]{"dossier_info"};
-	
+
+	// show only 2 tab dossier_part & info on create new dossier
+	if(cmd.equals(Constants.ADD)){
+		dossierSections = new String[]{"dossier_part", "dossier_info"};
+	}
 	String[][] categorySections = {dossierSections};
 	
 	boolean isEditDossier = ParamUtil.getBoolean(request, "isEditDossier");

@@ -454,7 +454,7 @@
         <column name="syncStatus" type="int"/>
         <column name="version" type="int"></column>
         <column name="signed" type="boolean"></column>
-        <finder name="D_DP" return-type="Collection">
+        <finder name="D_DP" return-type="Collection" where="removed=0">
             <finder-column name="dossierId"></finder-column>
             <finder-column name="dossierPartId"></finder-column>
         </finder>

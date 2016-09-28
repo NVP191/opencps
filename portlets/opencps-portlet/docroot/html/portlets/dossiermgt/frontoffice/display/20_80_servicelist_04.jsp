@@ -52,53 +52,81 @@
 <%@ include file="../../init.jsp"%>
 
 <%
+	
+	String backURL = ParamUtil.getString(request, "backURL");
+
 	long serviceDomainId = ParamUtil.getLong(request, "serviceDomainId");
+	
+	long administrationId = ParamUtil.getLong(request, "administrationId");
+	
+	String dictItemCode = ParamUtil.getString(request, "dictItemCode");
 	
 	long govAgencyId = ParamUtil.getLong(request, "govAgencyId");
 	
 	String dossierStatus = ParamUtil.getString(request, "dossierStatus", StringPool.BLANK);
 	
 	String tabs1 = ParamUtil.getString(request, "tabs1", DossierMgtUtil.TOP_TABS_DOSSIER);
-
-	PortletURL searchURL = renderResponse.createRenderURL();
-	searchURL.setParameter("mvcPath", templatePath + "display/20_80_servicelist_04.jsp");
-	searchURL.setParameter("tabs1", DossierMgtUtil.TOP_TABS_DOSSIER);
-	searchURL.setParameter("isListServiceConfig", String.valueOf(true));
-	searchURL.setParameter("backURL", currentURL);
+	
 	List<DictItem> dictItems = PortletUtil.getDictItemInUseByCode(themeDisplay.getScopeGroupId(), 
-			PortletPropsValues.DATAMGT_MASTERDATA_SERVICE_ADMINISTRATION, 
+			PortletPropsValues.DATAMGT_MASTERDATA_SERVICE_DOMAIN, 
 			PortletConstants.TREE_VIEW_DEFAULT_ITEM_CODE);
+	
+	JSONObject arrayParam = JSONFactoryUtil
+		    .createJSONObject();
+	arrayParam.put(DossierDisplayTerms.SERVICE_DOMAIN_ID, (serviceDomainId > 0) ? String.valueOf(serviceDomainId):StringPool.BLANK);
+	arrayParam.put("administrationId", (administrationId > 0) ? String.valueOf(administrationId):StringPool.BLANK);
+	arrayParam.put("backURL", currentURL);
+	arrayParam.put("isListServiceConfig", String.valueOf(true));
 %>
+
+<liferay-ui:header
+	backURL="<%= backURL %>"
+	title="service-list"
+/>
 
 <aui:row>
 	<aui:col width="100" >
 
 		<liferay-util:include page='<%=templatePath + "toolbar.jsp" %>' servletContext="<%=application %>" />
 
-		<ul class="sitemap-class opencps-horizontal">
+		<div class="opencps-searchcontainer-wrapper default-box-shadow radius8">
 		
-			<%
-				for(DictItem dictItem: dictItems){
-					searchURL.setParameter("administrationId", String.valueOf(dictItem.getDictItemId()));
-					searchURL.setParameter("dictItemCode", dictItem.getItemCode());
-			%>
-			
-			<li>
-				
-				<div class="img-<%=dictItem.getItemCode() %>"> 
-					<div> 
-						<a href="<%=searchURL.toString() %>"><%=dictItem.getItemName(locale) %></a> 
-					</div>
-				</div>
-				
-			</li>
-			
-			<%
-				} 
-			%>
+		<div id="serviceDomainIdTree" class="openCPSTree"></div>
 		
-		</ul>
+		<%
 		
+		String serviceDomainJsonData = ProcessOrderUtils.generateTreeViewMappingAdminCode(
+				PortletPropsValues.DATAMGT_MASTERDATA_SERVICE_ADMINISTRATION, 
+				dictItemCode, 
+				LanguageUtil.get(locale, "filter-by-service-domain-left") , 
+				PortletConstants.TREE_VIEW_LEVER_2, 
+				"radio",
+				false,
+				renderRequest);
+		%>
+		
+	</div>
+		
+	<aui:script use="liferay-util-window,liferay-portlet-url">
+
+	var serviceDomainId = '<%=String.valueOf(serviceDomainId) %>';
+	var serviceDomainJsonData = '<%=serviceDomainJsonData%>';
+	var arrayParam = '<%=arrayParam.toString() %>';
+	AUI().ready(function(A){
+		buildTreeView("serviceDomainIdTree", 
+				"<%=DossierDisplayTerms.SERVICE_DOMAIN_ID %>", 
+				serviceDomainJsonData, 
+				arrayParam, 
+				'<%= PortletURLFactoryUtil.create(request, WebKeys.DOSSIER_MGT_PORTLET, themeDisplay.getPlid(), PortletRequest.RENDER_PHASE) %>', 
+				'<%=templatePath + "display/20_80_servicelist_05.jsp" %>', 
+				'<%=LiferayWindowState.NORMAL.toString() %>', 
+				'normal',
+				null,
+				serviceDomainId,
+				'<%=renderResponse.getNamespace() %>');
+	});
+	
+</aui:script>
 	</aui:col>
 </aui:row>
 

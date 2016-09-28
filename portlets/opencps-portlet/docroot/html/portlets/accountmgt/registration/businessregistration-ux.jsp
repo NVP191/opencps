@@ -161,7 +161,7 @@
 
 	<liferay-ui:success 
 		key="<%=MessageKeys.ACCOUNT_UPDATE_CUCCESS %>" 
-		message="<%=MessageKeys.ACCOUNT_UPDATE_CUCCESS %>"
+		message="<%=messageSuccessfullRegistration %>"
 	/>
 	
 	<portlet:actionURL var="updateBusinessURL" name="updateBusiness">

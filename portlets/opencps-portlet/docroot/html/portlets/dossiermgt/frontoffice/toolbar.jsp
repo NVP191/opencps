@@ -67,6 +67,11 @@
 		searchURL.setParameter("tabs1", DossierMgtUtil.TOP_TABS_DOSSIER_FILE);
 	}
 	
+	if(isListServiceConfig && templatesToDisplay_cfg.equals("20_80")){
+		searchURL.setParameter("mvcPath", templatePath + "display/20_80_servicelist_05.jsp");
+		searchURL.setParameter("backURL", currentURL);
+	}
+	
 	DictCollection collectionDomain = null;
 	DictItem curDictItem = null;
 	try {

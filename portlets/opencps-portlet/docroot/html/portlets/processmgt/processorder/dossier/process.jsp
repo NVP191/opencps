@@ -488,14 +488,11 @@
 					postProcessWorkflow.getPreCondition() : StringPool.BLANK;
 					
 					boolean showButton = true;
-					/* showButton = BackendUtils.checkPreCondition(preCondition, dossier.getDossierId()); */
+					showButton = BackendUtils.checkPreCondition(preCondition, dossier.getDossierId());
 					
 					//Kiem tra neu co su kien auto event thi khong hien thi nut
-					showButton = Validator.isNotNull(postProcessWorkflow.getAutoEvent()) ? false : true;
-					
-					//Kiem tra neu co su kien auto event thi khong hien thi nut
-					showButton = Validator.isNotNull(postProcessWorkflow.getAutoEvent()) ? false : true;
-					
+					/* showButton = Validator.isNotNull(postProcessWorkflow.getAutoEvent()) ? false : true; */
+		
 				%>
 					<c:if test="<%= showButton %>">
 						<aui:button 

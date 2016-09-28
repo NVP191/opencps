@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 <%@page import="org.opencps.util.WebKeys"%>
+=======
+
+<%@page import="org.opencps.util.WebKeys"%>
+<%@page import="org.opencps.dossiermgt.search.DossierFileDisplayTerms"%>
+>>>>>>> fdsservice-rc-1.5.1-issue-fix#configPortlet13#
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -93,7 +99,32 @@
 				}
 			%>
 	
-	</aui:select>
+	</aui:select><aui:row>
+		<aui:col width="50">
+			<aui:select name="orderFieldDossierFile">
+				
+				<aui:option value="<%=StringPool.BLANK %>" />
+					
+				<aui:option value='<%=DossierFileDisplayTerms.DOSSIER_FILE_DATE %>' selected='<%= orderFieldDossierFile.equals(DossierFileDisplayTerms.DOSSIER_FILE_DATE) %>'>
+					<liferay-ui:message key="order-by-dossier-file-date"/>
+				</aui:option>
+				
+			</aui:select>
+		</aui:col>
+		<aui:col width="50">
+		
+			<aui:select name="orderBydDossierFile">
+				<aui:option value="<%=StringPool.BLANK %>" />
+				<aui:option value="<%= WebKeys.ORDER_BY_ASC %>" selected='<%= orderBydDossierFile.equals(WebKeys.ORDER_BY_ASC) %>'>
+					<liferay-ui:message key="order-by-old-dossier-file"/>
+				</aui:option>
+				
+				<aui:option value="<%= WebKeys.ORDER_BY_DESC %>" selected='<%= orderBydDossierFile.equals(WebKeys.ORDER_BY_DESC) %>'>
+					<liferay-ui:message key="order-by-new-dossier-file"/>
+				</aui:option>
+			</aui:select>
+		</aui:col>
+	</aui:row>
 	
 	<aui:input 
 		type="checkbox" 
@@ -119,11 +150,19 @@
 		value="<%= showBackToListButton %>"
 	/>
 	
+<<<<<<< HEAD
 	<aui:select name="orderDossierFileByDossierFileDate">
 		<aui:option label="orderDossierFileByDossierFileDateDefault" value="default"/>
 		<aui:option label="orderDossierFileByDossierFileDateAsc" value="<%=WebKeys.ORDER_BY_ASC %>"/>
 		<aui:option label="orderDossierFileByDossierFileDateDesc" value="<%=WebKeys.ORDER_BY_DESC %>"/>
 	</aui:select>
+=======
+	<aui:input 
+		type="checkbox"
+		name="showServiceDomainIdTree" 
+		value="<%= showServiceDomainIdTree %>"
+	/>
+>>>>>>> fdsservice-rc-1.5.1-issue-fix#configPortlet13#
 	
 	<aui:button type="submit" name="Save" value="save"></aui:button>
 

@@ -17,6 +17,7 @@
 
 package org.opencps.datamgt.service.impl;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
@@ -25,6 +26,7 @@ import java.util.Map;
 import org.opencps.datamgt.DuplicateItemCodeException;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.model.impl.DictItemImpl;
 import org.opencps.datamgt.service.base.DictItemServiceBaseImpl;
 
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -304,5 +306,24 @@ public class DictItemServiceImpl extends DictItemServiceBaseImpl {
 							.getDefault()));
 		}
 		return jsonObject;
+	}
+	
+	@JSONWebService(value = "get-dictitem_itemCode")
+	@AccessControlled(guestAccessEnabled = true)
+	public DictItem getDictItemByItemCode(
+			String collectionCode, String itemCode, long groupId) throws SystemException, PortalException {
+
+		DictItem result = new DictItemImpl();
+		
+		DictCollection dictCollection = dictCollectionLocalService.getDictCollection(groupId, collectionCode);
+		
+		if(!itemCode.equalsIgnoreCase("0")){
+			
+			result = dictItemLocalService
+					.getDictItemInuseByItemCode(dictCollection.getDictCollectionId(), itemCode);
+			
+		}
+		
+		return result;
 	}
 }

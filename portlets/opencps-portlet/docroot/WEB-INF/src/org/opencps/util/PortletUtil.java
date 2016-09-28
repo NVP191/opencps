@@ -35,14 +35,17 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.opencps.datamgt.NoSuchDictCollectionException;
+import org.opencps.datamgt.model.AdministrationServicedomain;
 import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
+import org.opencps.datamgt.service.AdministrationServicedomainLocalServiceUtil;
 import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
 import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.search.DossierDisplayTerms;
 import org.opencps.paymentmgt.util.PaymentMgtUtil;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
@@ -398,6 +401,67 @@ public class PortletUtil {
 		return result;
 	}
 
+	public static List<DictItem> getDictItemInUseByCode(long groupId, String dictCollectionCode, String itemCode) {
+
+		DictCollection dictCollection = null;
+		List<DictItem> result = new ArrayList<DictItem>();
+		try {
+			dictCollection = DictCollectionLocalServiceUtil.getDictCollection(groupId, dictCollectionCode);
+			if(Validator.isNotNull(dictCollection) &&
+					( Validator.isNull(itemCode) || itemCode.equals(PortletConstants.TREE_VIEW_DEFAULT_ITEM_CODE))) {
+				result = DictItemLocalServiceUtil
+								.getDictItemsInUseByDictCollectionIdAndParentItemId(dictCollection.getDictCollectionId(), 0);
+			}else if(Validator.isNotNull(dictCollection) &&
+					( Validator.isNotNull(itemCode) && itemCode.equals(PortletConstants.TREE_VIEW_ALL_ITEM))){
+				result = DictItemLocalServiceUtil
+						.getDictItemsInUseByDictCollectionId(dictCollection.getDictCollectionId());
+			}else{
+				//TODO
+				//get treedata from itemCode
+				DictItem dictItem = DictItemLocalServiceUtil.getDictItemInuseByItemCode(dictCollection.getDictCollectionId(), itemCode);
+				
+				result = DictItemLocalServiceUtil
+						.getDictItemsByTreeIndex(dictItem.getDictItemId(), dictItem.getParentItemId(), 1, 
+								QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+			}
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+		return result;
+	}
+	
+	public static List<DictItem> getDictItemInUseByCodeMappingAdminCode(long groupId, String dictCollectionCode, String itemCode) {
+
+		List<DictItem> result = new ArrayList<DictItem>();
+		
+		List<AdministrationServicedomain> adServicedomains = new ArrayList<AdministrationServicedomain>();
+		try {
+			
+			adServicedomains = AdministrationServicedomainLocalServiceUtil.getMappingAdministrationCode(groupId, dictCollectionCode, itemCode);
+			
+			DictItem dictItem = null;
+			for (AdministrationServicedomain administrationServicedomain : adServicedomains) {
+				
+				dictItem = DictItemLocalServiceUtil.getDictItemInuseByItemCode(administrationServicedomain.getGroupId(), 
+						administrationServicedomain.getServiceDomainCollectionCode(), 
+						administrationServicedomain.getServiceDomainCode());
+				if(Validator.isNotNull(dictItem)){
+					
+					result.add(dictItem);
+					
+				}
+				
+			}
+			
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+			_log.error(e);
+		}
+		return result;
+	}
+	
 	public static String getDestinationFolder(String[] folderNames) {
 
 		return StringUtil.merge(folderNames, StringPool.FORWARD_SLASH);

@@ -115,7 +115,7 @@
 	
 	boolean esign = false;
 	
-	long assigerToUserId = ProcessMgtUtil.getAssignUser(processWorkflowId);
+	long assigerToUserId = ProcessMgtUtil.getAssignUser(processWorkflowId, processOrderId, workflow.getPostProcessStepId());
 	
 %>
 

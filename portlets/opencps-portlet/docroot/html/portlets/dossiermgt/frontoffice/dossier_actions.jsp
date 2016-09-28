@@ -135,7 +135,7 @@
 				/>
 		 	</c:if>
  		</c:when>
-  		<c:when test="<%= (dossier.getDossierStatus().equals(PortletConstants.DOSSIER_STATUS_PROCESSING) && workFlow != null) %>">
+  		<c:when test="<%= (dossier.getDossierStatus().equals(PortletConstants.DOSSIER_STATUS_PROCESSING)) %>">
 			<portlet:actionURL var="cancelDossierURL" name="cancelDossier" >
 				<portlet:param name="<%=DossierDisplayTerms.DOSSIER_ID %>" value="<%=String.valueOf(dossier.getDossierId()) %>"/>
 				<portlet:param name="redirectURL" value="<%=currentURL %>"/>

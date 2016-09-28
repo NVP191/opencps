@@ -18,9 +18,11 @@
 
 package org.opencps.backend.engine;
 
+import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import org.opencps.backend.message.SendToBackOfficeMsg;
 import org.opencps.backend.message.SendToEngineMsg;
@@ -40,6 +42,7 @@ import org.opencps.processmgt.service.ProcessOrderLocalServiceUtil;
 import org.opencps.processmgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.processmgt.service.ProcessWorkflowLocalServiceUtil;
 import org.opencps.processmgt.service.SchedulerJobsLocalServiceUtil;
+import org.opencps.processmgt.util.ProcessMgtUtil;
 import org.opencps.util.PortletConstants;
 import org.opencps.util.WebKeys;
 
@@ -197,7 +200,7 @@ public class BackOfficeProcessEngine implements MessageListener {
 				curStepId = processOrder.getProcessStepId();
 			}
 			
-			
+			long assignToUserId = toEngineMsg.getAssignToUserId();
 			
 			ProcessWorkflow processWorkflow = null;
 
@@ -207,9 +210,8 @@ public class BackOfficeProcessEngine implements MessageListener {
 				    ProcessWorkflowLocalServiceUtil.getProcessWorkflowByEvent(
 				        serviceProcessId, toEngineMsg.getEvent(), curStepId);
 				
-				_log.info("#############################serviceProcessId " + serviceProcessId);
-				_log.info("#############################toEngineMsg.getEvent() " + toEngineMsg.getEvent());
-				_log.info("#############################curStepId " + curStepId);
+
+
 				
 				_log.info("######################## CREATE WORKFLOW ###############");
 			}
@@ -217,6 +219,16 @@ public class BackOfficeProcessEngine implements MessageListener {
 				processWorkflow =
 				    ProcessWorkflowLocalServiceUtil.fetchProcessWorkflow(processWorkflowId);
 				_log.info("######################## GET WORKFLOW ###############");
+				
+			}
+			
+			if (Validator.isNull(assignToUserId)) {
+
+				assignToUserId = ProcessMgtUtil.getAssignUser(processWorkflow.getProcessWorkflowId(), processOrderId, processWorkflow.getPostProcessStepId());
+								
+								//processWorkflow.getActionUserId();
+				
+				_log.info("#############################assignToUserId " + assignToUserId);
 
 			}
 
@@ -253,6 +265,8 @@ public class BackOfficeProcessEngine implements MessageListener {
 				} else {
 					changeStatus = PortletConstants.DOSSIER_STATUS_DONE;
 				}
+				
+				
 
 				// Update process order to SYSTEM
 				ProcessOrderLocalServiceUtil.updateProcessOrderStatus(
@@ -265,7 +279,7 @@ public class BackOfficeProcessEngine implements MessageListener {
 				    toEngineMsg.getActionUserId(),
 				    toEngineMsg.getActionDatetime(),
 				    toEngineMsg.getActionNote(),
-				    toEngineMsg.getAssignToUserId(), stepName, actionName, 0,
+				    assignToUserId, stepName, actionName, 0,
 				    0, PortletConstants.DOSSIER_STATUS_SYSTEM);
 				
 				toBackOffice.setProcessOrderId(processOrderId);
@@ -370,11 +384,19 @@ public class BackOfficeProcessEngine implements MessageListener {
 					toBackOffice.setPaymentFile(paymentFile);
 					
 					
+					Locale vnLocale = new Locale("vi", "VN");
+
+					NumberFormat vnFormat = NumberFormat.getCurrencyInstance(vnLocale);
+
 					//setPayment message in pattern in message Info
 					
 					StringBuffer sb = new StringBuffer();
 					
+					
 					sb.append(paymentMessages.get(0));
+					sb.append(StringPool.OPEN_PARENTHESIS);
+					sb.append(vnFormat.format(totalPayment));
+					sb.append(StringPool.CLOSE_PARENTHESIS);
 					sb.append(StringPool.SEMICOLON);
 					sb.append(toEngineMsg.getActionNote());
 					
@@ -451,75 +473,6 @@ public class BackOfficeProcessEngine implements MessageListener {
 		catch (Exception e) {
 
 		}
-	}
-	
-	/**
-	 * @param actor
-	 * @param actorId
-	 * @param actorName
-	 * @param userActionId
-	 */
-	private void setActor(int actor, long actorId, String actorName, long userActionId) {
-		
-		try {
-			if (userActionId != 0) {
-				User user = UserLocalServiceUtil.fetchUser(userActionId);
-				
-				actor = WebKeys.DOSSIER_ACTOR_EMPLOYEE;
-				
-				actorId = userActionId;
-				
-				actorName = user.getFullName();
-			} else {
-				actor = 0;
-				actorId = 0;
-				actorName = WebKeys.DOSSIER_ACTOR_SYSTEM_NAME;
-			}
-        }
-        catch (Exception e) {
-	        _log.error(e);
-        }
-		
-	}
-	
-	
-	/**
-	 * @param serviceInfoId
-	 * @param dossierTemplateId
-	 * @param govAgencyCode
-	 * @param govAgencyName
-	 * @param govAgencyOrganizationId
-	 * @param serviceProcessId
-	 * @param groupId
-	 * @param dossier
-	 */
-	private void setExtraInfoDossier(
-	    long serviceInfoId, long dossierTemplateId, String govAgencyCode,
-	    String govAgencyName, long govAgencyOrganizationId,
-	    long serviceProcessId, long groupId, Dossier dossier) {
-
-		if (Validator.isNotNull(dossier)) {
-			serviceInfoId = dossier.getServiceInfoId();
-			dossierTemplateId = dossier.getDossierTemplateId();
-			govAgencyCode = dossier.getGovAgencyCode();
-			govAgencyName = dossier.getGovAgencyName();
-			govAgencyOrganizationId = dossier.getGovAgencyOrganizationId();
-			
-			
-			try {
-
-				ServiceConfig serviceConfig =
-				    ServiceConfigLocalServiceUtil.getServiceConfigByG_S_G(
-				        groupId, serviceInfoId, govAgencyCode);
-				serviceProcessId = serviceConfig.getServiceProcessId();
-				
-
-			}
-			catch (Exception e) {
-				_log.error(e);
-			}
-		}
-
 	}
 
 	/**

@@ -257,4 +257,12 @@ public class ActionHistoryLocalServiceImpl
 	public int countActionHistoryByProcessId(long processId) throws PortalException, SystemException {
 		return actionHistoryPersistence.countByProcessOrderId(processId);
 	}
+	
+	public List<ActionHistory> getActionHistoryRecent(
+	    long processOrderId, long preProcessStepId)
+	    throws PortalException, SystemException {
+
+		return actionHistoryFinder.searchActionHistoryrecent(
+		    processOrderId, preProcessStepId);
+	}
 }

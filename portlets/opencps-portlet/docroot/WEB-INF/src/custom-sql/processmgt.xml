@@ -470,5 +470,26 @@
 				opencps_processorder.actionUserId = ?
 		]]>
 	</sql>
-	
+
+	<sql id="org.opencps.processmgt.service.persistence.ActionHistoryFinder.getActHisRecent">	
+		<![CDATA[
+			SELECT
+				*
+			FROM
+				opencps_actionhistory
+			WHERE
+				processOrderId = ?
+			AND processWorkflowId IN (
+				SELECT
+					opencps_processworkflow.processWorkflowId
+				FROM
+					opencps_processworkflow
+				WHERE
+					preProcessStepId = ?
+			)
+			ORDER BY
+				createDate DESC
+		]]>
+	</sql>
+
 </custom-sql>

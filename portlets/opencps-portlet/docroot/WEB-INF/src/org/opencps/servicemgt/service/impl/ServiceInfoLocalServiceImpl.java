@@ -13,6 +13,7 @@
 
 package org.opencps.servicemgt.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.search.Indexer;
 import com.liferay.portal.kernel.search.IndexerRegistryUtil;
 import com.liferay.portal.kernel.util.ContentTypes;
+import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
@@ -422,4 +424,59 @@ public class ServiceInfoLocalServiceImpl
 		
 	}
 
+	public List<ServiceInfo> getServiceInFosByG_DI_Status (long groupId, 
+			String treeIndex, String administrationIndex, int status, String keyword, int start, int end, OrderByComparator orderByComparator) throws SystemException {
+
+		List<ServiceInfo> results = new ArrayList<ServiceInfo>();
+		
+		//TODO
+		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
+		if(Validator.isNotNull(treeIndex)){
+			
+			results = serviceInfoPersistence.findByG_DI_Status(groupId, treeIndex + StringPool.PERCENT, StringPool.PERCENT + keyword + StringPool.PERCENT, status, administrationIndex + StringPool.PERCENT, start, end, orderByComparator);
+			
+		}else{
+			
+			results = getServiceInFosG_FullName_Status(groupId, status, keyword, start, end, orderByComparator);
+			
+		}
+		
+		return results;
+	}
+	
+	public int countServiceInFosByG_DI_Status (long groupId, 
+			String treeIndex, String administrationIndex, int status, String keyword) throws SystemException {
+		int result = 0;
+		
+		//TODO
+		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
+		if(Validator.isNotNull(treeIndex)){
+			
+			result = serviceInfoPersistence.countByG_DI_Status(groupId, treeIndex+ StringPool.PERCENT, StringPool.PERCENT + keyword + StringPool.PERCENT, status, administrationIndex + StringPool.PERCENT);
+			
+		}else{
+			
+			result = countServiceInFosG_FullName_Status(groupId, status, keyword);
+			
+		}
+		
+		return result;
+	}
+	
+	private List<ServiceInfo> getServiceInFosG_FullName_Status (long groupId, 
+			int status, String keyword, int start, int end, OrderByComparator orderByComparator) throws SystemException {
+
+		//TODO
+		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
+		return serviceInfoPersistence.findByG_FullName_Status(groupId, StringPool.PERCENT + keyword + StringPool.PERCENT, status, start, end, orderByComparator);
+			
+	}
+	
+	private int countServiceInFosG_FullName_Status (long groupId, 
+			int status, String keyword) throws SystemException {
+		//TODO
+		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
+		return serviceInfoPersistence.countByG_FullName_Status(groupId, StringPool.PERCENT + keyword + StringPool.PERCENT, status);
+			
+	}
 }

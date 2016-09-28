@@ -1364,6 +1364,8 @@ public class ProcessOrderPortlet extends MVCPortlet {
 		long dossierFileId =
 			ParamUtil.getLong(
 				actionRequest, DossierFileDisplayTerms.DOSSIER_FILE_ID);
+		
+		_log.info("DOSSIER_FILE////////////////////////" + dossierFileId);;
 
 		JSONObject jsonObject = null;
 
@@ -1377,6 +1379,8 @@ public class ProcessOrderPortlet extends MVCPortlet {
 			jsonObject = JSONFactoryUtil.createJSONObject();
 			if (dossierFileId > 0 &&
 				dossierPart.getPartType() != PortletConstants.DOSSIER_PART_TYPE_OTHER) {
+				
+				_log.info("DELETE DOSSIER FILE " + dossierFileId);;
 
 				DossierFileLocalServiceUtil.removeDossierFile(dossierFileId);
 

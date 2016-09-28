@@ -837,6 +837,7 @@ public class DossierFileLocalServiceImpl
 
 		DossierFile dossierFile =
 			DossierFileLocalServiceUtil.getDossierFile(dossierFileId);
+		
 
 		dossierFile.setRemoved(1);
 		dossierFile.setModifiedDate(new Date());
@@ -844,6 +845,10 @@ public class DossierFileLocalServiceImpl
 		indexer.reindex(dossierFile);
 
 		dossierFilePersistence.update(dossierFile);
+		
+		dossierFilePersistence.clearCache();
+		
+		dossierFilePersistence.clearCache(dossierFile);
 	}
 
 	/**
@@ -883,6 +888,36 @@ public class DossierFileLocalServiceImpl
 
 		return dossierFilePersistence.findByD_DP(dossierId, dossierPartId);
 	}
+	
+	/**
+	 * @param dossierId
+	 * @param dossierPartId
+	 * @param byComparator
+	 * @return
+	 * @throws NoSuchDossierFileException
+	 * @throws SystemException
+	 */
+	public List<DossierFile> getDossierFileByD_DP_Config(
+		long dossierId, long dossierPartId, OrderByComparator byComparator, int start, int end)
+		throws NoSuchDossierFileException, SystemException {
+
+		return dossierFilePersistence.findByD_DP(dossierId, dossierPartId, start, end, byComparator);
+	}
+	
+	/**
+	 * @param dossierId
+	 * @param dossierPartId
+	 * @return
+	 * @throws NoSuchDossierFileException
+	 * @throws SystemException
+	 */
+	public int countDossierFileByD_DP_Config(
+		long dossierId, long dossierPartId)
+		throws NoSuchDossierFileException, SystemException {
+
+		return dossierFilePersistence.countByD_DP(dossierId, dossierPartId);
+	}
+	
 
 	/**
 	 * @param fileGroupId

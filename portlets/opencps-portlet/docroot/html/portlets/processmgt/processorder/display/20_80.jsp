@@ -1,4 +1,5 @@
 
+<%@page import="java.util.LinkedHashMap"%>
 <%@page import="org.opencps.processmgt.service.ProcessOrderLocalServiceUtil"%>
 <%@page import="org.opencps.processmgt.search.ProcessOrderSearchTerms"%>
 <%@page import="com.liferay.portal.kernel.dao.search.RowChecker"%>
@@ -125,6 +126,13 @@
 		
 		
 	}catch(Exception e){}
+	
+	//remove duplicates process orders
+	Map<String, ProcessOrderBean> cleanMap = new LinkedHashMap<String, ProcessOrderBean>();
+	for (int i = 0; i < processOrderSteps.size(); i++) {
+	     cleanMap.put(processOrderSteps.get(i).getProcessStepId()+"", processOrderSteps.get(i));
+	}
+	processOrderSteps = new ArrayList<ProcessOrderBean>(cleanMap.values());
 	
 	JSONObject arrayParam = JSONFactoryUtil
 		    .createJSONObject();

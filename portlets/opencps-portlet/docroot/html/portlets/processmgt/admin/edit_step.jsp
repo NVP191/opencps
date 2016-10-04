@@ -155,9 +155,15 @@
 	
 	if(step != null) {
 		itemStatus = PortletUtil.getDictItem("DOSSIER_STATUS", step.getDossierStatus(), scopeGroupId);
-		dictStatusId = itemStatus.getDictItemId();
+		if(Validator.isNotNull(itemStatus)) {
+			dictStatusId = itemStatus.getDictItemId();
+		}
 	}
 %>
+
+<c:if test="<%=Validator.isNull(itemStatus) %>">
+	<div class="portlet-msg-error"><liferay-ui:message key="invalid-process"/></div>
+</c:if>
 
 <portlet:actionURL name="updateProcessStep" var="updateProcessStepURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString()%>"/>
 

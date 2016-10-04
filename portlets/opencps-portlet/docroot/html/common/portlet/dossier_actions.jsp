@@ -23,6 +23,9 @@
 <%@page import="org.opencps.dossiermgt.search.DossierFileDisplayTerms"%>
 <%@page import="org.opencps.dossiermgt.search.DossierDisplayTerms"%>
 <%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
+<%@page import="org.opencps.dossiermgt.search.DossierPartDisplayTerms"%>
+<%@page import="org.opencps.dossiermgt.service.DossierPartLocalServiceUtil"%>
+<%@page import="org.opencps.dossiermgt.model.DossierPart"%>
 
 <%@ include file="/init.jsp"%>
 
@@ -168,7 +171,7 @@
 					</c:choose>
 				</td>
 				
-				<td width="10%" align="right">
+				<td width="10%" align="right" >
 					<c:if test="<%=showVersionItemReference %>">
 						<span class="dossier-version-counter">
 							<span class="counter-value" title='<%=LanguageUtil.get(pageContext, "version") %>'>
@@ -271,7 +274,7 @@
 					</c:choose>
 				</td>
 				
-				<td width="10%" align="right">
+				<td width="10%" align="right" >
 					<c:if test="<%=showVersionItemReference %>">
 						<span class="dossier-version-counter">
 							<span class="counter-value" title='<%=LanguageUtil.get(pageContext, "version") %>'>
@@ -391,7 +394,7 @@
 					</c:choose>
 				</td>
 				
-				<td width="10%" align="right">
+				<td width="10%" align="right" >
 					<c:if test="<%=showVersionItemReference %>">
 						<span class="dossier-version-counter">
 							<span class="counter-value" title='<%=LanguageUtil.get(pageContext, "version") %>'>

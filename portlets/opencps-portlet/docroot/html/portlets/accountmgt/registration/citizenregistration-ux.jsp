@@ -121,9 +121,17 @@
 		message="<%= OutOfSizeFileUploadException.class.getName() %>" 
 	/>
 	
+	<%
+		String ACCOUNT_UPDATE_CUCCESS = StringPool.BLANK;
+		if (Validator.isNotNull(messageSuccessfullRegistration)){
+			ACCOUNT_UPDATE_CUCCESS = messageSuccessfullRegistration;
+		} else {
+			ACCOUNT_UPDATE_CUCCESS = MessageKeys.ACCOUNT_UPDATE_CUCCESS;
+		}
+	%>
 	<liferay-ui:success 
 		key="<%=MessageKeys.ACCOUNT_UPDATE_CUCCESS %>" 
-		message="<%=messageSuccessfullRegistration %>"
+		message="<%=ACCOUNT_UPDATE_CUCCESS %>"
 	/>
 	
 	<portlet:actionURL var="updateCitizenURL" name="updateCitizen">
@@ -297,7 +305,7 @@
 						<c:when test="<%=!showLabelTaglibDatamgt %>">
 							<datamgt:ddr 
 								cssClass="input100"
-								depthLevel="3" 
+								depthLevel="<%=WebKeys.DEPTH_LEVEL_3 %>" 
 								dictCollectionCode="ADMINISTRATIVE_REGION"
 								itemNames="cityId,districtId,wardId"
 								itemsEmptyOption="true,true,true"
@@ -310,7 +318,7 @@
 						<c:otherwise>
 							<datamgt:ddr 
 								cssClass="input100"
-								depthLevel="3" 
+								depthLevel="<%=WebKeys.DEPTH_LEVEL_3 %>" 
 								dictCollectionCode="ADMINISTRATIVE_REGION"
 								itemNames="cityId,districtId,wardId"
 								itemsEmptyOption="true,true,true"

@@ -16,7 +16,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 %>
-<%@page import="sun.print.resources.serviceui_zh_CN"%>
 <%@page import="javax.validation.Valid"%>
 <%@page import="javax.portlet.PortletRequest"%>
 <%@page import="com.liferay.portlet.PortletURLFactoryUtil"%>
@@ -115,6 +114,7 @@
 
 <portlet:renderURL var="referToSubmitOnline" windowState="<%=LiferayWindowState.EXCLUSIVE.toString() %>">
 	<portlet:param name="mvcPath" value="/html/portlets/dossiermgt/submit/ajax/url_online.jsp"/>
+	<portlet:param name="backURL" value="<%=backURL1 %>"/>
 </portlet:renderURL>
 <liferay-portlet:renderURL 
 		var="detailServiceURL" 
@@ -141,7 +141,7 @@
 	</aui:row>
 	<aui:row>
 		<aui:col width="50">
-			<aui:select name="administrationCode" cssClass="submit-online input100">
+			<aui:select name="administrationCode" label="co-quan-thuc-hien" cssClass="submit-online input100">
 				<%
 					if(listAdmin!=null && !listAdmin.isEmpty()){
 						for(DictItem d : listAdmin){

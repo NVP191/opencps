@@ -431,7 +431,7 @@ public class ServiceInfoLocalServiceImpl
 		
 		//TODO
 		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
-		if(Validator.isNotNull(treeIndex)){
+		if(Validator.isNotNull(treeIndex) || Validator.isNotNull(administrationIndex)){
 			
 			results = serviceInfoPersistence.findByG_DI_Status(groupId, treeIndex + StringPool.PERCENT, StringPool.PERCENT + keyword + StringPool.PERCENT, status, administrationIndex + StringPool.PERCENT, start, end, orderByComparator);
 			
@@ -450,7 +450,7 @@ public class ServiceInfoLocalServiceImpl
 		
 		//TODO
 		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
-		if(Validator.isNotNull(treeIndex)){
+		if(Validator.isNotNull(treeIndex) || Validator.isNotNull(administrationIndex)){
 			
 			result = serviceInfoPersistence.countByG_DI_Status(groupId, treeIndex+ StringPool.PERCENT, StringPool.PERCENT + keyword + StringPool.PERCENT, status, administrationIndex + StringPool.PERCENT);
 			

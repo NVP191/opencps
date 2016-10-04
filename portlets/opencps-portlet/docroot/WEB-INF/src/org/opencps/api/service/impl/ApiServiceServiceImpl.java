@@ -383,12 +383,10 @@ public class ApiServiceServiceImpl extends ApiServiceServiceBaseImpl {
 					
 					serviceContext.setUserId(dossier.getUserId());
 					
-					DLFolder dossierFolder = DLFolderUtil
-							.getDossierFolder(
-									serviceContext.getScopeGroupId(),
-									dossier.getUserId(),
-									dossier.getCounter(),
-									serviceContext);
+					DLFolder dossierFolder = DLFolderUtil.getDossierFolder(
+							serviceContext.getScopeGroupId(),
+							null, dossier.getOid(),
+							serviceContext);
 					
 					dossierFileLocalService
 							.addDossierFile(
@@ -465,7 +463,7 @@ public class ApiServiceServiceImpl extends ApiServiceServiceBaseImpl {
 
 					DLFolder dossierFolder = DLFolderUtil.getDossierFolder(
 							serviceContext.getScopeGroupId(),
-							dossier.getUserId(), dossier.getCounter(),
+							null, dossier.getOid(),
 							serviceContext);
 					
 					dossierPart = dossierPartLocalService

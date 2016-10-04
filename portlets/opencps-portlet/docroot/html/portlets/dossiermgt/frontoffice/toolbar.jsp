@@ -110,7 +110,7 @@
 						href="<%=addDossierURL %>"
 						cssClass="action-button"
 					/> --%>
-					<aui:button icon="icon-plus" href="<%=addDossierURL %>" cssClass="action-button" value="add-dossier-online"/>
+					<aui:button icon="icon-plus" href="<%=addDossierURL %>" cssClass="action-button" value="select-service-info"/>
 				</c:if>
 			</aui:nav>
 		</c:otherwise>

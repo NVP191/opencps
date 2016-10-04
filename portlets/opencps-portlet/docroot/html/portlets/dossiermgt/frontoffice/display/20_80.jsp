@@ -148,7 +148,7 @@
 	var serviceDomainJsonData = '<%=serviceDomainJsonData%>';
 	var dossierStatusJsonData = '<%=dossierStatusJsonData%>';
 	var arrayParam = '<%=arrayParam.toString() %>';
-	var showServiceDomainIdTree = '<%=showServiceDomainIdTree %>'
+	var showServiceDomainIdTree = <%=showServiceDomainIdTree %>
 	AUI().ready(function(A){
 		buildTreeView("dossierStatusTree", 
 				'<%=DossierDisplayTerms.DOSSIER_STATUS %>', 

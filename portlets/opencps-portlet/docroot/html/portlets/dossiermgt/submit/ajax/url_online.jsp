@@ -30,6 +30,7 @@
 	String govAdmin = ParamUtil.getString(request, "administrationCode");
 	ServiceInfo serviceInfo = null;
 	ServiceConfig serviceConfig = null;
+	String backURL = ParamUtil.getString(request, "backURL");
 	
 	try {
 		
@@ -61,10 +62,10 @@
 			<portlet:param name="mvcPath" value="/html/portlets/dossiermgt/frontoffice/edit_dossier.jsp"/>
 			<portlet:param name="<%=DossierDisplayTerms.SERVICE_CONFIG_ID %>" value="<%=String.valueOf(serviceConfig.getServiceConfigId()) %>"/>
 			<portlet:param name="<%=Constants.CMD %>" value="<%=Constants.ADD %>"/>
-			<portlet:param name="backURL" value="<%=currentURL %>"/>
+			<portlet:param name="backURL" value="<%=backURL %>"/>
 			<portlet:param name="isEditDossier" value="<%=String.valueOf(true) %>"/>
 </liferay-portlet:renderURL>
- 		
+
 <aui:row cssClass="serice-des">
 	<liferay-ui:message key="service-description-dvc"/>
 </aui:row>

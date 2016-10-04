@@ -129,7 +129,66 @@
 </aui:script>
 	</aui:col>
 </aui:row>
+<portlet:actionURL var="keywordsAutoCompleteURL" name="keywordsAutoComplete"/>
 
+<script type="text/javascript">
+
+$("#<portlet:namespace/>keywords1").autocomplete({
+									
+	delay: 200,
+						
+	minLength: 1,
+	
+	source: function( request, response ) {
+        $.ajax({
+            dataType: "json",
+            type : 'POST',
+            data: {
+            	<portlet:namespace/>keywords: request.term,
+            	<portlet:namespace/>administrationId: '<%=administrationId %>'
+            },
+            url: '<%=keywordsAutoCompleteURL.toString() %>',
+            success: function(data) {
+
+                response( $.map( data, function(value, key) {
+                	return {                
+				 		label: value,                                                
+				 		value:  key                                            
+				 	}    
+                }));
+            }
+        });
+    },
+							
+	focus: function(event, ui) {
+		// prevent autocomplete from updating the textbox
+		event.preventDefault();
+	},
+									
+	select: function(event, ui) {
+		// prevent autocomplete from updating the textbox
+		event.preventDefault();
+		// redirect page
+		var portletURL = Liferay.PortletURL.createURL('<%= PortletURLFactoryUtil.create(request, WebKeys.P26_SUBMIT_ONLINE, PortalUtil.getPlidFromPortletId(themeDisplay.getScopeGroupId(),  WebKeys.P26_SUBMIT_ONLINE), PortletRequest.RENDER_PHASE) %>');
+		portletURL.setParameter("mvcPath", "/html/portlets/dossiermgt/submit/dossier_submit_online.jsp");
+		portletURL.setWindowState('<%=LiferayWindowState.NORMAL.toString() %>'); 
+		portletURL.setPortletMode("normal");
+		portletURL.setParameter("serviceinfoId", ui.item.value + "");
+		portletURL.setParameter("backURL", "<%=currentURL.toString() %>");
+		
+		window.location = portletURL.toString();
+// 		alert(ui.item.label + "/" + ui.item.value);
+	},
+									
+	change: function(event, ui) {
+		// prevent autocomplete from updating the textbox
+		event.preventDefault();
+		console.log(1);
+	}
+									
+});
+
+</script>
 <%!
 	private Log _log = LogFactoryUtil.getLog("html.portlets.dossiermgt.frontoffice.frontofficeservicelist.jsp");
 %>

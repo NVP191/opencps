@@ -212,9 +212,7 @@
 							}
 							
 							%>
-								<c:if test="<%=!dossierStatusCHKInit.equals(\"-1\") %>">
 									<%@include file="/html/portlets/dossiermgt/frontoffice/dosier_search_results.jspf" %>
-								</c:if>
 							<%
 						}catch(Exception e){
 							_log.error(e);
@@ -246,21 +244,21 @@
 									<div class='<%= "text-align-right span1 " + cssStatusColor%>'>
 										<i class='<%="fa fa-circle sx10 " + dossier.getDossierStatus()%>'></i>
 									</div>
-									<div class="span2 bold-label">
+									<div class="span3 bold-label">
 										<liferay-ui:message key="dossier-no"/>
 									</div>
 									
-									<div class="span9"><%= dossier.getDossierId() %></div>
+									<div class="span8"><%= dossier.getDossierId() %></div>
 								</div>
 								
 								<div class="row-fluid">
 									<div class="span1"></div>
 									
-									<div class="span2 bold-label">
+									<div class="span3 bold-label">
 										<liferay-ui:message key="reception-no"/>
 									</div>
 									
-									<div class="span9"><%=dossier.getReceptionNo() %></div>
+									<div class="span8"><%=dossier.getReceptionNo() %></div>
 								</div>
 							</c:when>
 							

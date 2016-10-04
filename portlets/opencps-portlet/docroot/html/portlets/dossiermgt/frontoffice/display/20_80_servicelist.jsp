@@ -65,8 +65,9 @@
 	searchURL.setParameter("tabs1", DossierMgtUtil.TOP_TABS_DOSSIER);
 	searchURL.setParameter("isListServiceConfig", String.valueOf(true));
 	searchURL.setParameter("backURL", currentURL);
+	
 	List<DictItem> dictItems = PortletUtil.getDictItemInUseByCode(themeDisplay.getScopeGroupId(), 
-			PortletPropsValues.DATAMGT_MASTERDATA_SERVICE_ADMINISTRATION, 
+			PortletPropsValues.DATAMGT_MASTERDATA_SERVICE_DOMAIN, 
 			PortletConstants.TREE_VIEW_DEFAULT_ITEM_CODE);
 %>
 
@@ -106,58 +107,71 @@
 
 <script type="text/javascript">
 
-$("#<portlet:namespace/>keywords1").autocomplete({
-									
-	delay: 200,
-						
-	minLength: 1,
-	
-	source: function( request, response ) {
-        $.ajax({
-            dataType: "json",
-            type : 'POST',
-            data: {
-            	<portlet:namespace/>keywords: request.term
-            },
-            url: '<%=keywordsAutoCompleteURL.toString() %>',
-            success: function(data) {
-
-                response( $.map( data, function(value, key) {
-                	return {                
-				 		label: value,                                                
-				 		value:  key                                            
-				 	}    
-                }));
-            }
-        });
-    },
-							
-	focus: function(event, ui) {
-		// prevent autocomplete from updating the textbox
-		event.preventDefault();
-	},
-									
-	select: function(event, ui) {
-		// prevent autocomplete from updating the textbox
-		event.preventDefault();
-		// redirect page
-		var portletURL = Liferay.PortletURL.createURL('<%= PortletURLFactoryUtil.create(request, WebKeys.P26_SUBMIT_ONLINE, PortalUtil.getPlidFromPortletId(themeDisplay.getScopeGroupId(),  WebKeys.P26_SUBMIT_ONLINE), PortletRequest.RENDER_PHASE) %>');
-		portletURL.setParameter("mvcPath", "/html/portlets/dossiermgt/submit/dossier_submit_online.jsp");
-		portletURL.setWindowState('<%=LiferayWindowState.NORMAL.toString() %>'); 
-		portletURL.setPortletMode("normal");
-		portletURL.setParameter("serviceinfoId", ui.item.value + "");
-		portletURL.setParameter("backURL", "<%=currentURL.toString() %>");
+AUI().ready(function(A){
+	var dataSource = new Bloodhound({
+		  datumTokenizer: function (datum) {
+		        return Bloodhound.tokenizers.whitespace(datum.value);
+		  },
+		  queryTokenizer: Bloodhound.tokenizers.whitespace,
+		  prefetch: {
+			  	url: '<%=keywordsAutoCompleteURL.toString() %>',
+			  	
+			  	filter: function (item) {
+			           return $.map(item, function (data) {
+		                return {
+		                	value: data.serviceName,
+			                   code: data.serviceinfoId
+		                };
+		            });
+			  	}
+		  }
+	});
+	// Initialize the Bloodhound suggestion engine
+	dataSource.initialize();
+	$('#<portlet:namespace/>keywords1').typeahead({
 		
-		window.location = portletURL.toString();
-// 		alert(ui.item.label + "/" + ui.item.value);
-	},
-									
-	change: function(event, ui) {
-		// prevent autocomplete from updating the textbox
-		event.preventDefault();
-		console.log(1);
-	}
-									
+		  highlight: true
+		
+		},
+		{
+			
+			name: 'dataSource-typeahead',
+			
+			display: 'value',
+			
+			source: dataSource.ttAdapter(),
+
+			limit: 8,
+			
+			templates: {
+				empty: [
+		      	   '<div class="empty-message">',
+		     	   '<%=LanguageUtil.get(pageContext, "empty-message") %>',
+		    	   '</div>'
+		     	  ].join('\n'),
+		 		suggestion: Handlebars.compile('<div> <i class="icon-file"></i> &nbsp;&nbsp; {{value}}</div>')
+			}
+		}
+		).on(
+				{
+			        'typeahead:select': function(e, datum) {
+			        	var portletURL = Liferay.PortletURL.createURL('<%= PortletURLFactoryUtil.create(request, WebKeys.P26_SUBMIT_ONLINE, PortalUtil.getPlidFromPortletId(themeDisplay.getScopeGroupId(),  WebKeys.P26_SUBMIT_ONLINE), PortletRequest.RENDER_PHASE) %>');
+			    		portletURL.setParameter("mvcPath", "/html/portlets/dossiermgt/submit/dossier_submit_online.jsp");
+			    		portletURL.setWindowState('<%=LiferayWindowState.NORMAL.toString() %>'); 
+			    		portletURL.setPortletMode("normal");
+			    		portletURL.setParameter("serviceinfoId", datum.code + "");
+			    		portletURL.setParameter("backURL", "<%=currentURL.toString() %>");
+			    		
+			    		window.location = portletURL.toString();
+			            console.log(datum);
+			            console.log('selected');
+			        },
+			        'typeahead:change': function(e, datum) {
+			            console.log(datum);
+			            console.log('change');
+			        }
+				}
+		);
 });
 
 </script>

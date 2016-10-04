@@ -3120,7 +3120,7 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 			ActionRequest actionRequest, ActionResponse actionResponse)
 			throws PortalException, SystemException, IOException {
 
-		JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+		JSONArray jsonArray = JSONFactoryUtil.createJSONArray();
 		
 		ThemeDisplay themeDisplay =
 			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
@@ -3152,13 +3152,19 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 		
 		for (ServiceInfo serviceInfo : serviceInfos) {
-			jsonObject.put(
-					String.valueOf(serviceInfo.getServiceinfoId()),
+
+			JSONObject jsonObject = JSONFactoryUtil.createJSONObject();
+			
+			jsonObject.put("serviceinfoId",
+					String.valueOf(serviceInfo.getServiceinfoId()));
 					
+			jsonObject.put("serviceName",
 					serviceInfo.getServiceName());
+			
+			jsonArray.put(jsonObject);
 		}
 		
-		PortletUtil.writeJSON(actionRequest, actionResponse, jsonObject);
+		PortletUtil.writeJSON(actionRequest, actionResponse, jsonArray);
 	}
 	
 	private boolean _hasPermission = true;

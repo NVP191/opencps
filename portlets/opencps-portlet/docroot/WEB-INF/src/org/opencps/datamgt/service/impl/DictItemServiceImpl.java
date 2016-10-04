@@ -32,6 +32,7 @@ import org.opencps.datamgt.service.base.DictItemServiceBaseImpl;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
+import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.jsonwebservice.JSONWebService;
@@ -286,26 +287,30 @@ public class DictItemServiceImpl extends DictItemServiceBaseImpl {
 	
 	@JSONWebService(value = "get-dictitems_itemCode_keywords_datasource")
 	@AccessControlled(guestAccessEnabled = true)
-	public JSONObject getDictItemsByItemCodeDataSourceFitter(
+	public List<DictItem> getDictItemsByItemCodeDataSourceFitter(
 			String collectionCode, String itemCode, String keywords, long groupId) throws SystemException, PortalException {
 
-		JSONObject jsonObject = JSONFactoryUtil
-			.createJSONObject();
+		List<DictItem> result = new ArrayList<DictItem>();
 		
-		List<DictItem> result = dictItemLocalService
+		result = dictItemLocalService
 			.searchDictItemByName_like(
 					collectionCode, itemCode, keywords, groupId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 		
-		for (DictItem dictItem : result) {
-			jsonObject
-				.put(String
-					.valueOf(dictItem
-						.getItemCode()),
-					dictItem
-						.getItemName(Locale
-							.getDefault()));
-		}
-		return jsonObject;
+		return result;
+	}
+	
+	@JSONWebService(value = "get-dictitems_itemCode_keywords_datasource")
+	@AccessControlled(guestAccessEnabled = true)
+	public List<DictItem> getDictItemsByItemCodeDataSourceFitter(
+			String collectionCode, String itemCode, String keywords, long groupId, int start, int end) throws SystemException, PortalException {
+
+		List<DictItem> result = new ArrayList<DictItem>();
+		
+		result = dictItemLocalService
+			.searchDictItemByName_like(
+					collectionCode, itemCode, keywords, groupId, start, end, null);
+		
+		return result;
 	}
 	
 	@JSONWebService(value = "get-dictitem_itemCode")

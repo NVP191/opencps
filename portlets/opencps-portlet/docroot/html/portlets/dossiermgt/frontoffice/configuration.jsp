@@ -83,36 +83,38 @@
 	
 	<aui:select name="templatesToDisplay" id="templatesToDisplay">
 			
-			<aui:option selected="<%= templatesToDisplay_cfg.equals(\"default\") %>" value="default">default</aui:option>
-			
-			<aui:option selected="<%= templatesToDisplay_cfg.equals(\"20_80\") %>" value="20_80">20_80</aui:option>
+		<aui:option selected="<%= templatesToDisplay_cfg.equals(\"default\") %>" value="default">default</aui:option>
+		
+		<aui:option selected="<%= templatesToDisplay_cfg.equals(\"20_80\") %>" value="20_80">20_80</aui:option>
 	
 	</aui:select>
 	
 	<aui:select name="timeToReLoad" id="timeToReLoad">
 			
-			<%
-				for (int iTems = 0 ; iTems < 60; iTems += 5) {
-			%>
-				<aui:option selected="<%= timeToReLoad_cfg == iTems %>" value="<%= iTems %>"><%= iTems %></aui:option>
-			<%
-				}
-			%>
+		<%
+			for (int iTems = 0 ; iTems < 60; iTems += 5) {
+		%>
+			<aui:option selected="<%= timeToReLoad_cfg == iTems %>" value="<%= iTems %>"><%= iTems %></aui:option>
+		<%
+			}
+		%>
 	
-	</aui:select><aui:row>
-		<aui:col width="50">
-			<aui:select name="orderFieldDossierFile">
+	</aui:select>
+	
+	<aui:row>
+		<aui:select name="orderFieldDossierFile">
+			
+			<aui:option value="<%=StringPool.BLANK %>" />
 				
-				<aui:option value="<%=StringPool.BLANK %>" />
-					
-				<aui:option value='<%=DossierFileDisplayTerms.DOSSIER_FILE_DATE %>' selected='<%= orderFieldDossierFile.equals(DossierFileDisplayTerms.DOSSIER_FILE_DATE) %>'>
-					<liferay-ui:message key="order-by-dossier-file-date"/>
-				</aui:option>
-				
-			</aui:select>
-		</aui:col>
-		<aui:col width="50">
-		
+			<aui:option value='<%=DossierFileDisplayTerms.DOSSIER_FILE_DATE %>' selected='<%= orderFieldDossierFile.equals(DossierFileDisplayTerms.DOSSIER_FILE_DATE) %>'>
+				<liferay-ui:message key="order-by-dossier-file-date"/>
+			</aui:option>
+			
+		</aui:select>
+	</aui:row>
+	
+	<aui:row>
+		<div id = '<portlet:namespace/>hideOrderBydDossierFile' >
 			<aui:select name="orderBydDossierFile">
 				<aui:option value="<%=StringPool.BLANK %>" />
 				<aui:option value="<%= WebKeys.ORDER_BY_ASC %>" selected='<%= orderBydDossierFile.equals(WebKeys.ORDER_BY_ASC) %>'>
@@ -123,7 +125,7 @@
 					<liferay-ui:message key="order-by-new-dossier-file"/>
 				</aui:option>
 			</aui:select>
-		</aui:col>
+		</div>
 	</aui:row>
 	
 	<aui:input 
@@ -168,3 +170,26 @@
 
 </aui:form>
 
+<aui:script>
+	
+	AUI().ready(function(A) {
+		var orderFieldDossierFile = A.one('#<portlet:namespace />orderFieldDossierFile');
+		var orderBydDossierFile = A.one('#<portlet:namespace />orderBydDossierFile');
+		var hideOrderBydDossierFile = A.one('#<portlet:namespace />hideOrderBydDossierFile');
+		<portlet:namespace />checkHideOrderBydDossierFile(orderFieldDossierFile, orderBydDossierFile, hideOrderBydDossierFile);
+		if(orderFieldDossierFile) {
+			orderFieldDossierFile.on('change', function() {
+				<portlet:namespace />checkHideOrderBydDossierFile(orderFieldDossierFile, orderBydDossierFile, hideOrderBydDossierFile);
+			});
+		}
+		
+	});
+	
+	 Liferay.provide(window, '<portlet:namespace />checkHideOrderBydDossierFile', function(orderFieldDossierFile, orderBydDossierFile, hideOrderBydDossierFile) {
+		if(orderFieldDossierFile.val() == '') {
+			hideOrderBydDossierFile.hide();
+		} else {
+			hideOrderBydDossierFile.show();
+		}
+	});
+</aui:script>

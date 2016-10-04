@@ -21,20 +21,13 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import javax.portlet.PortletModeException;
-import javax.portlet.PortletURL;
 import javax.portlet.RenderRequest;
 import javax.portlet.WindowStateException;
 
-import org.opencps.backend.util.AutoFillFormData;
-import org.opencps.datamgt.model.DictCollection;
 import org.opencps.datamgt.model.DictItem;
-import org.opencps.datamgt.service.DictCollectionLocalServiceUtil;
-import org.opencps.datamgt.service.DictItemLocalServiceUtil;
 import org.opencps.dossiermgt.bean.ProcessOrderBean;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.processmgt.model.ProcessOrder;
@@ -44,7 +37,6 @@ import org.opencps.processmgt.search.ProcessOrderDisplayTerms;
 import org.opencps.processmgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.processmgt.service.StepAllowanceLocalServiceUtil;
 import org.opencps.processmgt.util.comparator.ProcessOrderModifiedDateComparator;
-import org.opencps.util.PortletConstants;
 import org.opencps.util.PortletUtil;
 //import org.opencps.processmgt.util.comparator.BuocXuLyComparator;
 //import org.opencps.processmgt.util.comparator.ChuHoSoComparator;
@@ -53,7 +45,6 @@ import org.opencps.util.PortletUtil;
 //import org.opencps.processmgt.util.comparator.ThuTucComparator;
 import org.opencps.util.WebKeys;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONArray;
@@ -61,10 +52,8 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.util.GetterUtil;
 import com.liferay.portal.kernel.util.HtmlUtil;
 import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ParamUtil;
 import com.liferay.portal.kernel.util.StringPool;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.kernel.util.Validator;
@@ -459,7 +448,7 @@ public class ProcessOrderUtils {
 					if(countPeriod <= level){
 						
 						jsonObject.put("label",
-								dictItem.getItemName(Locale.getDefault()));
+								dictItem.getItemName(themeDisplay.getLocale()));
 						
 						jsonObject.put("type", type);
 						
@@ -545,7 +534,7 @@ public class ProcessOrderUtils {
 					if(countPeriod <= level){
 						
 						jsonObject.put("label",
-								dictItem.getItemName(Locale.getDefault()));
+								dictItem.getItemName(themeDisplay.getLocale()));
 						
 						jsonObject.put("type", type);
 						

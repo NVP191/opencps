@@ -1,5 +1,7 @@
 Liferay.provide(window, 'buildTreeView', function(boundingBox, nameControl, data, arrayParam, portletURL, mvcPath, windowState, portletMode, url, active, nameSpace) {
-		var A = AUI();
+	var A = AUI();
+	if(A.one("#"+boundingBox) != "undefined" &&
+			A.one("#"+boundingBox) != null){
 		var json = JSON.parse(arrayParam);
 		var portletURL = Liferay.PortletURL.createURL(portletURL);
 		portletURL.setParameter("mvcPath", mvcPath);
@@ -94,4 +96,5 @@ Liferay.provide(window, 'buildTreeView', function(boundingBox, nameControl, data
 	        }
 				window.location = portletURL.toString();
 		});
+	}
 },['aui-tree-view','aui-base','liferay-portlet-url','aui-io']);

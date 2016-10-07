@@ -80,6 +80,7 @@
 <%
 	String dossierStatusCHKInit = ParamUtil.getString(request, DossierDisplayTerms.DOSSIER_STATUS, "-1");
 	String dossierStatus = ParamUtil.getString(request, DossierDisplayTerms.DOSSIER_STATUS, StringPool.BLANK);
+	System.out.println("=========dossierStatus "+dossierStatus);
 	int itemsToDisplay_cfg = GetterUtil.getInteger(portletPreferences.getValue("itemsToDisplay", "2"));
 	
 	long serviceDomainId = ParamUtil.getLong(request, "serviceDomainId");
@@ -87,7 +88,7 @@
 	PortletURL iteratorURL = renderResponse.createRenderURL();
 	iteratorURL.setParameter("mvcPath", templatePath + "frontofficedossierlist.jsp");
 	iteratorURL.setParameter("tabs1", DossierMgtUtil.TOP_TABS_DOSSIER);
-	iteratorURL.setParameter(DossierDisplayTerms.DOSSIER_STATUS, String.valueOf(dossierStatus));
+	iteratorURL.setParameter(DossierDisplayTerms.DOSSIER_STATUS, dossierStatus);
 	iteratorURL.setParameter("serviceDomainId", (serviceDomainId > 0) ? String.valueOf(serviceDomainId):StringPool.BLANK);
 	
 	List<Dossier> dossiers =  new ArrayList<Dossier>();
@@ -97,7 +98,7 @@
 	JSONObject arrayParam = JSONFactoryUtil
 		    .createJSONObject();
 	arrayParam.put(DossierDisplayTerms.SERVICE_DOMAIN_ID, (serviceDomainId > 0) ? String.valueOf(serviceDomainId):StringPool.BLANK);
-	arrayParam.put(DossierDisplayTerms.DOSSIER_STATUS, String.valueOf(dossierStatus));
+	arrayParam.put(DossierDisplayTerms.DOSSIER_STATUS, dossierStatus);
 	
 %>
 
@@ -144,7 +145,7 @@
 <aui:script use="liferay-util-window,liferay-portlet-url">
 
 	var serviceDomainId = '<%=String.valueOf(serviceDomainId) %>';
-	var dossierStatus = '<%=String.valueOf(dossierStatus) %>';
+	var dossierStatus = '<%=dossierStatus %>';
 	var serviceDomainJsonData = '<%=serviceDomainJsonData%>';
 	var dossierStatusJsonData = '<%=dossierStatusJsonData%>';
 	var arrayParam = '<%=arrayParam.toString() %>';

@@ -1,3 +1,4 @@
+<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
 <%@page import="org.opencps.util.PortletUtil"%>
 <%@page import="org.opencps.util.DateTimeUtil"%>
 <%@page import="org.opencps.usermgt.service.WorkingUnitLocalServiceUtil"%>
@@ -87,6 +88,11 @@
 						scopeGroupId, searchTerms.getKeywords(),
 						treeIndex, govAgencyCodes, dossierStatus);
 
+				System.out.println("========keyword "+keyword);
+				for (String string : govAgencyCodes){
+					System.out.println("========govAgencyCodes "+string);
+				}
+				System.out.println("========scopeGroupId "+scopeGroupId);
 				results =
 					DossierLocalServiceUtil.searchDossierByKeywordDomainAndStatus(
 						scopeGroupId, searchTerms.getKeywords(),
@@ -94,7 +100,9 @@
 						searchContainer.getStart(),
 						searchContainer.getEnd(),
 						searchContainer.getOrderByComparator());
-
+				
+				
+				
 				pageContext.setAttribute("results", results);
 				pageContext.setAttribute("total", total);
 			%>

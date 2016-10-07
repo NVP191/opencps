@@ -135,7 +135,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 		}
 
 		return countDossierByKeywordDomainAndStatus(
-			groupId, keywords, domainCode, govAgencyCodes, dossierStatus,
+			groupId, keywords, keyword, domainCode, govAgencyCodes, dossierStatus,
 			andOperator);
 	}
 
@@ -148,7 +148,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 	 * @return
 	 */
 	private int countDossierByKeywordDomainAndStatus(
-		long groupId, String[] keywords, String domainCode,
+		long groupId, String[] keywords, String keywordStr, String domainCode,
 		List<String> govAgencyCodes, String dossierStatus, boolean andOperator) {
 
 		Session session = null;
@@ -179,9 +179,9 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 					.replaceKeywords(sql, "lower(opencps_dossier.subjectName)",
 						StringPool.LIKE, true, keywords);
 				
-				sql = CustomSQLUtil
+				/*sql = CustomSQLUtil
 						.replaceKeywords(sql, "lower(opencps_dossier.dossierId)",
-							StringPool.LIKE, true, keywords);
+							StringPool.EQUAL, true, keywords);*/
 			}
 
 			if (keywords == null || keywords.length == 0) {
@@ -208,7 +208,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 				
 				sql = StringUtil
 						.replace(sql,
-							"OR (lower(opencps_dossier.dossierId) LIKE ? [$AND_OR_NULL_CHECK$]))",
+							"OR (lower(opencps_dossier.dossierId) = ? ))",
 							StringPool.BLANK);
 			}
 
@@ -253,7 +253,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 				qPos
 					.add(keywords, 2);
 				qPos
-					.add(keywords, 2);
+					.add(keywordStr);
 			}
 
 			if (Validator.isNotNull(dossierStatus)) {
@@ -516,7 +516,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 			andOperator = true;
 		}
 		return searchDossierByKeywordDomainAndStatus(
-			groupId, keywords, domainCode, govAgencyCodes, dossierStatus,
+			groupId, keywords , keyword, domainCode, govAgencyCodes, dossierStatus,
 			start, end, obc, andOperator);
 	}
 
@@ -532,7 +532,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 	 * @return
 	 */
 	private List<Dossier> searchDossierByKeywordDomainAndStatus(
-		long groupId, String[] keywords, String domainCode,
+		long groupId, String[] keywords, String keywordStr, String domainCode,
 		List<String> govAgencyCodes, String dossierStatus, int start, int end,
 		OrderByComparator obc, boolean andOperator) {
 
@@ -564,9 +564,9 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 					.replaceKeywords(sql, "lower(opencps_dossier.subjectName)",
 						StringPool.LIKE, true, keywords);
 				
-				sql = CustomSQLUtil
+				/*sql = CustomSQLUtil
 						.replaceKeywords(sql, "lower(opencps_dossier.dossierId)",
-							StringPool.LIKE, true, keywords);
+							StringPool.LIKE, true, keywords);*/
 			}
 
 			if (keywords == null || keywords.length == 0) {
@@ -593,7 +593,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 				
 				sql = StringUtil
 						.replace(sql,
-							"OR (lower(opencps_dossier.dossierId) LIKE ? [$AND_OR_NULL_CHECK$]))",
+							"OR (lower(opencps_dossier.dossierId) = ? ))",
 							StringPool.BLANK);
 			}
 
@@ -638,7 +638,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 				qPos
 					.add(keywords, 2);
 				qPos
-					.add(keywords, 2);
+					.add(keywordStr);
 			}
 
 			if (Validator.isNotNull(dossierStatus)) {

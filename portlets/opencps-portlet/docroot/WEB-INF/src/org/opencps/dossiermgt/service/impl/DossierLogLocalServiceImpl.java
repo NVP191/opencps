@@ -17,6 +17,7 @@
 
 package org.opencps.dossiermgt.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -27,6 +28,7 @@ import org.opencps.dossiermgt.service.base.DossierLogLocalServiceBaseImpl;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.service.ServiceContext;
 
 /**
@@ -49,6 +51,186 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 	 * {@link org.opencps.dossiermgt.service.DossierLogLocalServiceUtil} to
 	 * access the dossier log local service.
 	 */
+	
+
+	/* (non-Javadoc)
+	 * @see org.opencps.dossiermgt.service.DossierLogLocalService#countDossierLog(int, long)
+	 */
+	public int countDossierLog(int actor, long dossierId)
+	    throws PortalException, SystemException {
+		
+		int count = 0;
+		switch (actor) {
+		case 0:
+			count = dossierLogPersistence.countByDossierId(dossierId);
+			break;
+		case 1:
+			count = dossierLogFinder.countDossierLogByCitizen(dossierId);
+		case 2:
+			count = dossierLogFinder.countDossierLogByEmployee(dossierId);
+		default:
+			break;
+		}
+		
+		return count;
+	}
+	
+	/**
+	 * @param actor
+	 * @param dossierId
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public List<DossierLog> findDossierLog(int actor, long dossierId, int start, int end)
+	    throws PortalException, SystemException {
+		
+		List<DossierLog> ls = new ArrayList<DossierLog>();
+		
+		switch (actor) {
+		case 0:
+			ls = dossierLogPersistence.findByDossierId(dossierId);
+			break;
+		case 1:
+			ls = dossierLogFinder.findDossierLogByCitizen(dossierId, start, end);
+		case 2:
+			ls = dossierLogFinder.findDossierLogByEmployee(dossierId, start, end);
+		default:
+			break;
+		}
+		
+		return ls;
+
+	}
+	
+	/**
+	 * @param dossierLogId
+	 * @param status
+	 * @return
+	 * @throws SystemException
+	 */
+	public DossierLog updateDossierLog(long dossierLogId, String status)
+		throws SystemException {
+		
+		DossierLog dossierLog = dossierLogPersistence.fetchByPrimaryKey(dossierLogId);
+
+
+		Date now = new Date();
+
+		dossierLog.setModifiedDate(now);
+
+		dossierLog.setDossierStatus(status);
+		
+		return dossierLogPersistence.update(dossierLog);
+
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.opencps.dossiermgt.service.DossierLogLocalService#addDossierLog(long, long, long, long, long, java.lang.String, java.lang.String, java.lang.String, java.util.Date, int, java.lang.String)
+	 */
+	public DossierLog addDossierLog(
+	    long userId, long groupId, long companyId, long dossierId,
+	    long fileGroupId, String status, String actionInfo, String messageInfo,
+	    Date updateDatetime, int level, int syncStatus, int actor,
+	    long actorId, String actorName, String className)
+	    throws SystemException {
+		
+		
+		long dossierLogId =
+			counterLocalService.increment(DossierLog.class.getName());
+		DossierLog dossierLog = dossierLogPersistence.create(dossierLogId);
+
+		dossierLog.setGroupId(groupId);
+		dossierLog.setCompanyId(companyId);
+
+		Date now = new Date();
+
+		dossierLog.setUserId(userId);
+
+		dossierLog.setCreateDate(now);
+
+		dossierLog.setModifiedDate(now);
+
+		dossierLog.setDossierId(dossierId);
+		dossierLog.setFileGroupId(fileGroupId);
+		if (Validator.isNotNull(status)) {
+			dossierLog.setDossierStatus(status);
+		}
+		dossierLog.setActionInfo(actionInfo);
+		dossierLog.setMessageInfo(messageInfo);
+		dossierLog.setUpdateDatetime(updateDatetime);
+		dossierLog.setLevel(level);
+		dossierLog.setActor(actor);
+		dossierLog.setActorId(actorId);
+		dossierLog.setActorName(actorName);
+		dossierLog.setClassName(className);
+		dossierLog.setSyncStatus(syncStatus);
+		
+		return dossierLogPersistence.update(dossierLog);
+
+	}
+	
+	/**
+	 * @param userId
+	 * @param groupId
+	 * @param companyId
+	 * @param dossierId
+	 * @param fileGroupId
+	 * @param status
+	 * @param actionInfo
+	 * @param messageInfo
+	 * @param updateDatetime
+	 * @param level
+	 * @param syncStatus
+	 * @param actor
+	 * @param actorId
+	 * @param actorName
+	 * @param className
+	 * @param commandRequest
+	 * @return
+	 * @throws SystemException
+	 */
+	public DossierLog addCommandRequest(
+	    long userId, long groupId, long companyId, long dossierId,
+	    long fileGroupId, String status, String actionInfo, String messageInfo,
+	    Date updateDatetime, int level, int syncStatus, int actor,
+	    long actorId, String actorName, String className, String commandRequest)
+	    throws SystemException {
+		
+		
+		long dossierLogId =
+			counterLocalService.increment(DossierLog.class.getName());
+		DossierLog dossierLog = dossierLogPersistence.create(dossierLogId);
+
+		dossierLog.setGroupId(groupId);
+		dossierLog.setCompanyId(companyId);
+
+		Date now = new Date();
+
+		dossierLog.setUserId(userId);
+
+		dossierLog.setCreateDate(now);
+
+		dossierLog.setModifiedDate(now);
+
+		dossierLog.setDossierId(dossierId);
+		dossierLog.setFileGroupId(fileGroupId);
+		dossierLog.setDossierStatus(status);
+		dossierLog.setActionInfo(actionInfo);
+		dossierLog.setMessageInfo(messageInfo);
+		dossierLog.setUpdateDatetime(updateDatetime);
+		dossierLog.setLevel(level);
+		dossierLog.setActor(actor);
+		dossierLog.setActorId(actorId);
+		dossierLog.setActorName(actorName);
+		dossierLog.setClassName(className);
+		dossierLog.setSyncStatus(syncStatus);
+		dossierLog.setRequestCommand(commandRequest);
+		
+		return dossierLogPersistence.update(dossierLog);
+
+	}
+
 
 	/**
 	 * @param userId

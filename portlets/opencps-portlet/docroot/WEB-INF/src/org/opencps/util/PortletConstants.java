@@ -134,6 +134,26 @@ public class PortletConstants {
 	public static final String DOSSIER_STATUS_ERROR = "error";
 	
 	public static final String DOSSIER_STATUS_UPDATE = "updated";
+	
+	public static final String DOSSIER_ACTION_SEND = "send-dossier";
+	public static final String DOSSIER_ACTION_RESEND = "resend-dossier";
+	public static final String DOSSIER_ACTION_REVICE = "revice-dossier";
+	public static final String DOSSIER_ACTION_CANCEL_DOSSER_REQUEST = "cancel-dossier-request";
+	public static final String DOSSIER_ACTION_REPAIR_DOSSIER = "repair";
+	public static final String DOSSIER_ACTION_CANCEL_DOSSIER = "cancel";
+	public static final String DOSSIER_ACTION_REQUEST_PAYMENT = "request-payment";
+	public static final String DOSSIER_ACTION_CONFIRM_PAYMENT = "confirm-payment";
+	public static final String DOSSIER_ACTION_CONFIRM_CASH_PAYMENT = "confirm-payment-cash";
+	public static final String DOSSIER_ACTION_ONLINE_PAYMENT = "online-payment";
+
+
+	public static final String DOSSIER_ACTION_CREATE_PROCESS_ORDER = "create-process-order";
+	public static final String DOSSIER_ACTION_ADD_ATTACHMENT_FILE = "add-attachment-file";
+	public static final String DOSSIER_ACTION_CLONE_ATTACHMENT_FILE = "clone-attachment-file";
+	public static final String DOSSIER_ACTION_REMOVE_ATTACTMENT_FILE = "remove-attachment-file";
+	public static final String DOSSIER_ACTION_SIGN_FILE = "sign-file";
+	public static final String DOSSIER_ACTION_EXPORT_FILE = "export-file";
+	public static final String DOSSIER_ACTION_UPDATE_VERSION_FILE = "update-version-file";
 
 
 	public static final int DOSSIER_LOG_NORMAL = 0;

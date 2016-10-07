@@ -26,13 +26,11 @@ import java.util.Map;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
-import javax.portlet.PortletURL;
-import javax.portlet.WindowStateException;
 
 import org.opencps.accountmgt.model.Citizen;
 import org.opencps.accountmgt.service.CitizenLocalServiceUtil;
-import org.opencps.dossiermgt.bean.AccountBean;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.util.ActorBean;
 import org.opencps.jasperreport.util.JRReportUtil;
 import org.opencps.paymentmgt.NoSuchPaymentFileException;
 import org.opencps.paymentmgt.model.PaymentConfig;
@@ -45,10 +43,10 @@ import org.opencps.usermgt.model.Employee;
 import org.opencps.usermgt.model.WorkingUnit;
 import org.opencps.usermgt.service.EmployeeLocalServiceUtil;
 import org.opencps.usermgt.service.WorkingUnitLocalServiceUtil;
-import org.opencps.util.AccountUtil;
 import org.opencps.util.DLFolderUtil;
 import org.opencps.util.DateTimeUtil;
 import org.opencps.util.MessageKeys;
+import org.opencps.util.PortletConstants;
 import org.opencps.util.PortletPropsValues;
 import org.opencps.util.PortletUtil;
 import org.opencps.util.WebKeys;
@@ -59,8 +57,6 @@ import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.LiferayPortletMode;
-import com.liferay.portal.kernel.portlet.LiferayWindowState;
 import com.liferay.portal.kernel.repository.model.FileEntry;
 import com.liferay.portal.kernel.servlet.SessionErrors;
 import com.liferay.portal.kernel.servlet.SessionMessages;
@@ -72,7 +68,6 @@ import com.liferay.portal.service.ServiceContext;
 import com.liferay.portal.service.ServiceContextFactory;
 import com.liferay.portal.theme.ThemeDisplay;
 import com.liferay.portal.util.PortalUtil;
-import com.liferay.portlet.PortletURLFactoryUtil;
 import com.liferay.portlet.documentlibrary.model.DLFolder;
 import com.liferay.portlet.documentlibrary.service.DLAppServiceUtil;
 import com.liferay.util.bridges.mvc.MVCPortlet;
@@ -129,6 +124,31 @@ public class PaymentMgtBackOfficePortlet extends MVCPortlet {
 				}
 				paymentFile.setModifiedDate(new Date());
 				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+				
+				ServiceContext serviceContext = ServiceContextFactory.getInstance(actionRequest);
+				
+				ActorBean actorBean =
+							    new ActorBean(2, serviceContext.getUserId());
+				
+				String msgInfo = StringPool.BLANK;
+				
+				if (Validator.isNull(lyDo)) {
+					msgInfo = PortletConstants.DOSSIER_ACTION_CONFIRM_PAYMENT;
+				} else {
+					msgInfo = lyDo;
+				}
+				
+				// Add dossierLog for confirm payment
+				DossierLogLocalServiceUtil.addDossierLog(
+				    serviceContext.getUserId(),
+				    serviceContext.getScopeGroupId(),
+				    serviceContext.getCompanyId(), paymentFile.getDossierId(),
+				    paymentFile.getFileGroupId(), null,
+				    PortletConstants.DOSSIER_ACTION_CONFIRM_PAYMENT, msgInfo,
+				    new Date(), 1, 2, actorBean.getActor(),
+				    actorBean.getActorId(), actorBean.getActorName(),
+				    PaymentMgtBackOfficePortlet.class.getName());
+				
 				SessionMessages.add(
 					    actionRequest,
 					    MessageKeys.PAYMENT_FILE_CONFIRM_BANK_SUCCESS);				
@@ -171,8 +191,6 @@ public class PaymentMgtBackOfficePortlet extends MVCPortlet {
 		long paymentFileId = ParamUtil
 		    .getLong(actionRequest, "paymentFileId");
 		
-		AccountBean accountBean = AccountUtil
-					    .getAccountBean(actionRequest);
 		File file = null;
 
 		InputStream inputStream = null;
@@ -334,7 +352,7 @@ public class PaymentMgtBackOfficePortlet extends MVCPortlet {
 						        file.length(),
 						        serviceContext);
 						fileExportDir = getURL(fileEntry);
-						String tenFileExport = "defaultPDF.pdfs";
+						//String tenFileExport = "defaultPDF.pdfs";
 						if(fileExportDir.contains(".pdfs")){
 							urlFileDowLoad = fileExportDir.replace(".pdfs", ".pdf") + "#view=FitH&scrollbar=0&page=1&toolbar=0&statusbar=0&messages=0&navpanes=0";
 						} else if(fileExportDir.contains(".doc")){
@@ -393,6 +411,22 @@ public class PaymentMgtBackOfficePortlet extends MVCPortlet {
 			paymentFile.setPaymentMethod(PaymentMgtUtil.PAYMENT_METHOD_BANK);
 			paymentFile.setModifiedDate(new Date());
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(actionRequest);
+			
+			ActorBean actorBean =
+						    new ActorBean(2, serviceContext.getUserId());
+			
+			// Add dossierLog for confirm payment
+			DossierLogLocalServiceUtil.addDossierLog(
+			    serviceContext.getUserId(), serviceContext.getScopeGroupId(),
+			    serviceContext.getCompanyId(), paymentFile.getDossierId(),
+			    paymentFile.getFileGroupId(), null,
+			    PortletConstants.DOSSIER_ACTION_CONFIRM_PAYMENT,
+			    PortletConstants.DOSSIER_ACTION_CONFIRM_PAYMENT, new Date(), 1,
+			    2, actorBean.getActor(), actorBean.getActorId(),
+			    actorBean.getActorName(),
+			    PaymentMgtBackOfficePortlet.class.getName());
+
 			addProcessActionSuccessMessage = false;
 			SessionMessages.add(actionRequest, "confirm-payment-cash-success");
 		}
@@ -421,6 +455,22 @@ public class PaymentMgtBackOfficePortlet extends MVCPortlet {
 			paymentFile.setModifiedDate(new Date());
 			PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 			addProcessActionSuccessMessage = false;
+
+			ServiceContext serviceContext = ServiceContextFactory.getInstance(actionRequest);
+
+			ActorBean actorBean =
+						    new ActorBean(2, serviceContext.getUserId());
+			
+			// Add dossierLog for confirm payment
+			DossierLogLocalServiceUtil.addDossierLog(
+			    serviceContext.getUserId(), serviceContext.getScopeGroupId(),
+			    serviceContext.getCompanyId(), paymentFile.getDossierId(),
+			    paymentFile.getFileGroupId(), null,
+			    PortletConstants.DOSSIER_ACTION_CONFIRM_CASH_PAYMENT,
+			    PortletConstants.DOSSIER_ACTION_CONFIRM_PAYMENT, new Date(), 1,
+			    2, actorBean.getActor(), actorBean.getActorId(),
+			    actorBean.getActorName(),
+			    PaymentMgtBackOfficePortlet.class.getName());
 			SessionMessages.add(actionRequest, "confirm-payment-cash-success");
 		}
 		catch (PortalException e) {

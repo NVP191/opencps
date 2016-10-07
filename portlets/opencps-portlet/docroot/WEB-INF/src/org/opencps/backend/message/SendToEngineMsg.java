@@ -305,6 +305,23 @@ public class SendToEngineMsg {
     
     	this.actionDatetime = actionDatetime;
     }
+	
+    /**
+     * @return the dossierStatus
+     */
+    public String getDossierStatus() {
+    
+    	return dossierStatus;
+    }
+
+	
+    /**
+     * @param dossierStatus the dossierStatus to set
+     */
+    public void setDossierStatus(String dossierStatus) {
+    
+    	this.dossierStatus = dossierStatus;
+    }
 	protected long dossierId;
 	protected long fileGroupId;
 	protected String event;
@@ -318,6 +335,7 @@ public class SendToEngineMsg {
 	protected double paymentValue;
 	protected int signature;
 	protected String action;
+	protected String dossierStatus;
 	
 	protected long userId;
 	protected long groupId;

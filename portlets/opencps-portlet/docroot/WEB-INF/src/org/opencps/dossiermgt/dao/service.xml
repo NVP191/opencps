@@ -355,6 +355,7 @@
         <column name="updateDatetime" type="Date"/>
         <column name="level" type="int"/>
         <column name="actor" type="int"></column>
+        <column name="className" type="String"/>
         <column name="actorId" type="long"></column>
         <column name="actorName" type="String"></column>
         <column name="syncStatus" type="int"></column>

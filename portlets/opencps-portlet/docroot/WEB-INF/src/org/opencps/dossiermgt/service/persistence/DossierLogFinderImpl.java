@@ -18,6 +18,7 @@
 package org.opencps.dossiermgt.service.persistence;
 
 import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +31,8 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
+import com.liferay.portal.kernel.exception.PortalException;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.CalendarUtil;
@@ -53,8 +56,190 @@ public class DossierLogFinderImpl extends BasePersistenceImpl<DossierLog>
 
 	public static final String SEARCH_ADMIN_LOG =
 		DossierLogFinder.class.getName() + ".searchAdminLog";
+	
+	
+	public static final String COUNT_LOG_CITIZEN =
+	    DossierLogFinder.class.getName() + ".countDossierLogByCitizen";
+	public static final String FIND_LOG_CITIZEN =
+	    DossierLogFinder.class.getName() + ".findDossierLogByCitizen";
+	public static final String COUNT_LOG_EMPLOYEE =
+	    DossierLogFinder.class.getName() + ".countDossierLogByEmployee";
+	public static final String FIND_LOG_EMPLOYEE =
+	    DossierLogFinder.class.getName() + ".findDossierLogByEmployee";
 
 	private Log _log = LogFactoryUtil.getLog(DossierLogFinder.class.getName());
+	
+	/**
+	 * @param dossierId
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public int countDossierLogByCitizen(long dossierId)
+	    throws PortalException, SystemException {
+
+		Session session = null;
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(COUNT_LOG_CITIZEN);
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			q.setCacheable(false);
+			q.addScalar(COUNT_COLUMN_NAME, Type.INTEGER);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(dossierId);
+
+			Iterator<Integer> itr = q.iterate();
+
+			if (itr.hasNext()) {
+				Integer count = itr.next();
+
+				if (count != null) {
+					return count.intValue();
+				}
+			}
+
+			return 0;
+
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return 0;
+	}
+
+	/**
+	 * @param dossierId
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public int countDossierLogByEmployee(long dossierId)
+	    throws PortalException, SystemException {
+
+		Session session = null;
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(COUNT_LOG_EMPLOYEE);
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			q.setCacheable(false);
+			q.addScalar(COUNT_COLUMN_NAME, Type.INTEGER);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(dossierId);
+
+			Iterator<Integer> itr = q.iterate();
+
+			if (itr.hasNext()) {
+				Integer count = itr.next();
+
+				if (count != null) {
+					return count.intValue();
+				}
+			}
+
+			return 0;
+
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return 0;
+	}
+
+	/**
+	 * @param dossierId
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public List<DossierLog> findDossierLogByCitizen(long dossierId, int start, int end)
+	    throws PortalException, SystemException {
+
+		Session session = null;
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(FIND_LOG_CITIZEN);
+			
+			_log.info(FIND_LOG_CITIZEN);
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			q.setCacheable(false);
+			q.addEntity("DossierLog", DossierLogImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(dossierId);
+
+			return (List<DossierLog>) QueryUtil.list(
+			    q, getDialect(), start, end);
+
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return new ArrayList<DossierLog>();
+	}
+
+	/**
+	 * @param dossierId
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public List<DossierLog> findDossierLogByEmployee(long dossierId, int start, int end)
+	    throws PortalException, SystemException {
+
+		Session session = null;
+		try {
+			session = openSession();
+
+			String sql = CustomSQLUtil.get(FIND_LOG_EMPLOYEE);
+
+			SQLQuery q = session.createSQLQuery(sql);
+
+			q.setCacheable(false);
+			q.addEntity("DossierLog", DossierLogImpl.class);
+
+			QueryPos qPos = QueryPos.getInstance(q);
+
+			qPos.add(dossierId);
+
+			return (List<DossierLog>) QueryUtil.list(
+			    q, getDialect(), start, end);
+
+		}
+		catch (Exception e) {
+			_log.error(e);
+		}
+		finally {
+			closeSession(session);
+		}
+
+		return new ArrayList<DossierLog>();
+	}
 
 	/**
 	 * @param fromUpdateDatetime

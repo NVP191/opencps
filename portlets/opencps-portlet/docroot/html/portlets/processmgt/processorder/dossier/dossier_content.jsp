@@ -111,7 +111,7 @@
 								if(dossier != null){
 									try{
 										dossierFile = DossierFileLocalServiceUtil.getDossierFileInUse(dossier.getDossierId(), 
-												dossierPart.getDossierpartId());
+                                            dossierPart.getDossierpartId(), PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS);
 										if(dossierFile.getFormData().length() > 0){
 											isOnlineData = 1;
 										}else{

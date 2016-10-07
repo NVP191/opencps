@@ -370,6 +370,11 @@
 	}
 	
 	function openCPSSelectedbildDataSource(controlId,dictCollectionId, parentItemId) {
+		var comboTarget = document.getElementById(controlId);
+		comboTarget.innerHTML = "";
+		var optionBlank = comboTarget.appendChild(document.createElement('option'));
+		optionBlank.value = "";
+		optionBlank.text = "<%=LanguageUtil.get(pageContext, "select-combo-blank") %>";
 		Liferay.Service(
 				  '/opencps-portlet.dictitem/get-dictitems_itemCode_datasource',
 				  {
@@ -378,8 +383,6 @@
 					  groupId: themeDisplay.getScopeGroupId()
 				  },
 				  function(obj) {
-					var comboTarget = document.getElementById(controlId); 
-					comboTarget.innerHTML = "";
 				    for(j in obj){
 	                    var sub_key = j;
 	                    var sub_val = obj[j];

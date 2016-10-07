@@ -234,6 +234,26 @@ public class UserActionMsg {
 
 
 
+	
+    /**
+     * @return the dossierStatus
+     */
+    public String getDossierStatus() {
+    
+    	return dossierStatus;
+    }
+
+	
+    /**
+     * @param dossierStatus the dossierStatus to set
+     */
+    public void setDossierStatus(String dossierStatus) {
+    
+    	this.dossierStatus = dossierStatus;
+    }
+
+
+
 	protected long paymentFileId;
 	protected String noReceptionNo;
 	protected long groupId;
@@ -246,5 +266,6 @@ public class UserActionMsg {
 	protected Locale locale;
 	protected long processOrderId;
 	protected String dossierOId;
+	protected String dossierStatus;
 
 }

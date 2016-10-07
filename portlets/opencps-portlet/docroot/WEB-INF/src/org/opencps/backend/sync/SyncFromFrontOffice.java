@@ -24,10 +24,10 @@ import org.opencps.backend.message.UserActionMsg;
 import org.opencps.backend.util.BackendUtils;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierStatus;
-import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierStatusLocalServiceUtil;
-import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
+import org.opencps.dossiermgt.util.ActorBean;
 import org.opencps.processmgt.model.ProcessOrder;
 import org.opencps.processmgt.service.ProcessOrderLocalServiceUtil;
 import org.opencps.util.PortletConstants;
@@ -40,10 +40,6 @@ import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
 import com.liferay.portal.kernel.util.Validator;
-import com.liferay.portal.model.Organization;
-import com.liferay.portal.model.User;
-import com.liferay.portal.service.OrganizationLocalServiceUtil;
-import com.liferay.portal.service.UserLocalServiceUtil;
 
 /**
  * @author khoavd
@@ -98,17 +94,6 @@ public class SyncFromFrontOffice implements MessageListener {
 					long govAgencyOrgId =
 						BackendUtils.getGovAgencyOrgId(userActionMgs.getDossierId());
 
-					// Change dossier status to SYSTEM
-					// Update govAgencyOrgId of dossier and dossierFile
-					/*
-					 * DossierLocalServiceUtil.updateDossierStatus(
-					 * userActionMgs.getUserId(), userActionMgs.getDossierId(),
-					 * govAgencyOrgId, PortletConstants.DOSSIER_STATUS_SYSTEM,
-					 * PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS,
-					 * userActionMgs.getFileGroupId(), logLevel,
-					 * userActionMgs.getLocale());
-					 */
-
 					DossierLocalServiceUtil.updateDossierStatus(
 						userActionMgs.getUserId(),
 						userActionMgs.getDossierId(), govAgencyOrgId,
@@ -126,12 +111,27 @@ public class SyncFromFrontOffice implements MessageListener {
 					engineMsg.setFileGroupId(userActionMgs.getFileGroupId());
 					engineMsg.setEvent(WebKeys.ACTION_SUBMIT_VALUE);
 					engineMsg.setGroupId(userActionMgs.getGroupId());
+					engineMsg.setDossierStatus(userActionMgs.getDossierStatus());
 
 					msgToEngine.put("msgToEngine", engineMsg);
 
 					// Send message to ...engine/destination
 					MessageBusUtil.sendMessage(
 						"opencps/backoffice/engine/destination", msgToEngine);
+					
+					//Update DossierLog (Listener revice mgs)
+					
+					ActorBean actorBean = new ActorBean(0, 0);
+					
+					DossierLogLocalServiceUtil.addDossierLog(
+					    userActionMgs.getUserId(), userActionMgs.getGroupId(),
+					    userActionMgs.getCompanyId(), dossierId, 0,
+					    PortletConstants.DOSSIER_STATUS_SYSTEM,
+					    PortletConstants.DOSSIER_ACTION_REVICE,
+					    PortletConstants.DOSSIER_ACTION_REVICE, new Date(), 0,
+					    0, actorBean.getActor(), actorBean.getActorId(),
+					    actorBean.getActorName(),
+					    SyncFromFrontOffice.class.getName());
 
 				}
 				else if (Validator.equals(WebKeys.ACTION_RESUBMIT_VALUE, action) &&
@@ -167,12 +167,26 @@ public class SyncFromFrontOffice implements MessageListener {
 					engineMsg.setActionDatetime(new Date());
 					engineMsg.setProcessOrderId(processOrder.getProcessOrderId());
 					engineMsg.setGroupId(userActionMgs.getGroupId());
+					engineMsg.setDossierStatus(userActionMgs.getDossierStatus());
 
 					msgToEngine.put("msgToEngine", engineMsg);
 
 					// Send message to ...engine/destination
 					MessageBusUtil.sendMessage(
 						"opencps/backoffice/engine/destination", msgToEngine);
+					
+					ActorBean actorBean = new ActorBean(0, 0);
+					
+					DossierLogLocalServiceUtil.addDossierLog(
+					    userActionMgs.getUserId(), userActionMgs.getGroupId(),
+					    userActionMgs.getCompanyId(), dossierId, 0,
+					    PortletConstants.DOSSIER_STATUS_SYSTEM,
+					    PortletConstants.DOSSIER_ACTION_REVICE,
+					    PortletConstants.DOSSIER_ACTION_REVICE, new Date(), 0,
+					    0, actorBean.getActor(), actorBean.getActorId(),
+					    actorBean.getActorName(),
+					    SyncFromFrontOffice.class.getName());
+
 
 				}
 				else if (Validator.equals(WebKeys.ACTION_REPAIR_VALUE, action)) {
@@ -180,8 +194,21 @@ public class SyncFromFrontOffice implements MessageListener {
 					// TODO check again
 					Dossier dossier =
 						DossierLocalServiceUtil.fetchDossier(userActionMgs.getDossierId());
+					
+					ActorBean actorBean = new ActorBean(1, dossier.getUserId());
+					
+					DossierLogLocalServiceUtil.addCommandRequest(
+					    dossier.getUserId(), dossier.getGroupId(),
+					    dossier.getCompanyId(), dossierId, 0,
+					    dossier.getDossierStatus(),
+					    PortletConstants.DOSSIER_ACTION_REPAIR_DOSSIER,
+					    PortletConstants.DOSSIER_ACTION_REPAIR_DOSSIER,
+					    new Date(), 0, 2, actorBean.getActor(),
+					    actorBean.getActorId(), actorBean.getActorName(),
+					    SyncFromFrontOffice.class.getName() +
+					        ".repairDossier()", WebKeys.ACTION_REPAIR_VALUE);
 
-					actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
+/*					actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
 
 					actorId = dossier.getOwnerOrganizationId();
 
@@ -210,14 +237,25 @@ public class SyncFromFrontOffice implements MessageListener {
 						WebKeys.ACTION_REPAIR_VALUE,
 						WebKeys.ACTION_REPAIR_VALUE,
 						WebKeys.ACTION_REPAIR_VALUE);
-				}
+*/				}
 				else if (Validator.equals(WebKeys.ACTION_CLOSE_VALUE, action)) {
 					Dossier dossier =
-						DossierLocalServiceUtil.fetchDossier(userActionMgs.getDossierId());
+					    DossierLocalServiceUtil.fetchDossier(userActionMgs.getDossierId());
 
-					// TODO check again
+					ActorBean actorBean = new ActorBean(1, dossier.getUserId());
 
-					actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
+					DossierLogLocalServiceUtil.addCommandRequest(
+					    dossier.getUserId(), dossier.getGroupId(),
+					    dossier.getCompanyId(), dossierId, 0,
+					    dossier.getDossierStatus(),
+					    PortletConstants.DOSSIER_ACTION_CANCEL_DOSSIER,
+					    PortletConstants.DOSSIER_ACTION_CANCEL_DOSSIER,
+					    new Date(), 0, 2, actorBean.getActor(),
+					    actorBean.getActorId(), actorBean.getActorName(),
+					    SyncFromFrontOffice.class.getName() +
+					        ".repairDossier()", WebKeys.ACTION_CANCEL_VALUE);
+					
+					/*					actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
 
 					actorId = dossier.getOwnerOrganizationId();
 
@@ -245,7 +283,7 @@ public class SyncFromFrontOffice implements MessageListener {
 						dossier.getFinishDatetime(), actor, actorId, actorName,
 						WebKeys.ACTION_CLOSE_VALUE, WebKeys.ACTION_CLOSE_VALUE,
 						WebKeys.ACTION_CLOSE_VALUE);
-				}
+*/				}
 
 			}
 			catch (Exception e) {

@@ -67,7 +67,6 @@
 		}
 	}
 	
-	
 %>
 <style>
 .payment-ld button {

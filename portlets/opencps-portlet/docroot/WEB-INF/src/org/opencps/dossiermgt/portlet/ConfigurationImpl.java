@@ -75,6 +75,8 @@ public class ConfigurationImpl implements ConfigurationAction{
 
 		boolean showServiceDomainIdTree = ParamUtil.getBoolean(actionRequest, "showServiceDomainIdTree");
 		
+		boolean hideTabDossierFile = ParamUtil.getBoolean(actionRequest, "hideTabDossierFile");
+		
 		PortletURL redirectURL =
 		    PortletURLFactoryUtil.create(
 		        PortalUtil.getHttpServletRequest(actionRequest),
@@ -110,6 +112,8 @@ public class ConfigurationImpl implements ConfigurationAction{
 		preferences.setValue("orderBydDossierFile", orderBydDossierFile);
 		
 		preferences.setValue("showServiceDomainIdTree", String.valueOf(showServiceDomainIdTree));
+		
+		preferences.setValue("hideTabDossierFile", String.valueOf(hideTabDossierFile));
 		
 		preferences.store();
 

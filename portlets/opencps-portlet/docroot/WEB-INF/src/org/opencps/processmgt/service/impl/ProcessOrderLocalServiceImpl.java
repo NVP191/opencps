@@ -534,7 +534,7 @@ public class ProcessOrderLocalServiceImpl
 	public List searchProcessOrder(
 		long serviceInfoId, long processStepId, long loginUserId,
 		long actionUserId, int start, int end, OrderByComparator orderByComparator) {
-		
+/*		
 		List<ProcessOrder> al = new ArrayList<ProcessOrder>();
 		// add elements to al, including duplicates
 		
@@ -545,9 +545,11 @@ public class ProcessOrderLocalServiceImpl
 				actionUserId, start, end, orderByComparator));
 		
 		al.clear();
-		al.addAll(hs);
+		al.addAll(hs);*/
 		
-		return al;
+		return processOrderFinder
+						.searchProcessOrder(serviceInfoId, processStepId, loginUserId,
+							actionUserId, start, end, orderByComparator);
 	}
 
 	/**

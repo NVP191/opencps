@@ -1,3 +1,9 @@
+<%@page import="java.util.Date"%>
+<%@page import="org.opencps.util.PortletConstants"%>
+<%@page import="org.opencps.dossiermgt.util.ActorBean"%>
+<%@page import="org.opencps.dossiermgt.bean.AccountBean"%>
+<%@page import="com.liferay.portal.kernel.mail.Account"%>
+<%@page import="org.opencps.dossiermgt.service.DossierLogLocalServiceUtil"%>
 <%@page import="org.opencps.util.WebKeys"%>
 <%
 /**
@@ -99,6 +105,16 @@
 							paymentFile.setPaymentStatus(PaymentMgtUtil.PAYMENT_STATUS_APPROVED);
 							paymentFile.setPaymentMethod(WebKeys.PAYMENT_METHOD_KEYPAY);
 							PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
+							
+							ActorBean actorBean = new ActorBean(1, themeDisplay.getUserId());
+							
+							// Add dossierLog payment confirm
+							
+							DossierLogLocalServiceUtil.addDossierLog(themeDisplay.getUserId(), themeDisplay.getScopeGroupId(),
+								themeDisplay.getCompanyId(), paymentFile.getDossierId(), paymentFile.getFileGroupId(),
+								null, PortletConstants.DOSSIER_ACTION_CONFIRM_PAYMENT, PortletConstants.DOSSIER_ACTION_CONFIRM_PAYMENT,
+								new Date(), 1, 2, actorBean.getActor(), actorBean.getActorId(), actorBean.getActorName(), 
+								"html/portlet/paymentmgt/frontoffice/frontofficeconfirmkeypay.jsp");
 						}
 					}
 				}

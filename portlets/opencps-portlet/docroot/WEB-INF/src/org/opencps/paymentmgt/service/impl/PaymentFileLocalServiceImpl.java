@@ -14,12 +14,15 @@
 
 package org.opencps.paymentmgt.service.impl;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import org.opencps.paymentmgt.model.PaymentFile;
 import org.opencps.paymentmgt.service.base.PaymentFileLocalServiceBaseImpl;
 
+import com.liferay.portal.kernel.log.Log;
+import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -148,17 +151,31 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	}
 	
 	public List<PaymentFile> searchPaymentFiles(
-	    long groupId, String paymentStatus, String keywords, int start, int end) {
+		    long groupId, int paymentStatus, long govAgencyOrganizationId, String keywords, int start, int end) {
+			
+		List<PaymentFile> listPaymentFile = new ArrayList<PaymentFile>();
 
-		return paymentFileFinder.searchPaymentFiles(
-		    groupId, paymentStatus, keywords, start, end);
+		try {
+			listPaymentFile = paymentFileFinder.searchPaymentFiles(
+			    groupId, paymentStatus, govAgencyOrganizationId, keywords, start, end);
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			_log.error(e);
+		}
+		return listPaymentFile;
 	}
 
 	public int countPaymentFiles(
-	    long groupId, String paymentStatus, String keywords) {
+	    long groupId, int paymentStatus, long govAgencyOrganizationId, String keywords) {
 
-		return paymentFileFinder.countPaymentFiles(
-		    groupId, paymentStatus, keywords);
+		try {
+			return paymentFileFinder.countPaymentFiles(
+			    groupId, paymentStatus, govAgencyOrganizationId, keywords);
+		} catch (SystemException e) {
+			// TODO Auto-generated catch block
+			_log.error(e);
+		}
+		return 0;
 	}
 
 	public int countCustomerPaymentFile(
@@ -179,20 +196,20 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 	}
 
 	public int countCustomerPaymentFileNewRequest(
-		    long groupId, String keyword, boolean isCitizen, long customerId,
-		    int[] paymentStatus) {
+	    long groupId, String keyword, boolean isCitizen, long customerId,
+	    int[] paymentStatus) {
 
-			return paymentFileFinder.countCustomerPaymentFileNewRequest(
-			    groupId, keyword, isCitizen, customerId, paymentStatus);
-		}
+		return paymentFileFinder.countCustomerPaymentFileNewRequest(
+		    groupId, keyword, isCitizen, customerId, paymentStatus);
+	}
 
 	public List<PaymentFile> searchCustomerPaymentFileNewRequest(
-		    long groupId, String keyword, boolean isCitizen, long customerId,
-		    int[] paymentStatus, int start, int end, OrderByComparator obc) {
+	    long groupId, String keyword, boolean isCitizen, long customerId,
+	    int[] paymentStatus, int start, int end, OrderByComparator obc) {
 
-			return paymentFileFinder.searchCustomerPaymentFileNewRequest(
-			    groupId, keyword, isCitizen, customerId, paymentStatus, start, end,
-			    obc);
+		return paymentFileFinder.searchCustomerPaymentFileNewRequest(
+		    groupId, keyword, isCitizen, customerId, paymentStatus, start, end,
+		    obc);
 	}
 		
 	public PaymentFile getPaymentFileByGoodCode(
@@ -334,5 +351,7 @@ public class PaymentFileLocalServiceImpl extends PaymentFileLocalServiceBaseImpl
 		return paymentFile;
 
 	}
+	
+	private Log _log = LogFactoryUtil.getLog(PaymentFileLocalServiceImpl.class);
 	
 }

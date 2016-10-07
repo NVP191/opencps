@@ -217,7 +217,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			serviceContext);
 
 		// Update DossierLog with Actor
-		dossierLogLocalService.addDossierLog(
+/*		dossierLogLocalService.addDossierLog(
 			userId,
 			dossierId,
 			0,
@@ -228,7 +228,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			PortletUtil.getActionInfo(
 				PortletConstants.DOSSIER_STATUS_NEW, serviceContext.getLocale()),
 			StringPool.BLANK, now, PortletConstants.DOSSIER_LOG_NORMAL,
-			serviceContext);
+			serviceContext);*/
 
 		long classTypeId = 0;
 
@@ -1662,13 +1662,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			User user = userPersistence.fetchByPrimaryKey(actorId);
 			actorName = user.getFullName();
 		}
-
+/*
 		dossierLogLocalService.addDossierLog(
 			userId, dossierId, 0, PortletConstants.DOSSIER_STATUS_NEW, actor,
 			actorId, actorName, PortletUtil.getActionInfo(
 				PortletConstants.DOSSIER_STATUS_UPDATE,
 				serviceContext.getLocale()), StringPool.BLANK, now,
-			PortletConstants.DOSSIER_LOG_NORMAL, serviceContext);
+			PortletConstants.DOSSIER_LOG_NORMAL, serviceContext);*/
 
 		return dossier;
 	}
@@ -1847,11 +1847,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 				dossierFileLocalService.updateDossierFile(dossierFile);
 			}
 		}
-
-		dossierLogLocalService.addDossierLog(
+		
+		//Remove addDossierLog
+		
+/*		dossierLogLocalService.addDossierLog(
 			userId, dossier.getGroupId(), dossier.getCompanyId(), dossierId,
 			fileGroupId, status, PortletUtil.getActionInfo(status, locale),
-			StringPool.BLANK, now, level);
+			StringPool.BLANK, now, level);*/
 
 		dossierPersistence.update(dossier);
 
@@ -1909,12 +1911,15 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 					PortletConstants.DOSSIER_STATUS_PAYING)) {
 				level = 1;
 			}
-			dossierLogLocalService.addDossierLog(
+			
+			//Remove DossierLog
+			
+/*			dossierLogLocalService.addDossierLog(
 				dossier.getUserId(), dossier.getGroupId(),
 				dossier.getCompanyId(), dossierId, fileGroupId, dossierStatus,
 				actor, actorId, actorName, requestCommand, actionInfo,
 				messageInfo, level);
-
+*/
 			dossierPersistence.update(dossier);
 
 			result = true;
@@ -1997,12 +2002,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setDossierStatus(dossierStatus);
 
 		dossier.setModifiedDate(now);
-
-		dossierLogLocalService.addDossierLog(
+		
+		//Remove update DossierLog
+		
+/*		dossierLogLocalService.addDossierLog(
 			dossier.getUserId(), dossier.getGroupId(), dossier.getCompanyId(),
 			dossierId, fileGroupId, dossierStatus, actor, actorId, actorName,
 			requestCommand, actionInfo, messageInfo, level);
-
+*/
 		dossierPersistence.update(dossier);
 	}
 

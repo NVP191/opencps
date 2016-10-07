@@ -166,6 +166,12 @@
 	/>
 >>>>>>> fdsservice-rc-1.5.1-issue-fix#configPortlet13#
 	
+	<aui:input 
+		type="checkbox"
+		name="hideTabDossierFile" 
+		value="<%= hideTabDossierFile %>"
+	/>
+	
 	<aui:button type="submit" name="Save" value="save"></aui:button>
 
 </aui:form>

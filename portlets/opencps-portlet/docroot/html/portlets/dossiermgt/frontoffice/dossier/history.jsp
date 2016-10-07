@@ -90,11 +90,14 @@
 >
 	<liferay-ui:search-container-results>
 		<%
-			dossierLogs = DossierLogLocalServiceUtil.getDossierLogByDossierId(dossierId, searchContainer.getStart(), searchContainer.getEnd());
-			
+/* 			dossierLogs = DossierLogLocalServiceUtil.getDossierLogByDossierId(dossierId, searchContainer.getStart(), searchContainer.getEnd());
+ */			
+ 			dossierLogs = DossierLogLocalServiceUtil.findDossierLog(1, dossierId, searchContainer.getStart(), searchContainer.getEnd());
+
 			results = dossierLogs;
 			
-			total = DossierLogLocalServiceUtil.countDossierLogByDossierId(dossierId);
+			//total = DossierLogLocalServiceUtil.countDossierLogByDossierId(dossierId);
+			total = DossierLogLocalServiceUtil.countDossierLog(1, dossierId);
 			
 			pageContext.setAttribute("results", results);
 			pageContext.setAttribute("total", total);
@@ -154,7 +157,7 @@
 					</span>
 					
 					<span class="span8">
-						<%= DossierMgtUtil.getDossierLogs(StringPool.BLANK, dossierLog.getMessageInfo())  %>
+						<liferay-ui:message key="<%= DossierMgtUtil.getDossierLogs(StringPool.BLANK, dossierLog.getMessageInfo())  %>"/>
 					</span>
 					
 				</aui:row>

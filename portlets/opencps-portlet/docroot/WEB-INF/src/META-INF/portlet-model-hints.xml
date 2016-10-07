@@ -526,6 +526,7 @@
 		<field name="updateDatetime" type="Date" />
 		<field name="level" type="int" />
 		<field name="actor" type="int" />
+		<field name="className" type="String" />
 		<field name="actorId" type="long" />
 		<field name="actorName" type="String" />
 		<field name="syncStatus" type="int" />

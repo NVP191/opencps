@@ -954,4 +954,77 @@
 			ORDER BY opencps_processorder.actionDatetime DESC
 		]]>
 	</sql>
+	
+	<sql id="org.opencps.dossiermgt.service.persistence.DossierLogFinder.findDossierLogByCitizen">
+		<![CDATA[
+			SELECT
+				opencps_dossier_log.*
+			FROM
+				opencps_dossier_log
+			WHERE
+				opencps_dossier_log.dossierId = ?
+			AND (
+				(
+					opencps_dossier_log.actor = 1
+					AND (opencps_dossier_log.actionInfo != "clone-attachment-file" AND opencps_dossier_log.actionInfo != "add-attachment-file")
+				)
+				OR opencps_dossier_log.syncStatus = 2
+			)
+		]]>
+	</sql>
+	
+	<sql id="org.opencps.dossiermgt.service.persistence.DossierLogFinder.countDossierLogByCitizen">
+		<![CDATA[
+			SELECT
+				COUNT(*) AS COUNT_VALUE
+			FROM
+				opencps_dossier_log
+			WHERE
+				opencps_dossier_log.dossierId = ?
+			AND (
+				(
+					opencps_dossier_log.actor = 1
+					AND (opencps_dossier_log.actionInfo != "clone-attachment-file" AND opencps_dossier_log.actionInfo != "add-attachment-file")
+				)
+				OR opencps_dossier_log.syncStatus = 2
+			)
+		]]>
+	</sql>
+	
+	<sql id="org.opencps.dossiermgt.service.persistence.DossierLogFinder.findDossierLogByEmployee">
+		<![CDATA[
+			SELECT
+				opencps_dossier_log.*
+			FROM
+				opencps_dossier_log
+			WHERE
+				opencps_dossier_log.dossierId = ?
+			AND (
+				(
+					opencps_dossier_log.actor = 1
+					AND (opencps_dossier_log.actionInfo != "clone-attachment-file" AND opencps_dossier_log.actionInfo != "add-attachment-file")
+				)
+				OR opencps_dossier_log.actor = 2
+			)
+		]]>
+	</sql>
+	
+	<sql id="org.opencps.dossiermgt.service.persistence.DossierLogFinder.countDossierLogByEmployee">
+		<![CDATA[
+			SELECT
+				COUNT(*) AS COUNT_VALUE
+			FROM
+				opencps_dossier_log
+			WHERE
+				opencps_dossier_log.dossierId = ?
+			AND (
+				(
+					opencps_dossier_log.actor = 1
+					AND (opencps_dossier_log.actionInfo != "clone-attachment-file" AND opencps_dossier_log.actionInfo != "add-attachment-file")
+				)
+				OR opencps_dossier_log.actor = 2
+			)
+		]]>
+	</sql>
+	
 </custom-sql>

@@ -32,6 +32,9 @@ import org.opencps.dossiermgt.NoSuchDossierException;
 import org.opencps.dossiermgt.bean.AccountBean;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.util.ActorBean;
+import org.opencps.dossiermgt.util.DossierMgtUtil;
 import org.opencps.keypay.model.KeyPay;
 import org.opencps.paymentmgt.NoSuchPaymentConfigException;
 import org.opencps.paymentmgt.NoSuchPaymentFileException;
@@ -47,12 +50,14 @@ import org.opencps.servicemgt.IOFileUploadException;
 import org.opencps.util.AccountUtil;
 import org.opencps.util.DLFolderUtil;
 import org.opencps.util.MessageKeys;
+import org.opencps.util.PortletConstants;
 import org.opencps.util.PortletUtil;
 
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.json.JSONFactoryUtil;
 import com.liferay.portal.kernel.json.JSONObject;
+import com.liferay.portal.kernel.language.LanguageUtil;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.repository.model.FileEntry;
@@ -133,7 +138,6 @@ public class PaymentMgtFrontOfficePortlet extends MVCPortlet {
 			// TODO Auto-generated catch block
 			_log.error(e);
 		}
-		System.out.println("----REDIRECT KEYPAY----");
 		if (paymentConfig != null) {
 			Date curDate = new Date();
 			boolean updatePaymentFile = false;
@@ -347,13 +351,47 @@ public class PaymentMgtFrontOfficePortlet extends MVCPortlet {
 
 			if (paymentFileId > 0) {
 				paymentFile =
-					PaymentFileLocalServiceUtil.getPaymentFile(paymentFileId);
+				    PaymentFileLocalServiceUtil.getPaymentFile(paymentFileId);
 				paymentFile.setConfirmFileEntryId(fileEntry.getFileEntryId());
 				paymentFile.setPaymentStatus(PaymentMgtUtil.PAYMENT_STATUS_CONFIRMED);
 				paymentFile.setPaymentMethod(PaymentMgtUtil.PAYMENT_METHOD_BANK);
 				paymentFile.setModifiedDate(new Date());
+
 				PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile);
 
+				ActorBean actorBean =
+				    new ActorBean(1, serviceContext.getUserId());
+
+				// Add log baonop
+				StringBuffer msgInforSb = new StringBuffer();
+
+				msgInforSb.append(LanguageUtil.get(
+				    serviceContext.getLocale(),
+				    PortletConstants.DOSSIER_ACTION_REQUEST_PAYMENT));
+				msgInforSb.append(StringPool.SPACE);
+				msgInforSb.append(StringPool.COLON);
+				msgInforSb.append(StringPool.SPACE);
+				msgInforSb.append(StringPool.OPEN_PARENTHESIS);
+				msgInforSb.append(paymentFile.getAmount());
+				msgInforSb.append(StringPool.CLOSE_PARENTHESIS);
+				msgInforSb.append(StringPool.SPACE);
+				msgInforSb.append(LanguageUtil.get(
+				    serviceContext.getLocale(), "for-dossier"));
+				msgInforSb.append(StringPool.SPACE);
+				msgInforSb.append(DossierMgtUtil.getServiceName(paymentFile.getDossierId()));
+				
+				DossierLogLocalServiceUtil.addDossierLog(
+				    serviceContext.getUserId(),
+				    serviceContext.getScopeGroupId(),
+				    serviceContext.getCompanyId(), paymentFile.getDossierId(),
+				    paymentFile.getFileGroupId(), null,
+				    PortletConstants.DOSSIER_ACTION_REQUEST_PAYMENT,
+				    msgInforSb.toString(), new Date(), 1, 2,
+				    actorBean.getActor(), actorBean.getActorId(),
+				    actorBean.getActorName(),
+				    PaymentMgtFrontOfficePortlet.class.getName() +
+				        ".requestBankPayment()");
+				
 				SessionMessages.add(
 					actionRequest,
 					MessageKeys.PAYMENT_FILE_CONFIRM_BANK_SUCCESS);
@@ -386,50 +424,6 @@ public class PaymentMgtFrontOfficePortlet extends MVCPortlet {
 
 	}
 
-	/**
-	 * @param actionRequest
-	 * @param actionResponse
-	 * @return
-	 * @throws PortalException
-	 * @throws SystemException
-	 * @throws IOException
-	 */
-	/*
-	 * public void requestBankPayment( ActionRequest actionRequest,
-	 * ActionResponse actionResponse) throws IOException { long paymentFileId =
-	 * ParamUtil.getLong( actionRequest,
-	 * PaymentFileDisplayTerms.PAYMENT_FILE_ID); String redirectURL =
-	 * ParamUtil.getString(actionRequest, "redirectURL"); String returnURL =
-	 * ParamUtil.getString(actionRequest, "returnURL"); SessionMessages.add(
-	 * actionRequest, PortalUtil.getPortletId(actionRequest) +
-	 * SessionMessages.KEY_SUFFIX_HIDE_DEFAULT_ERROR_MESSAGE);
-	 * System.out.println("----PAYMENT FILE ID----" + paymentFileId); try {
-	 * ServiceContext serviceContext =
-	 * ServiceContextFactory.getInstance(actionRequest); if (paymentFileId <= 0)
-	 * { FileEntry fileEntry = updateFileEntry(actionRequest, actionResponse);
-	 * if (Validator.isNotNull(fileEntry)) { } else { throw new
-	 * IOFileUploadException("File upload exception"); } } else { FileEntry
-	 * fileEntry = updateFileEntry(actionRequest, actionResponse);
-	 * System.out.println("----CONFIRM FILE----" + fileEntry.getFileEntryId());
-	 * PaymentFile paymentFile = null; try { paymentFile =
-	 * PaymentFileLocalServiceUtil.getPaymentFile(paymentFileId); if
-	 * (paymentFile != null) {
-	 * paymentFile.setConfirmFileEntryId(fileEntry.getFileEntryId());
-	 * paymentFile.setPaymentStatus(PaymentMgtUtil.PAYMENT_STATUS_CONFIRMED);
-	 * paymentFile.setPaymentMethod(PaymentMgtUtil.PAYMENT_METHOD_BANK);
-	 * paymentFile.setModifiedDate(new Date());
-	 * PaymentFileLocalServiceUtil.updatePaymentFile(paymentFile); } } catch
-	 * (NoSuchPaymentFileException e) { } SessionMessages.add( actionRequest,
-	 * MessageKeys.PAYMENT_FILE_CONFIRM_BANK_SUCCESS); } } catch (Exception e) {
-	 * if (e instanceof DuplicateFileNameException) { SessionErrors.add(
-	 * actionRequest, MessageKeys.SERVICE_TEMPLATE_FILE_NAME_EXCEPTION); } else
-	 * if (e instanceof DuplicateFileNoException) { SessionErrors.add(
-	 * actionRequest, MessageKeys.SERVICE_TEMPLATE_FILE_NO_EXCEPTION); } else if
-	 * (e instanceof IOFileUploadException) { SessionErrors.add( actionRequest,
-	 * MessageKeys.SERVICE_TEMPLATE_UPLOAD_EXCEPTION); } else {
-	 * SessionErrors.add( actionRequest,
-	 * MessageKeys.SERVICE_TEMPLATE_EXCEPTION_OCCURRED); } } }
-	 */
 
 	/**
 	 * @param actionRequest

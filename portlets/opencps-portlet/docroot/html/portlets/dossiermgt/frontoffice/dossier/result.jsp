@@ -1,3 +1,4 @@
+
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -297,6 +298,7 @@
 									continue;
 									
 								}
+
 								%>
 									<aui:row cssClass='<%=count > 1 ? "top-line pd_b20 pd_t20" : "pd_b20 pd_t20" %>'>
 										<aui:col width="50">

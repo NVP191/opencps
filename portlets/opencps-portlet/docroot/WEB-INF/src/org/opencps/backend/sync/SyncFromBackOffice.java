@@ -17,13 +17,17 @@
 
 package org.opencps.backend.sync;
 
+import java.util.Date;
 import java.util.List;
 
 import org.opencps.backend.message.SendToBackOfficeMsg;
 import org.opencps.backend.message.SendToCallbackMsg;
 import org.opencps.backend.util.BackendUtils;
+import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
+import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
+import org.opencps.dossiermgt.util.ActorBean;
 import org.opencps.processmgt.model.WorkflowOutput;
 import org.opencps.processmgt.service.WorkflowOutputLocalServiceUtil;
 import org.opencps.util.PortletConstants;
@@ -61,7 +65,8 @@ public class SyncFromBackOffice implements MessageListener {
 
 		boolean trustServiceMode =
 			BackendUtils.checkServiceMode(toBackOffice.getDossierId());
-
+		
+		
 		if (trustServiceMode) {
 			boolean statusUpdate = false;
 
@@ -90,6 +95,23 @@ public class SyncFromBackOffice implements MessageListener {
 					0, toBackOffice.getDossierId(),
 					PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS,
 					workflowOutputs);
+				
+				//Update DossierLog 
+				
+				Dossier dossier = DossierLocalServiceUtil.fetchDossier(toBackOffice.getDossierId());
+				
+				ActorBean actorBean = new ActorBean(toBackOffice.getActor(), toBackOffice.getActorId());
+				
+				DossierLogLocalServiceUtil.addDossierLog(
+				    dossier.getUserId(), dossier.getGroupId(),
+				    dossier.getCompanyId(), toBackOffice.getDossierId(),
+				    toBackOffice.getFileGroupId(),
+				    toBackOffice.getDossierStatus(),
+				    toBackOffice.getActionInfo(),
+				    toBackOffice.getMessageInfo(), new Date(), 0,
+				    toBackOffice.getSyncStatus(), actorBean.getActor(),
+				    actorBean.getActorId(), actorBean.getActorName(),
+				    SyncFromBackOffice.class.getName());
 			}
 			catch (Exception e) {
 				_log.error(e);

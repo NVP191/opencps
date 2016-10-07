@@ -420,6 +420,23 @@ public class SendToBackOfficeMsg{
     
     	this.actorName = actorName;
     }
+	
+    /**
+     * @return the syncStatus
+     */
+    public int getSyncStatus() {
+    
+    	return syncStatus;
+    }
+
+	
+    /**
+     * @param syncStatus the syncStatus to set
+     */
+    public void setSyncStatus(int syncStatus) {
+    
+    	this.syncStatus = syncStatus;
+    }
 	protected String requestCommand;
 
 	protected long processOrderId;
@@ -444,5 +461,6 @@ public class SendToBackOfficeMsg{
 	protected int actor;
 	protected long actorId;
 	protected String actorName;
+	protected int syncStatus;
 
 }

@@ -47,5 +47,7 @@
 	String orderDossierFileByDossierFileDate = preferences.getValue("orderDossierFileByDossierFileDate", "default");
 
 	boolean showServiceDomainIdTree = GetterUtil.getBoolean(preferences.getValue("showServiceDomainIdTree", "true"), true);
+	
+	boolean hideTabDossierFile = GetterUtil.getBoolean(preferences.getValue("hideTabDossierFile", "false"), false);
 %>
 

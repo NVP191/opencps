@@ -16,7 +16,7 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 %>
-
+<%@page import="com.liferay.portal.kernel.language.UnicodeLanguageUtil"%>
 <%@page import="org.opencps.util.AccountUtil"%>
 <%@page import="org.opencps.util.ActionKeys"%>
 <%@page import="org.opencps.dossiermgt.permissions.DossierPermission"%>
@@ -70,7 +70,7 @@
 	String[] dossierSections = dossier != null ? 
 		new String[]{"dossier_part", "dossier_info", "result", "history"} : 
 		new String[]{"dossier_info"};
-
+	
 	// show only 2 tab dossier_part & info on create new dossier
 	if(cmd.equals(Constants.ADD)){
 		dossierSections = new String[]{"dossier_part", "dossier_info"};
@@ -93,6 +93,8 @@
 	catch (Exception e) {
 		
 	}
+	
+	boolean quickCreateDossier = dossier == null ? true : false;
 %>
 
 <liferay-ui:error 
@@ -130,6 +132,8 @@
 		/>
 		
 		<portlet:actionURL var="updateDossierURL" name="updateDossier"/>
+		
+		<portlet:actionURL var="quickUpdateDossierURL" name="quickUpdateDossier"/>
 		
 		<liferay-util:buffer var="htmlTop">
 			<c:if test="<%= dossier != null %>">
@@ -170,7 +174,7 @@
 									<portlet:param name="redirectURL" value="<%=backDossierList %>"/>
 								</portlet:actionURL>  --%>
 						 		<liferay-ui:icon
-						 			cssClass="search-container-action fa forward check-before-send"
+						 			cssClass="search-container-action fa forward input100"
 						 			image="reply"
 						 			message="resend" 
 						 			url="<%=updateDossierStatusURL.toString() %>" 
@@ -181,12 +185,11 @@
 					 	<c:if test="<%=showBackToListButton %>">
 					 		<liferay-ui:icon
 								image="back"
-								cssClass="search-container-action fa forward input100"
+								cssClass="search-container-action fa forward"
 								message="back-dossier-list"  
 								url="<%= backDossierList.toString() %>" 
 							/>
-					 	</c:if>
-					 	
+						</c:if>
 			 		</c:if>
 			  		<c:if test="<%= (dossier.getDossierStatus().equals(PortletConstants.DOSSIER_STATUS_PROCESSING) && workFlow != null) %>">
 					 		<portlet:actionURL var="cancelDossierURL" name="cancelDossier" >
@@ -219,19 +222,21 @@
 			  		
 		 		</c:if>
 		 	
-			 	<div>	
-			 		<aui:button 
-			 			type="submit"
-			 			cssClass="btn des-sub-button radius20" 
-			 			icon="add"
-			 			value="edit-dossier-btn"
-			 		/>	
+			 	<div>
+			 		<c:if test="<%=!quickCreateDossier %>">
+				 		<aui:button 
+				 			type="submit"
+				 			cssClass="btn des-sub-button radius20" 
+				 			icon="add"
+				 			value="edit-dossier-btn"
+				 		/>	
+			 		</c:if>
 			 	</div>
 			</c:if>
 			
 		</liferay-util:buffer>
 	
-		<aui:form name="fm" action="<%=updateDossierURL %>" method="post">
+		<aui:form name="fm" action="<%=dossier != null ? updateDossierURL : quickUpdateDossierURL %>" method="post">
 		
 			<aui:model-context bean="<%= dossier %>" model="<%= Dossier.class %>" />
 			
@@ -341,6 +346,23 @@
 				/>
 			</div>
 		</aui:form>	
+		
+		<aui:script use="aui-loading-mask-deprecated">
+			AUI().ready(function(A){
+				var quickCreateDossier = '<%=quickCreateDossier%>';
+				if(quickCreateDossier ==='true'){
+					var loadingMask = new A.LoadingMask(
+						{
+							'strings.loading': '<%= UnicodeLanguageUtil.get(pageContext, "rending...") %>',
+							target: A.one('#<portlet:namespace/>fm')
+						}
+					);
+					
+					loadingMask.show();
+					submitForm(document.<portlet:namespace />fm);
+				}
+			});
+		</aui:script>
 	</c:when>
 	
 	<c:otherwise>

@@ -2182,6 +2182,293 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 
 		}
 	}
+	
+	
+	/**
+	 * @param actionRequest
+	 * @param actionResponse
+	 * @throws IOException
+	 */
+	public void quickUpdateDossier(
+		ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException {
+
+		ThemeDisplay themeDisplay =
+			(ThemeDisplay) actionRequest.getAttribute(WebKeys.THEME_DISPLAY);
+		
+		AccountBean accountBean = AccountUtil.getAccountBean(actionRequest);
+
+		HttpServletRequest request =
+			PortalUtil.getHttpServletRequest(actionRequest);
+
+		HttpSession session = request.getSession();
+
+		String accountType =
+			GetterUtil.getString(session.getAttribute(WebKeys.ACCOUNT_TYPE));
+
+		Dossier dossier = null;
+
+		long dossierId =
+			ParamUtil.getLong(actionRequest, DossierDisplayTerms.DOSSIER_ID);
+		long dossierTemplateId =
+			ParamUtil.getLong(
+				actionRequest, DossierDisplayTerms.DOSSIER_TEMPLATE_ID);
+		long serviceInfoId =
+			ParamUtil.getLong(
+				actionRequest, DossierDisplayTerms.SERVICE_INFO_ID);
+		long cityId =
+			ParamUtil.getLong(actionRequest, DossierDisplayTerms.CITY_ID);
+		long districtId =
+			ParamUtil.getLong(actionRequest, DossierDisplayTerms.DISTRICT_ID);
+		long wardId =
+			ParamUtil.getLong(actionRequest, DossierDisplayTerms.WARD_ID);
+		long serviceConfigId =
+			ParamUtil.getLong(
+				actionRequest, DossierDisplayTerms.SERVICE_CONFIG_ID);
+
+		long govAgencyOrganizationId =
+			ParamUtil.getLong(
+				actionRequest, DossierDisplayTerms.GOVAGENCY_ORGANIZATION_ID);
+
+		long ownerOrganizationId =
+			GetterUtil.getLong(session.getAttribute(WebKeys.ACCOUNT_OWNERORGANIZATIONID));
+
+		int serviceMode =
+			ParamUtil.getInteger(
+				actionRequest, DossierDisplayTerms.SERVICE_MODE);
+		String serviceDomainIndex =
+			ParamUtil.getString(
+				actionRequest, DossierDisplayTerms.SERVICE_DOMAIN_INDEX);
+
+		String govAgencyCode =
+			ParamUtil.getString(
+				actionRequest, DossierDisplayTerms.GOVAGENCY_CODE);
+		String govAgencyName =
+			ParamUtil.getString(
+				actionRequest, DossierDisplayTerms.GOVAGENCY_NAME);
+
+		String serviceAdministrationIndex =
+			ParamUtil.getString(
+				actionRequest, DossierDisplayTerms.SERVICE_ADMINISTRATION_INDEX);
+		String templateFileNo =
+			ParamUtil.getString(
+				actionRequest, DossierDisplayTerms.TEMPLATE_FILE_NO);
+		String subjectName =
+			ParamUtil.getString(actionRequest, DossierDisplayTerms.SUBJECT_NAME);
+		String subjectId =
+			ParamUtil.getString(actionRequest, DossierDisplayTerms.SUBJECT_ID);
+		String address =
+			ParamUtil.getString(actionRequest, DossierDisplayTerms.ADDRESS);
+		String contactName =
+			ParamUtil.getString(actionRequest, DossierDisplayTerms.CONTACT_NAME);
+		String contactTelNo =
+			ParamUtil.getString(
+				actionRequest, DossierDisplayTerms.CONTACT_TEL_NO);
+		String contactEmail =
+			ParamUtil.getString(
+				actionRequest, DossierDisplayTerms.CONTACT_EMAIL);
+		String note =
+			ParamUtil.getString(actionRequest, DossierDisplayTerms.NOTE);
+
+		String backURL = ParamUtil.getString(actionRequest, "backURL");
+
+		String redirectURL = ParamUtil.getString(actionRequest, "redirectURL");
+
+		String redirectPaymentURL =
+			ParamUtil.getString(
+				request, DossierDisplayTerms.REDIRECT_PAYMENT_URL);
+
+		boolean isEditDossier = ParamUtil.getBoolean(request, "isEditDossier");
+
+		boolean update = false;
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextFactory.getInstance(actionRequest);
+
+			serviceContext.setAddGroupPermissions(true);
+			serviceContext.setAddGuestPermissions(true);
+
+			if (dossierId > 0) {
+				dossier = DossierLocalServiceUtil.getDossier(dossierId);
+			}
+
+			String dossierDestinationFolder = StringPool.BLANK;
+
+			SplitDate splitDate = PortletUtil.splitDate(new Date());
+
+			dossierDestinationFolder =
+				PortletUtil.getDossierDestinationFolder(
+					serviceContext.getScopeGroupId(), splitDate.getYear(),
+					splitDate.getMonth(), splitDate.getDayOfMoth());
+
+			if (dossier != null) {
+				dossierDestinationFolder += StringPool.SLASH + dossier.getOid();
+			}
+
+			
+
+			String cityCode = StringPool.BLANK;
+			String districtCode = StringPool.BLANK;
+			String wardCode = StringPool.BLANK;
+
+			String cityName = StringPool.BLANK;
+			String districtName = StringPool.BLANK;
+			String wardName = StringPool.BLANK;
+			
+			DictItem city = null;
+			
+			DictItem district = null;
+			
+			DictItem ward = null;
+			
+			if(accountBean.isCitizen()){
+				Citizen citizen = (Citizen)accountBean.getAccountInstance();
+				city = DictItemLocalServiceUtil.getDictItemByCode(citizen.getCityCode());
+				district = DictItemLocalServiceUtil.getDictItemByCode(citizen.getDistrictCode());
+				ward = DictItemLocalServiceUtil.getDictItemByCode(citizen.getWardCode());
+			}
+			
+			if(accountBean.isBusiness()){
+				Business business = (Business)accountBean.getAccountInstance();
+				city = DictItemLocalServiceUtil.getDictItemByCode(business.getCityCode());
+				district = DictItemLocalServiceUtil.getDictItemByCode(business.getDistrictCode());
+				ward = DictItemLocalServiceUtil.getDictItemByCode(business.getWardCode());
+			}
+
+			if (city != null) {
+				cityCode = city.getItemCode();
+				cityName = city.getItemName(themeDisplay.getLocale());
+				cityId = city.getDictItemId();
+			}
+
+			if (district != null) {
+				districtCode = district.getItemCode();
+				districtName = district.getItemName(themeDisplay.getLocale());
+				districtId = district.getDictItemId();
+			}
+
+			if (ward != null) {
+				wardCode = ward.getItemCode();
+				wardName = ward.getItemName(themeDisplay.getLocale());
+				wardId = ward.getDictItemId();
+			}
+			
+			
+			
+			validateDossier(
+				cityId, districtId, wardId, accountType,
+				dossierDestinationFolder, subjectName, subjectId, address,
+				contactName, contactTelNo, contactEmail);
+
+			DLFolder dossierFolder =
+				DLFolderUtil.getTargetFolder(
+					serviceContext.getUserId(),
+					serviceContext.getScopeGroupId(),
+					serviceContext.getScopeGroupId(), false, 0,
+					dossierDestinationFolder, StringPool.BLANK, false,
+					serviceContext);
+
+			if (dossierId == 0) {
+				dossier =
+					DossierLocalServiceUtil.addDossier(
+						serviceContext.getUserId(), ownerOrganizationId,
+						dossierTemplateId, templateFileNo, serviceConfigId,
+						serviceInfoId, serviceDomainIndex,
+						govAgencyOrganizationId, govAgencyCode, govAgencyName,
+						serviceMode, serviceAdministrationIndex, cityCode,
+						cityName, districtCode, districtName, wardName,
+						wardCode, subjectName, subjectId, address, contactName,
+						contactTelNo, contactEmail, note,
+						PortletConstants.DOSSIER_SOURCE_DIRECT,
+						PortletConstants.DOSSIER_STATUS_NEW,
+						dossierFolder.getFolderId(), redirectPaymentURL,
+						serviceContext);
+
+			}
+			else {
+				dossier =
+					DossierLocalServiceUtil.updateDossier(
+						dossierId, serviceContext.getUserId(),
+						ownerOrganizationId, dossierTemplateId, templateFileNo,
+						serviceConfigId, serviceInfoId, serviceDomainIndex,
+						govAgencyOrganizationId, govAgencyCode, govAgencyName,
+						serviceMode, serviceAdministrationIndex, cityCode,
+						cityName, districtCode, districtName, wardName,
+						wardCode, subjectName, subjectId, address, contactName,
+						contactTelNo, contactEmail, note,
+
+						dossierFolder.getFolderId(), serviceContext);
+			}
+
+			SessionMessages.add(
+				actionRequest, MessageKeys.DOSSIER_UPDATE_SUCCESS);
+
+			update = true;
+		}
+		catch (Exception e) {
+			update = false;
+			if (e instanceof EmptyDossierCityCodeException ||
+				e instanceof EmptyDossierDistrictCodeException ||
+				e instanceof EmptyDossierWardCodeException ||
+				e instanceof InvalidDossierObjectException ||
+				e instanceof CreateDossierFolderException ||
+				e instanceof EmptyDossierSubjectNameException ||
+				e instanceof OutOfLengthDossierSubjectNameException ||
+				e instanceof EmptyDossierSubjectIdException ||
+				e instanceof OutOfLengthDossierSubjectIdException ||
+				e instanceof EmptyDossierAddressException ||
+				e instanceof OutOfLengthDossierContactEmailException ||
+				e instanceof OutOfLengthDossierContactNameException ||
+				e instanceof OutOfLengthDossierContactTelNoException ||
+				e instanceof EmptyDossierContactNameException ||
+				e instanceof OutOfLengthDossierAddressException ||
+				e instanceof EmptyDossierFileException ||
+				e instanceof DuplicateFolderNameException) {
+
+				SessionErrors.add(actionRequest, e.getClass());
+			}
+			else {
+				SessionErrors.add(
+					actionRequest,
+					MessageKeys.DOSSIER_SYSTEM_EXCEPTION_OCCURRED);
+			}
+
+			_log.error(e);
+
+		}
+		finally {
+			if (update) {
+				if (Validator.isNotNull(redirectURL)) {
+
+					actionResponse.sendRedirect(redirectURL + "&_" +
+						WebKeys.DOSSIER_MGT_PORTLET + "_dossierId=" +
+						dossier.getDossierId());
+
+				}
+			}
+			else {
+
+				actionResponse.setRenderParameter("backURL", backURL);
+
+				actionResponse.setRenderParameter(
+					DossierDisplayTerms.SERVICE_CONFIG_ID,
+					String.valueOf(serviceConfigId));
+				actionResponse.setRenderParameter(
+					DossierDisplayTerms.DOSSIER_ID,
+					String.valueOf(dossier != null ? dossier.getDossierId() : 0));
+
+				actionResponse.setRenderParameter(
+					"isEditDossier", String.valueOf(isEditDossier));
+
+				actionResponse.setRenderParameter(
+					"mvcPath",
+					"/html/portlets/dossiermgt/frontoffice/edit_dossier.jsp");
+			}
+
+		}
+	}
+
 
 	/**
 	 * @param actionRequest

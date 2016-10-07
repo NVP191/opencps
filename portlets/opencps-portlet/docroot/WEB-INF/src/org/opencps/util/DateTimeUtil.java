@@ -113,7 +113,9 @@ public class DateTimeUtil {
 		DateFormat df = getDateTimeFormat(_VN_DATE_FORMAT);
 		Date date = null;
 		try {
-			date = df.parse(strDate);
+			if (Validator.isNotNull(strDate)) {
+				date = df.parse(strDate);
+			}
 
 		}
 		catch (ParseException e) {

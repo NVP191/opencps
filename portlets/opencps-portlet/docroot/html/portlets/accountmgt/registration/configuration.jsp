@@ -51,7 +51,12 @@
 		</aui:col>
 		<aui:col width="40"></aui:col>
 	</aui:row>
-	
+	<aui:input
+		type="text"
+		name="emailConfirmToAdmin"
+		value="<%=emailConfirmToAdmin %>"
+		>
+	</aui:input>
 	<aui:input 
 		type="checkbox"
 		name="showLabelTaglibDatamgt" 

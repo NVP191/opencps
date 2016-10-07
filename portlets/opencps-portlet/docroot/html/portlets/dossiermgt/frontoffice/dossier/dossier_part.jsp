@@ -272,7 +272,7 @@
 							<c:if test="<%=partType == PortletConstants.DOSSIER_PART_TYPE_OTHER && dossier != null%>">
 								<%
 									List<DossierFile> dossierFiles = DossierFileLocalServiceUtil.
-										getDossierFileByD_DP(dossier.getDossierId(), dossierPartLevel1.getDossierpartId());
+										getDossierFileByDID_DP_R(dossier.getDossierId(), dossierPartLevel1.getDossierpartId(), 0);
 								
 									if(dossierFiles != null){
 										for(DossierFile dossierFileOther : dossierFiles){

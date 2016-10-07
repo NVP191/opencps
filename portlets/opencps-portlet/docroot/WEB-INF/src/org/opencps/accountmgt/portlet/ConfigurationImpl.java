@@ -45,6 +45,7 @@ public class ConfigurationImpl implements ConfigurationAction{
 		throws Exception {
 		String businessRegStep = ParamUtil.getString(actionRequest, "businessRegStep");
 		String citizenRegStep = ParamUtil.getString(actionRequest, "citizenRegStep");
+		String emailConfirmToAdmin = ParamUtil.getString(actionRequest, "emailConfirmToAdmin");
 		String portletResource =
 					    ParamUtil.getString(actionRequest, "portletResource");
 		String showLabelTaglibDatamgt = ParamUtil.getString(actionRequest, "showLabelTaglibDatamgt");
@@ -56,6 +57,8 @@ public class ConfigurationImpl implements ConfigurationAction{
 					        actionRequest, portletResource);
 		preferences.setValue("businessRegStep", businessRegStep);
 		preferences.setValue("citizenRegStep", citizenRegStep);
+		
+		preferences.setValue("emailConfirmToAdmin", emailConfirmToAdmin);
 
 		preferences.setValue("showLabelTaglibDatamgt", showLabelTaglibDatamgt);
 		

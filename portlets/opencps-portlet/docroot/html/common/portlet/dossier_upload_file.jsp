@@ -1,4 +1,5 @@
 
+<%@page import="com.liferay.portal.RolePermissionsException"%>
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -140,6 +141,11 @@
 <liferay-ui:error 
 	exception="<%= DuplicateFileException.class %>" 
 	message="<%= MessageKeys.DOSSIER_FILE_DUPLICATE_NAME %>"
+/>
+
+<liferay-ui:error 
+    exception="<%= RolePermissionsException.class %>" 
+    message="<%= RolePermissionsException.class.getName() %>"
 />
 
 <aui:form 

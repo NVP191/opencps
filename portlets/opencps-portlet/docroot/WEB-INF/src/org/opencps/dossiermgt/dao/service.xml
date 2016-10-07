@@ -455,16 +455,18 @@
         <column name="syncStatus" type="int"/>
         <column name="version" type="int"></column>
         <column name="signed" type="boolean"></column>
-        <finder name="D_DP" return-type="Collection" where="removed=0">
+        <finder name="DID_DP_R" return-type="Collection">
             <finder-column name="dossierId"></finder-column>
             <finder-column name="dossierPartId"></finder-column>
+            <finder-column name="removed"></finder-column>
         </finder>
         <finder name="DossierId" return-type="Collection" where="removed=0">
             <finder-column name="dossierId"></finder-column>
         </finder>
-        <finder name="D_GF" return-type="Collection" where="removed=0">
+        <finder name="DID_GFID_R" return-type="Collection">
             <finder-column name="dossierId"></finder-column>
             <finder-column name="groupFileId"></finder-column>
+            <finder-column name="removed"></finder-column>
         </finder>
         <finder name="DossierFileInUse" return-type="DossierFile">
             <finder-column name="dossierId"></finder-column>
@@ -478,7 +480,7 @@
             <finder-column name="syncStatus"></finder-column>
         </finder>
 
-        <finder name="D_DP_GF" return-type="Collection">
+        <finder name="DID_DP_GF" return-type="Collection">
             <finder-column name="dossierId"></finder-column>
             <finder-column name="dossierPartId"></finder-column>
             <finder-column name="groupFileId"></finder-column>
@@ -511,6 +513,10 @@
             <finder-column name="syncStatus"></finder-column>
             <finder-column name="dossierPartId"></finder-column>
             <finder-column name="removed"></finder-column>
+        </finder>
+        <finder name="DID_DP" return-type="Collection">
+            <finder-column name="dossierId"></finder-column>
+            <finder-column name="dossierPartId"></finder-column>
         </finder>
         
 	<reference package-path="com.liferay.portlet.documentlibrary" entity="DLApp" />

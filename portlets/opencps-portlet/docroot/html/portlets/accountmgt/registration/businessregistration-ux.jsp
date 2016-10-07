@@ -189,6 +189,8 @@
 		
 		<aui:input name="businessRegStep_cfg" value="<%=businessRegStep_cfg %>" type="hidden"></aui:input>
 		
+		<aui:input name="emailConfirmToAdmin" value="<%=emailConfirmToAdmin %>" type="hidden"></aui:input>
+		
 		<div class="register-content">
 			<div class="opencps accountmgt fm-registration header">
 				<aui:row>

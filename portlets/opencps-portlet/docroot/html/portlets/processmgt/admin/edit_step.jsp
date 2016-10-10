@@ -161,7 +161,7 @@
 	}
 %>
 
-<c:if test="<%=Validator.isNull(itemStatus) %>">
+<c:if test="<%=Validator.isNull(itemStatus) && Validator.isNotNull(step) %>">
 	<div class="portlet-msg-error"><liferay-ui:message key="invalid-process"/></div>
 </c:if>
 

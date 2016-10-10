@@ -230,6 +230,10 @@
 			<finder-column name="processWorkflowId"/>
 			<finder-column name="esign"/>
 		</finder>
+        <finder name="PWID_DPID" return-type="Collection">
+            <finder-column name="processWorkflowId"></finder-column>
+            <finder-column name="dossierPartId"></finder-column>
+        </finder>
 		
 	</entity>
 

@@ -122,7 +122,7 @@ public class MsgOutBackOffice implements MessageListener {
 					}
 				}
 
-				DossierFileLocalServiceUtil.updateDossierFileSyncStatus(
+				DossierFileLocalServiceUtil.updateDossierFileResultSyncStatus(
 					0, toBackOffice.getDossierId(),
 					PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS,
 					workflowOutputs);

@@ -138,7 +138,7 @@
 
 	if (processStepId > 0) {
 		processStepDossierParts =
-	ProcessUtils.getDossierPartByStep(processStepId);
+			ProcessUtils.getDossierPartByStep(processStepId);
 	}
 	
 	//Get list DossierPart

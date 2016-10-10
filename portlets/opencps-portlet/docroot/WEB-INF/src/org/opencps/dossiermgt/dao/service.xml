@@ -502,9 +502,9 @@
             <finder-column name="syncStatus"></finder-column>
             <finder-column name="removed"></finder-column>
         </finder>
-        <finder name="GFID_DID_SS_R" return-type="Collection">
-            <finder-column name="groupFileId"></finder-column>
+        <finder name="DID_GFID_SS_R" return-type="Collection">
             <finder-column name="dossierId"></finder-column>
+            <finder-column name="groupFileId"></finder-column>
             <finder-column name="syncStatus"></finder-column>
             <finder-column name="removed"></finder-column>
         </finder>

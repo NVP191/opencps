@@ -782,15 +782,6 @@ public class DossierFileLocalServiceImpl
 	}
 
 	/**
-	 * @param dossierId
-	 * @param dossierPartId
-	 * @param removed
-	 * @param syncStatus
-	 * @return
-	 * @throws SystemException
-	 */
-
-	/**
 	 * @param groupId
 	 * @param keyword
 	 * @param templateFileNo
@@ -967,11 +958,11 @@ public class DossierFileLocalServiceImpl
 	 * @return
 	 * @throws SystemException
 	 */
-	public List<DossierFile> getDossierFileByGFID_DID_SS_R(
+	public List<DossierFile> getDossierFileByDID_GFID_SS_R(
 		long fileGroupId, long dossierId, int syncStatus, int removed)
 		throws SystemException {
 
-		return dossierFilePersistence.findByGFID_DID_SS_R(
+		return dossierFilePersistence.findByDID_GFID_SS_R(
 			fileGroupId, dossierId, syncStatus, removed);
 	}
 
@@ -1290,7 +1281,7 @@ public class DossierFileLocalServiceImpl
 	 * @throws NoSuchDossierStatusException
 	 * @throws PortalException
 	 */
-	public void updateDossierFileSyncStatus(
+	public void updateDossierFileResultSyncStatus(
 		long userId, long dossierId, int syncStatus,
 		List<WorkflowOutput> worklows)
 		throws SystemException, NoSuchDossierStatusException, PortalException {
@@ -1314,9 +1305,45 @@ public class DossierFileLocalServiceImpl
 
 			}
 			catch (Exception e) {
-				_log.error("NO FILE RESULT UPLOAD..............");
+				_log.info("NO FILE RESULT UPLOAD..............");
 			}
 
+		}
+	}
+
+	/**
+	 * @param userId
+	 * @param dossierId
+	 * @param curSyncStatus
+	 * @param newSyncStatus
+	 * @param removed
+	 * @throws SystemException
+	 * @throws NoSuchDossierStatusException
+	 * @throws PortalException
+	 */
+	public void updateDossierFileSyncStatus(
+		long userId, long dossierId, int curSyncStatus, int newSyncStatus,
+		int removed)
+		throws SystemException, NoSuchDossierStatusException, PortalException {
+
+		Date now = new Date();
+
+		List<DossierFile> dossierFiles =
+			dossierFileLocalService.getDossierFileByDID_SS_R(
+				dossierId, curSyncStatus, removed);
+
+		if (dossierFiles != null) {
+			for (DossierFile dossierFile : dossierFiles) {
+				if (dossierFile.getDossierFileType() != PortletConstants.DOSSIER_FILE_TYPE_OUTPUT) {
+					dossierFile.setSyncStatus(newSyncStatus);
+					dossierFile.setModifiedDate(now);
+					if (userId != 0) {
+						dossierFile.setUserId(userId);
+					}
+					dossierFileLocalService.updateDossierFile(dossierFile);
+				}
+
+			}
 		}
 	}
 
@@ -1329,27 +1356,36 @@ public class DossierFileLocalServiceImpl
 	 * @throws PortalException
 	 */
 	public void updateDossierFileSyncStatus(
-		long userId, long dossierId, long fileGroupId, int syncStatus)
+		long userId, long fileGroupId, long dossierId, int curSyncStatus,
+		int newSyncStatus, int removed)
 		throws SystemException, NoSuchDossierStatusException, PortalException {
 
 		Date now = new Date();
 
 		List<DossierFile> dossierFiles =
-			dossierFileLocalService.getDossierFileByDID_GFID_R(
-				dossierId, fileGroupId, 0);
+			dossierFileLocalService.getDossierFileByDID_GFID_SS_R(
+				dossierId, fileGroupId, curSyncStatus, removed);
 
 		if (dossierFiles != null) {
 			for (DossierFile dossierFile : dossierFiles) {
-				dossierFile.setSyncStatus(syncStatus);
-				dossierFile.setModifiedDate(now);
-				if (userId != 0) {
-					dossierFile.setUserId(userId);
+				if (dossierFile.getDossierFileType() != PortletConstants.DOSSIER_FILE_TYPE_OUTPUT) {
+					dossierFile.setSyncStatus(newSyncStatus);
+					dossierFile.setModifiedDate(now);
+					if (userId != 0) {
+						dossierFile.setUserId(userId);
+					}
+					dossierFileLocalService.updateDossierFile(dossierFile);
 				}
-				dossierFileLocalService.updateDossierFile(dossierFile);
 			}
 		}
 	}
 
+	/**
+	 * @param dossierId
+	 * @param templateFileNo
+	 * @return
+	 * @throws SystemException
+	 */
 	public DossierFile fetchByTemplateFileNoDossierId_First(
 		long dossierId, String templateFileNo)
 		throws SystemException {
@@ -1362,6 +1398,11 @@ public class DossierFileLocalServiceImpl
 			dossierId, templateFileNo, comparator);
 	}
 
+	/**
+	 * @param oid
+	 * @return
+	 * @throws SystemException
+	 */
 	public DossierFile getByOid(String oid)
 		throws SystemException {
 

@@ -192,7 +192,30 @@
 			AND
 				(opencps_dossierpart.dossierTemplateId = ?)
 		]]>
-	</sql>	
+	</sql>
+	
+	<sql id="org.opencps.dossiermgt.service.persistence.DossierFileFinder.searchDossierFileResult">
+		<![CDATA[
+			SELECT
+				*
+			FROM
+				opencps_dossier_file
+			INNER JOIN
+				opencps_dossierpart
+			ON
+				opencps_dossier_file.dossierPartId = opencps_dossierpart.dossierpartId
+			WHERE
+				opencps_dossier_file.removed = ?
+			AND 
+				opencps_dossier_file.dossierId = ?
+			AND
+				opencps_dossier_file.syncStatus = ?
+			AND 
+				opencps_dossierpart.partType IN (? , ?)
+			ORDER BY 
+				opencps_dev.opencps_dossier_file.dossierFileDate DESC
+		]]>
+	</sql>
 	
 	<!-- <sql id="org.opencps.dossiermgt.service.persistence.DossierLogFinder.findRequiredProcessDossier">
 		<![CDATA[

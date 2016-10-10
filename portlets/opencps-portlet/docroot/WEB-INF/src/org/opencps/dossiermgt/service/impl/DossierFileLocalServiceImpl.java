@@ -31,6 +31,7 @@ import org.opencps.dossiermgt.service.base.DossierFileLocalServiceBaseImpl;
 import org.opencps.processmgt.model.WorkflowOutput;
 import org.opencps.util.PortletConstants;
 
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
@@ -1431,8 +1432,21 @@ public class DossierFileLocalServiceImpl
 		}
 
 		return sbFileName.toString();
+	}	
+	/**
+	 * Ham lay ra cac giay to loai nhieu ket qua hoac giay to ket qua
+	 * 
+	 * @param dossierId
+	 * @param orderByComparator
+	 * @return
+	 */
+	
+	public List<DossierFile> getDossierFileResult (long dossierId, int start, int end,
+		OrderByComparator orderByComparator) throws SystemException {
+		
+		return dossierFileFinder.searchDossierFileResult(0, dossierId, 2, 
+			5, 6, start, end, orderByComparator);
 	}
+	private static Log _log = LogFactoryUtil.getLog(DossierFileLocalServiceImpl.class.getName());
 
-	private static Log _log =
-		LogFactoryUtil.getLog(DossierFileLocalServiceImpl.class.getName());
 }

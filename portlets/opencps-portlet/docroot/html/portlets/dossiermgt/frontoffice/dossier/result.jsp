@@ -1,4 +1,5 @@
 
+<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -207,7 +208,6 @@
 				</label>
 			
 					<%
-					
 						int count = 1;
 						for(DossierLog dossierLog : dossierLogs){
 							
@@ -255,104 +255,17 @@
 				
 			</aui:row>
 		</c:if>
-		
-		<c:if test="<%=dossierPartsLevel1 != null && !dossierPartsLevel1.isEmpty() %>">
-		
-			<aui:row cssClass="bottom-line mg-l-30 pd_b20 pd_t20 pd-r60"></aui:row>
+		<!-- cau hinh hien thi sap xep giay to ket qua -->
+		<c:choose>
+			<c:when test="<%=Validator.isNotNull(orderFieldDossierFile) %>">
+				<%@ include file="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_order.jsp" %>
+			</c:when>
 			
-			<aui:row cssClass="pd_t20">
-				<label class="bold uppercase">
-					<liferay-ui:message key="dossier-file-result"/>
-				</label>
-				<%
-					int count = 1;
-					for (DossierPart dossierPartLevel1 : dossierPartsLevel1){
-						
-						int partType = dossierPartLevel1.getPartType();
-					
-						List<DossierPart> dossierParts = DossierMgtUtil.getTreeDossierPart(dossierPartLevel1.getDossierpartId());
-						
-						if(dossierParts != null){
-							for(DossierPart dossierPart : dossierParts){
-								DossierFile dossierFile = null;
-								try{
-									dossierFile = DossierFileLocalServiceUtil.getDossierFileInUse(dossier.getDossierId(), dossierPart.getDossierpartId());
-								}catch(Exception e){
-									continue;
-								}
-								
-								if(dossierFile.getFileEntryId() <= 0 || dossierFile.getSyncStatus() != PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS){
-									continue;
-								}
-								
-								
-								String fileURL = StringPool.BLANK;
-								
-								try{
-									FileEntry fileEntry = DLFileEntryUtil.getFileEntry(dossierFile.getFileEntryId());
-									if(fileEntry != null){
-										fileURL = DLUtil.getPreviewURL(fileEntry, fileEntry.getFileVersion(), 
-												themeDisplay, StringPool.BLANK);
-									}
-								}catch(Exception e){
-									continue;
-									
-								}
+			<c:otherwise>
+				<%@ include file="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_default.jsp" %>
+			</c:otherwise>
+		</c:choose>
 
-								%>
-									<aui:row cssClass='<%=count > 1 ? "top-line pd_b20 pd_t20" : "pd_b20 pd_t20" %>'>
-										<aui:col width="50">
-											<aui:row>
-												<aui:col width="50">
-													<span class="span1">
-														<i class="fa fa-circle blue sx10"></i>
-													</span>
-													<span class="span2">
-														<%=count %>
-													</span>
-													<span class="span9">
-														<%=
-															Validator.isNotNull(dossierFile.getDossierFileDate()) ? 
-															DateTimeUtil.convertDateToString(dossierFile.getDossierFileDate(), DateTimeUtil._VN_DATE_TIME_FORMAT) : 
-															DateTimeUtil._EMPTY_DATE_TIME
-														%>
-													</span>
-												</aui:col>
-												<aui:col width="50">
-													<span class="span5 bold">
-														<liferay-ui:message key="dossier-file-no"/>
-													</span>
-													<span class="span7">
-														<%=Validator.isNotNull(dossierFile.getDossierFileNo()) ? dossierFile.getDossierFileNo() : StringPool.DASH %>
-													</span>
-												</aui:col>
-											</aui:row>
-										</aui:col>
-										<aui:col width="50">
-											<span class="span3 bold">
-												<liferay-ui:message key="dossier-file-name"/>
-											</span>
-											<span class="span6">
-												<a class="blue" href="<%=fileURL%>" target="_blank">
-													<%=Validator.isNotNull(dossierFile.getDisplayName()) ? dossierFile.getDisplayName() : StringPool.BLANK  %>
-												</a>
-											</span>
-											<span class="span3">
-												
-											</span>
-										</aui:col>
-									</aui:row>
-									
-								<%
-								
-								count++;
-							}
-						}
-					}
-				%>
-			</aui:row>
-		</c:if>
-		
 	</c:when>
 	
 	<c:otherwise>

@@ -491,7 +491,7 @@ public class ApiServiceServiceImpl extends ApiServiceServiceBaseImpl {
 									dossierFileNo,
 									new Date(),
 									1,
-									PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS,
+									PortletConstants.DOSSIER_FILE_SYNC_STATUS_NOSYNC,
 									dossierFolder.getFolderId(),
 									sourceFileName, mimeType, dossierFileName,
 									StringPool.BLANK, StringPool.BLANK, bytes, serviceContext);

@@ -1,4 +1,4 @@
-<%@page import="org.apache.jasper.tagplugins.jstl.core.ForEach"%>
+<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
 <%@page import="org.opencps.util.PortletUtil"%>
 <%@page import="org.opencps.util.DateTimeUtil"%>
 <%@page import="org.opencps.usermgt.service.WorkingUnitLocalServiceUtil"%>
@@ -52,6 +52,7 @@
 	iteratorURL.setParameter("tab1", ProcessMgtUtil.TOP_TABS_DOSSIERLIST);
 	iteratorURL.setParameter(DossierDisplayTerms.DOSSIER_STATUS, dossierStatus);
 	iteratorURL.setParameter(DossierDisplayTerms.SERVICE_DOMAIN_CODE, serviceDomainCode);
+	iteratorURL.setParameter(DossierDisplayTerms.SUBMIT_DATETIME, serviceDomainCode);
 	
 	List<String> govAgencyCodes = new ArrayList<String>();
 	if(Validator.isNotNull(employee)){
@@ -87,22 +88,17 @@
 					DossierLocalServiceUtil.countDossierByKeywordDomainAndStatus(
 						scopeGroupId, searchTerms.getKeywords(),
 						treeIndex, govAgencyCodes, dossierStatus);
-
-				System.out.println("========keyword "+keyword);
-				for (String string : govAgencyCodes){
-					System.out.println("========govAgencyCodes "+string);
-				}
-				System.out.println("========scopeGroupId "+scopeGroupId);
+				
+				OrderByComparator orderByComparator = DossierMgtUtil.getDossierOrderByComparator(DossierDisplayTerms.SUBMIT_DATETIME, "desc");
+				
 				results =
 					DossierLocalServiceUtil.searchDossierByKeywordDomainAndStatus(
 						scopeGroupId, searchTerms.getKeywords(),
 						treeIndex, govAgencyCodes, dossierStatus,
 						searchContainer.getStart(),
 						searchContainer.getEnd(),
-						searchContainer.getOrderByComparator());
-				
-				
-				
+						orderByComparator);
+
 				pageContext.setAttribute("results", results);
 				pageContext.setAttribute("total", total);
 			%>
@@ -184,8 +180,7 @@
 				</div>
 						
 				<div class="row-fluid">
-					<div class="account.getUserName()
-				account.getName()span3 bold-label">
+					<div class="span3 bold-label">
 						<liferay-ui:message key="finish-datetime"/>
 					</div>
 							

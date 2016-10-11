@@ -1,5 +1,3 @@
-
-<%@page import="org.opencps.datamgt.model.DictItem"%>
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -34,6 +32,7 @@
 <%@page import="org.opencps.processmgt.model.ServiceProcess"%>
 <%@page import="org.opencps.servicemgt.search.ServiceDisplayTerms"%>
 <%@page import="org.opencps.processmgt.model.ProcessStep"%>
+<%@page import="org.opencps.datamgt.model.DictItem"%>
 <%@ include file="../init.jsp" %>
 
 <%
@@ -160,10 +159,6 @@
 		}
 	}
 %>
-
-<c:if test="<%=Validator.isNull(itemStatus) && Validator.isNotNull(step) %>">
-	<div class="portlet-msg-error"><liferay-ui:message key="invalid-process"/></div>
-</c:if>
 
 <portlet:actionURL name="updateProcessStep" var="updateProcessStepURL" windowState="<%= LiferayWindowState.EXCLUSIVE.toString()%>"/>
 

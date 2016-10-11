@@ -23,12 +23,14 @@ import java.util.Locale;
 import java.util.Stack;
 
 import org.opencps.dossiermgt.comparator.DossierFileDossierFileDateComparator;
+import org.opencps.dossiermgt.comparator.DossierSubmitDateComparator;
 import org.opencps.dossiermgt.comparator.DossierTemplateNameComparator;
 import org.opencps.dossiermgt.comparator.DossierTemplateNoComparator;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
 import org.opencps.dossiermgt.model.ServiceConfig;
+import org.opencps.dossiermgt.search.DossierDisplayTerms;
 import org.opencps.dossiermgt.search.DossierFileDisplayTerms;
 import org.opencps.dossiermgt.search.DossierTemplateDisplayTerms;
 import org.opencps.dossiermgt.service.DossierLocalServiceUtil;
@@ -114,6 +116,34 @@ public class DossierMgtUtil {
 		return orderByComparator;
 	}
 	
+	/**
+	 * @param orderByCol
+	 * @param orderByType
+	 * @return
+	 */
+	public static OrderByComparator getDossierOrderByComparator(
+		String orderByCol, String orderByType) {
+
+		boolean orderByAsc = false;
+
+		if (orderByType.equals("asc")) {
+			orderByAsc = true;
+		}
+
+		OrderByComparator orderByComparator = null;
+
+		if (orderByCol.equals(DossierDisplayTerms.SUBMIT_DATETIME)) {
+			orderByComparator = new DossierSubmitDateComparator(orderByAsc);
+		}
+
+		return orderByComparator;
+	}
+	
+	/**
+	 * @param orderByType
+	 * @param dossierFiles
+	 * @return
+	 */
 	public static List<DossierFile> orderDossierFileByDossierFileDate(String orderByType, List<DossierFile> dossierFiles) {
 		int value = 0;
 		DossierFile dossierFileTemp = null;

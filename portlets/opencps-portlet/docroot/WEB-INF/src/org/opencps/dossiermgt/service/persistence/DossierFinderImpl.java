@@ -208,7 +208,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 				
 				sql = StringUtil
 						.replace(sql,
-							"OR (lower(opencps_dossier.dossierId) = ? ))",
+							"OR (opencps_dossier.dossierId = ?))",
 							StringPool.BLANK);
 			}
 
@@ -593,7 +593,7 @@ public class DossierFinderImpl extends BasePersistenceImpl<Dossier>
 				
 				sql = StringUtil
 						.replace(sql,
-							"OR (lower(opencps_dossier.dossierId) = ? ))",
+							"OR (opencps_dossier.dossierId = ?))",
 							StringPool.BLANK);
 			}
 

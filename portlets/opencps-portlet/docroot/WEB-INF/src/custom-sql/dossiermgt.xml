@@ -97,7 +97,7 @@
 			OR 
 				(lower(opencps_dossier.subjectName) LIKE ? [$AND_OR_NULL_CHECK$])
 			OR
-				(lower(opencps_dossier.dossierId) = ? ))
+				(opencps_dossier.dossierId = ?))
 			AND 
 				(opencps_dossier.dossierStatus = ?)
 
@@ -129,7 +129,7 @@
 			OR 
 				(lower(opencps_dossier.subjectName) LIKE ? [$AND_OR_NULL_CHECK$])
 			OR
-				(lower(opencps_dossier.dossierId) = ? ))
+				(opencps_dossier.dossierId = ?))
 			AND 
 				(opencps_dossier.dossierStatus = ?)
 

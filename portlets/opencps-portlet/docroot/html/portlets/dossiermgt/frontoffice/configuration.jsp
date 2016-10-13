@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-<%@page import="org.opencps.util.WebKeys"%>
-=======
-
 <%@page import="org.opencps.util.WebKeys"%>
 <%@page import="org.opencps.dossiermgt.search.DossierFileDisplayTerms"%>
->>>>>>> fdsservice-rc-1.5.1-issue-fix#configPortlet13#
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -152,19 +147,17 @@
 		value="<%= showBackToListButton %>"
 	/>
 	
-<<<<<<< HEAD
 	<aui:select name="orderDossierFileByDossierFileDate">
 		<aui:option label="orderDossierFileByDossierFileDateDefault" value="default"/>
 		<aui:option label="orderDossierFileByDossierFileDateAsc" value="<%=WebKeys.ORDER_BY_ASC %>"/>
 		<aui:option label="orderDossierFileByDossierFileDateDesc" value="<%=WebKeys.ORDER_BY_DESC %>"/>
 	</aui:select>
-=======
+	
 	<aui:input 
 		type="checkbox"
 		name="showServiceDomainIdTree" 
 		value="<%= showServiceDomainIdTree %>"
 	/>
->>>>>>> fdsservice-rc-1.5.1-issue-fix#configPortlet13#
 	
 	<aui:input 
 		type="checkbox"

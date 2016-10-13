@@ -305,7 +305,7 @@
 						<c:when test="<%=!showLabelTaglibDatamgt %>">
 							<datamgt:ddr 
 								cssClass="input100"
-								depthLevel="<%=WebKeys.DEPTH_LEVEL_3 %>" 
+								depthLevel="3" 
 								dictCollectionCode="ADMINISTRATIVE_REGION"
 								itemNames="cityId,districtId,wardId"
 								itemsEmptyOption="true,true,true"
@@ -318,7 +318,7 @@
 						<c:otherwise>
 							<datamgt:ddr 
 								cssClass="input100"
-								depthLevel="<%=WebKeys.DEPTH_LEVEL_3 %>" 
+								depthLevel="3" 
 								dictCollectionCode="ADMINISTRATIVE_REGION"
 								itemNames="cityId,districtId,wardId"
 								itemsEmptyOption="true,true,true"

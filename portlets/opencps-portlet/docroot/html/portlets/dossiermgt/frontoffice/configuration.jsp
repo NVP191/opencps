@@ -167,14 +167,8 @@
 	
 	<aui:input 
 		type="checkbox"
-		name="hideTabDossierFile" 
-		value="<%= hideTabDossierFile %>"
-	/>
-	
-	<aui:input 
-		type="checkbox"
 		name="showTabDossierResultFirst" 
-		value="<%= showTabDossierResultFirst %>"
+		value="<%=showTabDossierResultFirst %>"
 	/>
 	
 	<aui:button type="submit" name="Save" value="save"></aui:button>

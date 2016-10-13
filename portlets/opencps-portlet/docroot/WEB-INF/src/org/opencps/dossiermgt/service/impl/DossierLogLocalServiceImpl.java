@@ -93,8 +93,10 @@ public class DossierLogLocalServiceImpl extends DossierLogLocalServiceBaseImpl {
 			break;
 		case 1:
 			ls = dossierLogFinder.findDossierLogByCitizen(dossierId, start, end);
+			break;
 		case 2:
 			ls = dossierLogFinder.findDossierLogByEmployee(dossierId, start, end);
+			break;
 		default:
 			break;
 		}

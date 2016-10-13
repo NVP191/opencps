@@ -469,8 +469,7 @@
 />
 
 <aui:input 
-	name="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME %>" 
-	
+	name="<%=ProcessOrderDisplayTerms.ESTIMATE_DATE %>" 
 	type="hidden"
 />
 

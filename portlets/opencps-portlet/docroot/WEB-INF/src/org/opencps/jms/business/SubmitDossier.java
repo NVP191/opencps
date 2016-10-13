@@ -119,6 +119,7 @@ public class SubmitDossier {
 						syncDossier, syncDossierFiles, syncFileGroups,
 						syncFileGroupDossierParts, syncDLFileEntries, data,
 						syncDossierTemplate, serviceContext);
+				// TODO add log
 			}
 			else {
 				dossier =
@@ -126,6 +127,7 @@ public class SubmitDossier {
 						syncDossier, syncDossierFiles, syncFileGroups,
 						syncFileGroupDossierParts, syncDLFileEntries, data,
 						syncDossierTemplate, serviceContext);
+				// TODO add log
 			}
 
 			// Dong bo trang thai giay to
@@ -134,6 +136,8 @@ public class SubmitDossier {
 				dossier.getUserId(), dossier.getDossierId(),
 				PortletConstants.DOSSIER_FILE_SYNC_STATUS_REQUIREDSYNC,
 				PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS, 0);
+
+			// TODO add log
 
 			sendToBackend(
 				dossier.getDossierId(), 0, dossier.getDossierStatus(),
@@ -180,7 +184,7 @@ public class SubmitDossier {
 					dossierId, fileGroupId);
 
 			engineMsg.setProcessOrderId(processOrder.getProcessOrderId());
-			
+
 			engineMsg.setEvent(WebKeys.ACTION_CHANGE_VALUE);
 
 		}

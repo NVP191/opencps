@@ -58,19 +58,23 @@
 	List<DictItem> listAdmin = new ArrayList<DictItem>();
 	List<ServiceConfig> listServiceConfig = new ArrayList<ServiceConfig>();
 	
-	try {
-		serviceConfig = ServiceConfigLocalServiceUtil.getServiceConfig(serviceConfigId);
-	} catch (Exception e) {
-		_log.error(e);
+	if(serviceConfigId > 0) {
+		try {
+			serviceConfig = ServiceConfigLocalServiceUtil.getServiceConfig(serviceConfigId);
+		} catch (Exception e) {
+			_log.error(e);
+		}
 	}
 	
 	
 	long serviceInfoIdToDetail = Validator.isNotNull(serviceConfig) ? serviceConfig.getServiceInfoId() : serviceinfoId;
 	
-	try {
-		serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceInfoIdToDetail);
-	} catch (Exception e) {
-		_log.error(e);
+	if(serviceInfoIdToDetail > 0) {
+		try {
+			serviceInfo = ServiceInfoLocalServiceUtil.getServiceInfo(serviceInfoIdToDetail);
+		} catch (Exception e) {
+			_log.error(e);
+		}
 	}
 	
 	try {

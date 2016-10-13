@@ -482,9 +482,13 @@ public class ProcessOrderPortlet extends MVCPortlet {
 			ParamUtil.getString(
 				actionRequest, ProcessOrderDisplayTerms.PAYMENTVALUE);
 
-		String estimateDatetime =
+		String estimateDate =
 			ParamUtil.getString(
-				actionRequest, ProcessOrderDisplayTerms.ESTIMATE_DATETIME);
+				actionRequest, ProcessOrderDisplayTerms.ESTIMATE_DATE);
+
+		String estimateTime =
+			ParamUtil.getString(
+				actionRequest, ProcessOrderDisplayTerms.ESTIMATE_TIME);
 
 		String redirectURL = ParamUtil.getString(actionRequest, "redirectURL");
 
@@ -511,8 +515,10 @@ public class ProcessOrderPortlet extends MVCPortlet {
 
 		Date deadline = null;
 
-		if (Validator.isNotNull(estimateDatetime)) {
-			deadline = DateTimeUtil.convertStringToDate(estimateDatetime);
+		if (Validator.isNotNull(estimateDate)) {
+			deadline =
+				DateTimeUtil.convertStringToFullDate(estimateDate +
+					StringPool.SPACE + estimateTime + StringPool.COLON + "00");
 		}
 
 		try {
@@ -2184,10 +2190,9 @@ public class ProcessOrderPortlet extends MVCPortlet {
 			throw new NoSuchDossierException();
 		}
 
-		if (processStepId <= 0) {
-			throw new NoSuchProcessStepException();
-		}
-
+		/*
+		 * if (processStepId <= 0) { throw new NoSuchProcessStepException(); }
+		 */
 		List<WorkflowOutput> workflowOutputs = new ArrayList<WorkflowOutput>();
 
 		List<ProcessStepDossierPart> processStepDossierParts =
@@ -2244,7 +2249,7 @@ public class ProcessOrderPortlet extends MVCPortlet {
 				}
 			}
 		}
-		
+
 		if (requiredFlag) {
 			throw new RequiredDossierPartException();
 		}
@@ -2371,15 +2376,18 @@ public class ProcessOrderPortlet extends MVCPortlet {
 
 		List<ProcessOrderBean> processOrderSteps =
 			new ArrayList<ProcessOrderBean>();
-		
-		List<ProcessOrderBean> processOrderServices = new ArrayList<ProcessOrderBean>();
-		
+
+		List<ProcessOrderBean> processOrderServices =
+			new ArrayList<ProcessOrderBean>();
+
 		if (tabs1.equals(ProcessUtils.TOP_TABS_PROCESS_ORDER_WAITING_PROCESS)) {
-			
-			processOrderServices = (List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getProcessOrderServiceByUser(themeDisplay.getUserId());
-			
-			for(ProcessOrderBean ett : processOrderServices){
-				processOrderSteps.addAll((List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getUserProcessStep(themeDisplay.getUserId(), ett.getServiceInfoId()));
+
+			processOrderServices =
+				(List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getProcessOrderServiceByUser(themeDisplay.getUserId());
+
+			for (ProcessOrderBean ett : processOrderServices) {
+				processOrderSteps.addAll((List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getUserProcessStep(
+					themeDisplay.getUserId(), ett.getServiceInfoId()));
 			}
 			if (serviceInfoId > 0) {
 				processOrderSteps =
@@ -2389,12 +2397,14 @@ public class ProcessOrderPortlet extends MVCPortlet {
 		}
 		else {
 
-			processOrderServices = (List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getProcessOrderServiceJustFinishedByUser(themeDisplay.getUserId());
-			
-			for(ProcessOrderBean ett : processOrderServices){
-				processOrderSteps.addAll((List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getUserProcessStep(themeDisplay.getUserId(), ett.getServiceInfoId()));
+			processOrderServices =
+				(List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getProcessOrderServiceJustFinishedByUser(themeDisplay.getUserId());
+
+			for (ProcessOrderBean ett : processOrderServices) {
+				processOrderSteps.addAll((List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getUserProcessStep(
+					themeDisplay.getUserId(), ett.getServiceInfoId()));
 			}
-			
+
 			if (serviceInfoId > 0) {
 				processOrderSteps =
 					(List<ProcessOrderBean>) ProcessOrderLocalServiceUtil.getUserProcessStepJustFinished(

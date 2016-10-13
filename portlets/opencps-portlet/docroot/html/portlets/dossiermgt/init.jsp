@@ -51,5 +51,6 @@
 	boolean hideTabDossierFile = GetterUtil.getBoolean(preferences.getValue("hideTabDossierFile", "false"), false);
 	
 	boolean showTabDossierResultFirst = GetterUtil.getBoolean(preferences.getValue("showTabDossierResultFirst", "false"), false);
+	
 %>
 

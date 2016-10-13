@@ -118,20 +118,20 @@ public class SyncFromFrontOffice implements MessageListener {
 					// Send message to ...engine/destination
 					MessageBusUtil.sendMessage(
 						"opencps/backoffice/engine/destination", msgToEngine);
-					
-					//Update DossierLog (Listener revice mgs)
-					
+
+					// Update DossierLog (Listener revice mgs)
+
 					ActorBean actorBean = new ActorBean(0, 0);
-					
+
 					DossierLogLocalServiceUtil.addDossierLog(
-					    userActionMgs.getUserId(), userActionMgs.getGroupId(),
-					    userActionMgs.getCompanyId(), dossierId, 0,
-					    PortletConstants.DOSSIER_STATUS_SYSTEM,
-					    PortletConstants.DOSSIER_ACTION_REVICE,
-					    PortletConstants.DOSSIER_ACTION_REVICE, new Date(), 0,
-					    0, actorBean.getActor(), actorBean.getActorId(),
-					    actorBean.getActorName(),
-					    SyncFromFrontOffice.class.getName());
+						userActionMgs.getUserId(), userActionMgs.getGroupId(),
+						userActionMgs.getCompanyId(), dossierId, 0,
+						PortletConstants.DOSSIER_STATUS_SYSTEM,
+						PortletConstants.DOSSIER_ACTION_REVICE,
+						PortletConstants.DOSSIER_ACTION_REVICE, new Date(), 0,
+						0, actorBean.getActor(), actorBean.getActorId(),
+						actorBean.getActorName(),
+						SyncFromFrontOffice.class.getName());
 
 				}
 				else if (Validator.equals(WebKeys.ACTION_RESUBMIT_VALUE, action) &&
@@ -174,19 +174,18 @@ public class SyncFromFrontOffice implements MessageListener {
 					// Send message to ...engine/destination
 					MessageBusUtil.sendMessage(
 						"opencps/backoffice/engine/destination", msgToEngine);
-					
-					ActorBean actorBean = new ActorBean(0, 0);
-					
-					DossierLogLocalServiceUtil.addDossierLog(
-					    userActionMgs.getUserId(), userActionMgs.getGroupId(),
-					    userActionMgs.getCompanyId(), dossierId, 0,
-					    PortletConstants.DOSSIER_STATUS_SYSTEM,
-					    PortletConstants.DOSSIER_ACTION_REVICE,
-					    PortletConstants.DOSSIER_ACTION_REVICE, new Date(), 0,
-					    0, actorBean.getActor(), actorBean.getActorId(),
-					    actorBean.getActorName(),
-					    SyncFromFrontOffice.class.getName());
 
+					ActorBean actorBean = new ActorBean(0, 0);
+
+					DossierLogLocalServiceUtil.addDossierLog(
+						userActionMgs.getUserId(), userActionMgs.getGroupId(),
+						userActionMgs.getCompanyId(), dossierId, 0,
+						PortletConstants.DOSSIER_STATUS_SYSTEM,
+						PortletConstants.DOSSIER_ACTION_REVICE,
+						PortletConstants.DOSSIER_ACTION_REVICE, new Date(), 0,
+						0, actorBean.getActor(), actorBean.getActorId(),
+						actorBean.getActorName(),
+						SyncFromFrontOffice.class.getName());
 
 				}
 				else if (Validator.equals(WebKeys.ACTION_REPAIR_VALUE, action)) {
@@ -194,96 +193,85 @@ public class SyncFromFrontOffice implements MessageListener {
 					// TODO check again
 					Dossier dossier =
 						DossierLocalServiceUtil.fetchDossier(userActionMgs.getDossierId());
-					
+
 					ActorBean actorBean = new ActorBean(1, dossier.getUserId());
-					
+
 					DossierLogLocalServiceUtil.addCommandRequest(
-					    dossier.getUserId(), dossier.getGroupId(),
-					    dossier.getCompanyId(), dossierId, 0,
-					    dossier.getDossierStatus(),
-					    PortletConstants.DOSSIER_ACTION_REPAIR_DOSSIER,
-					    PortletConstants.DOSSIER_ACTION_REPAIR_DOSSIER,
-					    new Date(), 0, 2, actorBean.getActor(),
-					    actorBean.getActorId(), actorBean.getActorName(),
-					    SyncFromFrontOffice.class.getName() +
-					        ".repairDossier()", WebKeys.ACTION_REPAIR_VALUE);
+						dossier.getUserId(), dossier.getGroupId(),
+						dossier.getCompanyId(), dossierId, 0,
+						dossier.getDossierStatus(),
+						PortletConstants.DOSSIER_ACTION_REPAIR_DOSSIER,
+						PortletConstants.DOSSIER_ACTION_REPAIR_DOSSIER,
+						new Date(), 0, 2, actorBean.getActor(),
+						actorBean.getActorId(), actorBean.getActorName(),
+						SyncFromFrontOffice.class.getName() +
+							".repairDossier()", WebKeys.ACTION_REPAIR_VALUE);
 
-/*					actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
-
-					actorId = dossier.getOwnerOrganizationId();
-
-					if (actorId == 0) {
-						actorId = dossier.getUserId();
-
-						User user = UserLocalServiceUtil.fetchUser(actorId);
-
-						actorName = user.getFullName();
-					}
-					else {
-						Organization org =
-							OrganizationLocalServiceUtil.fetchOrganization(actorId);
-
-						actorName = org.getName();
-					}
-
-					DossierLocalServiceUtil.updateDossierStatus(
-						userActionMgs.getDossierId(),
-						userActionMgs.getFileGroupId(),
-						dossier.getDossierStatus(), dossier.getReceptionNo(),
-						dossier.getSubmitDatetime(),
-						dossier.getEstimateDatetime(),
-						dossier.getReceiveDatetime(),
-						dossier.getFinishDatetime(), actor, actorId, actorName,
-						WebKeys.ACTION_REPAIR_VALUE,
-						WebKeys.ACTION_REPAIR_VALUE,
-						WebKeys.ACTION_REPAIR_VALUE);
-*/				}
-				else if (Validator.equals(WebKeys.ACTION_CLOSE_VALUE, action)) {
+					/*
+					 * actor = WebKeys.DOSSIER_ACTOR_CITIZEN; actorId =
+					 * dossier.getOwnerOrganizationId(); if (actorId == 0) {
+					 * actorId = dossier.getUserId(); User user =
+					 * UserLocalServiceUtil.fetchUser(actorId); actorName =
+					 * user.getFullName(); } else { Organization org =
+					 * OrganizationLocalServiceUtil.fetchOrganization(actorId);
+					 * actorName = org.getName(); }
+					 * DossierLocalServiceUtil.updateDossierStatus(
+					 * userActionMgs.getDossierId(),
+					 * userActionMgs.getFileGroupId(),
+					 * dossier.getDossierStatus(), dossier.getReceptionNo(),
+					 * dossier.getSubmitDatetime(),
+					 * dossier.getEstimateDatetime(),
+					 * dossier.getReceiveDatetime(),
+					 * dossier.getFinishDatetime(), actor, actorId, actorName,
+					 * WebKeys.ACTION_REPAIR_VALUE, WebKeys.ACTION_REPAIR_VALUE,
+					 * WebKeys.ACTION_REPAIR_VALUE);
+					 */}
+				else if (Validator.equals(WebKeys.ACTION_CANCEL_VALUE, action)) {
 					Dossier dossier =
-					    DossierLocalServiceUtil.fetchDossier(userActionMgs.getDossierId());
+						DossierLocalServiceUtil.fetchDossier(userActionMgs.getDossierId());
 
 					ActorBean actorBean = new ActorBean(1, dossier.getUserId());
 
 					DossierLogLocalServiceUtil.addCommandRequest(
-					    dossier.getUserId(), dossier.getGroupId(),
-					    dossier.getCompanyId(), dossierId, 0,
-					    dossier.getDossierStatus(),
-					    PortletConstants.DOSSIER_ACTION_CANCEL_DOSSIER,
-					    PortletConstants.DOSSIER_ACTION_CANCEL_DOSSIER,
-					    new Date(), 0, 2, actorBean.getActor(),
-					    actorBean.getActorId(), actorBean.getActorName(),
-					    SyncFromFrontOffice.class.getName() +
-					        ".repairDossier()", WebKeys.ACTION_CANCEL_VALUE);
-					
-					/*					actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
+						dossier.getUserId(), dossier.getGroupId(),
+						dossier.getCompanyId(), dossierId, 0,
+						dossier.getDossierStatus(),
+						PortletConstants.DOSSIER_ACTION_CANCEL_DOSSIER,
+						PortletConstants.DOSSIER_ACTION_CANCEL_DOSSIER,
+						new Date(), 0, 2, actorBean.getActor(),
+						actorBean.getActorId(), actorBean.getActorName(),
+						SyncFromFrontOffice.class.getName() +
+							".repairDossier()", WebKeys.ACTION_CANCEL_VALUE);
 
-					actorId = dossier.getOwnerOrganizationId();
+					// actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
 
-					if (actorId == 0) {
-						actorId = dossier.getUserId();
+					// actorId = dossier.getOwnerOrganizationId();
 
-						User user = UserLocalServiceUtil.fetchUser(actorId);
+					// if (actorId == 0) {
+					// actorId = dossier.getUserId();
 
-						actorName = user.getFullName();
-					}
-					else {
-						Organization org =
-							OrganizationLocalServiceUtil.fetchOrganization(actorId);
+					// User user = UserLocalServiceUtil.fetchUser(actorId);
 
-						actorName = org.getName();
-					}
+					// actorName = user.getFullName();
+					// }
+					// else {
+					// Organization org =
+					// OrganizationLocalServiceUtil.fetchOrganization(actorId);
 
-					DossierLocalServiceUtil.updateDossierStatus(
-						userActionMgs.getDossierId(),
-						userActionMgs.getFileGroupId(),
-						dossier.getDossierStatus(), dossier.getReceptionNo(),
-						dossier.getSubmitDatetime(),
-						dossier.getEstimateDatetime(),
-						dossier.getReceiveDatetime(),
-						dossier.getFinishDatetime(), actor, actorId, actorName,
-						WebKeys.ACTION_CLOSE_VALUE, WebKeys.ACTION_CLOSE_VALUE,
-						WebKeys.ACTION_CLOSE_VALUE);
-*/				}
+					// actorName = org.getName();
+					// }
+
+					// DossierLocalServiceUtil.updateDossierStatus(
+					// userActionMgs.getDossierId(),
+					// userActionMgs.getFileGroupId(),
+					// dossier.getDossierStatus(), dossier.getReceptionNo(),
+					// dossier.getSubmitDatetime(),
+					// dossier.getEstimateDatetime(),
+					// dossier.getReceiveDatetime(),
+					// dossier.getFinishDatetime(), actor, actorId, actorName,
+					// WebKeys.ACTION_CLOSE_VALUE, WebKeys.ACTION_CLOSE_VALUE,
+					// WebKeys.ACTION_CLOSE_VALUE);
+				}
 
 			}
 			catch (Exception e) {
@@ -293,7 +281,6 @@ public class SyncFromFrontOffice implements MessageListener {
 		}
 
 	}
-
 
 	private boolean _checkStatus(long dossierId, long fileGroupId) {
 

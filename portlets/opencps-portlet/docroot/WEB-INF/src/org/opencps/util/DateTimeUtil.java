@@ -123,6 +123,22 @@ public class DateTimeUtil {
 		}
 		return date;
 	}
+	
+	public static Date convertStringToFullDate(String strDate) {
+		
+		DateFormat df = getDateTimeFormat(_VN_DATE_TIME_FORMAT);
+		Date date = null;
+		try {
+			if (Validator.isNotNull(strDate)) {
+				date = df.parse(strDate);
+			}
+
+		}
+		catch (ParseException e) {
+			_log.error(e);
+		}
+		return date;
+	}
 
 	public static Date getDate(int day, int month, int year) {
 

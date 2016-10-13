@@ -196,12 +196,18 @@
 		value="<%=backURL %>" 
 		type="hidden"
 	/>
+	
+	<%
+		String cssCol = (processWorkflow != null &&  processWorkflow.isRequestPayment()) ? "span3" : "span4";
+	%>
+	
 	<div class="row-fluid">
-		<div class="span3">
+		<div class="<%=cssCol%>">
 			<aui:select 
 				name="<%=ProcessOrderDisplayTerms.ASSIGN_TO_USER_ID %>" 
 				label="assign-to-next-user" 
 				showEmptyOption="true"
+				cssClass="input100"
 			>
 				<%
 					List<User> assignUsers = ProcessUtils.getAssignUsers(processStepId, 0);
@@ -214,50 +220,69 @@
 				%>
 			</aui:select>
 		</div>
-		<div class="span3">
-			<c:if test="<%=processWorkflow != null &&  processWorkflow.isRequestPayment()%>">
+		
+		<c:if test="<%=processWorkflow != null &&  processWorkflow.isRequestPayment()%>">
+			<div class="<%=cssCol%>">
 				<aui:input 
+					cssClass="input100"
 					name="<%=ProcessOrderDisplayTerms.PAYMENTVALUE %>" 
 					label="requirement-to-pay-charges" 
 					type="text"
 					value="<%=Validator.isNotNull(processWorkflow.getPaymentFee()) ? PaymentRequestGenerator.getTotalPayment(processWorkflow.getPaymentFee(), dossierId) : StringPool.BLANK %>"
 				/>
-			</c:if>
+			</div>
+		</c:if>
 		
-		</div>
-		<div class="span3">
+		<div class="<%=cssCol%>">
 			<aui:input 
 				name="<%=ProcessOrderDisplayTerms.RECEPTION_NO %>" 
 				label="reception-no" 
 				value="<%=receptionNo %>"
 				type="text"
+				cssClass="input100"
 			/>
 		</div>
 		
-		<div class="span3">
-			<label class="control-label custom-lebel"  for='<portlet:namespace/><%="deadline" %>'>
-				<liferay-ui:message key="return-date"/>
-			</label>
-		
-			<liferay-ui:input-date
-				dayParam="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME_DAY %>"
-				disabled="<%= false %>"
-				monthParam="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME_MONTH %>"
-				name="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME %>"
-				yearParam="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME_YEAR %>"
-				formName="fm"
-				autoFocus="<%=true %>"
-				dayValue="<%=spd != null ? spd.getDayOfMoth() : 0 %>"
-				monthValue="<%=spd != null ? spd.getMonth() : 0 %>"
-				yearValue="<%=spd != null ? spd.getYear() : 0 %>"
-				nullable="<%=spd == null ? true: false %>"
-			/>
+		<div class="<%=cssCol%>">
+			<aui:row>
+				<label class="control-label custom-lebel" for='<portlet:namespace/><%="deadline" %>'>
+					<liferay-ui:message key="return-date"/>
+				</label>
+			</aui:row>
 			
+			<aui:row>
+				<span class="span8">
+					<liferay-ui:input-date
+						dayParam="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME_DAY %>"
+						disabled="<%= false %>"
+						monthParam="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME_MONTH %>"
+						name="<%=ProcessOrderDisplayTerms.ESTIMATE_DATE %>"
+						yearParam="<%=ProcessOrderDisplayTerms.ESTIMATE_DATETIME_YEAR %>"
+						formName="fm"
+						autoFocus="<%=true %>"
+						dayValue="<%=spd != null ? spd.getDayOfMoth() : 0 %>"
+						monthValue="<%=spd != null ? spd.getMonth() : 0 %>"
+						yearValue="<%=spd != null ? spd.getYear() : 0 %>"
+						nullable="<%=spd == null ? true: false %>"
+						cssClass="input100"
+					/>
+				</span>
+				
+				<span class="span4">
+					<liferay-ui:input-time 
+						minuteParam="00" 
+						amPmParam="AM" 
+						hourParam="00"
+						cssClass="input100"
+						name="<%=ProcessOrderDisplayTerms.ESTIMATE_TIME %>"
+					/>
+				</span>
+			</aui:row>
 		</div>
 	</div>
 	<div class="row-fluid">
 		<div class="span12">
-			<aui:input name="<%=ProcessOrderDisplayTerms.ACTION_NOTE %>" label="action-note" type="textarea"/>
+			<aui:input name="<%=ProcessOrderDisplayTerms.ACTION_NOTE %>" label="action-note" type="textarea" cssClass="input100"/>
 		</div>
 	</div>
 	
@@ -336,10 +361,12 @@
 	</c:if>
 
 	<aui:button type="submit" value="submit" name="submit"/>
+	
 	<c:if test="<%=esign %>">
 		<aui:button type="button" value="esign" name="esign"/>
 	</c:if>
 	<aui:button type="button" value="cancel" name="cancel"/>
+	
 	<div id="myProgressBar" class="aui-progress-warning"></div>
 </aui:form>
 

@@ -84,7 +84,7 @@
 	<liferay-ui:search-container 
 		emptyResultsMessage="no-action-history-were-found"
 		iteratorURL="<%=iteratorURL %>"
-		delta="<%=20 %>"
+		delta="<%= NUMBER_DELTA_PADDING %>"
 		deltaConfigurable="true"
 		>
 		<liferay-ui:search-container-results>
@@ -187,3 +187,8 @@
 		<liferay-ui:search-iterator type="opencs_page_iterator"/>
 	</liferay-ui:search-container>
 </div>
+
+
+<%!
+	private int NUMBER_DELTA_PADDING = 100;
+%>

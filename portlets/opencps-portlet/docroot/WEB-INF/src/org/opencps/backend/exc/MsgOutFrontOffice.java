@@ -23,12 +23,12 @@ import javax.naming.NamingException;
 import org.opencps.backend.message.UserActionMsg;
 import org.opencps.backend.util.BackendUtils;
 import org.opencps.jms.context.JMSHornetqContext;
+import org.opencps.jms.message.CancelDossierMessage;
 import org.opencps.jms.message.SubmitDossierMessage;
 import org.opencps.jms.message.SubmitPaymentFileMessage;
 import org.opencps.jms.util.JMSMessageUtil;
 import org.opencps.paymentmgt.model.PaymentFile;
 import org.opencps.paymentmgt.service.PaymentFileLocalServiceUtil;
-import org.opencps.util.PortletConstants;
 import org.opencps.util.WebKeys;
 
 import com.liferay.portal.kernel.log.Log;
@@ -51,7 +51,7 @@ public class MsgOutFrontOffice implements MessageListener {
 
 	private void _doReceiveDossier(Message message) {
 
-		System.out.println("DONE MSGOUT_FO///////////////////////////////");
+		_log.info("####################MsgOutFrontOffice: Started receive message bus");
 
 		UserActionMsg userActionMgs =
 			(UserActionMsg) message.get("msgToEngine");
@@ -80,17 +80,34 @@ public class MsgOutFrontOffice implements MessageListener {
 						WebKeys.JMS_QUEUE_OPENCPS_FRONTOFFICE.toLowerCase(),
 						"remote", "hornetq");
 
-				if (userActionMgs.getAction().contentEquals(
-					PortletConstants.PAYMENT_TYPE)) {
+				if (userActionMgs.getAction().equals(WebKeys.ACTION_PAY_VALUE)) {
 
 					SubmitPaymentFileMessage submitPaymentFileMessage =
 						new SubmitPaymentFileMessage(context);
 
 					PaymentFile paymentFile =
-						PaymentFileLocalServiceUtil.fetchPaymentFile(userActionMgs.getPaymentFileId());
+						PaymentFileLocalServiceUtil.getPaymentFile(userActionMgs.getPaymentFileId());
 
-					submitPaymentFileMessage.sendHornetMessage(paymentFile);
+					submitPaymentFileMessage.sendMessageByHornetq(
+						paymentFile, paymentFile.getConfirmFileEntryId() > 0
+							? WebKeys.SYNC_PAY_SEND_CONFIRM
+							: WebKeys.SYNC_PAY_CONFIRM);
 
+					// TODO add log
+
+					_log.info("####################MsgOutFrontOffice: Sended Synchronized JMSPaymentMessage");
+
+				}
+				else if (userActionMgs.getAction().equals(
+					WebKeys.ACTION_CANCEL_VALUE)) {
+
+					CancelDossierMessage cancelDossierMessage =
+						new CancelDossierMessage(context);
+					cancelDossierMessage.sendMessage(
+						userActionMgs.getDossierId(),
+						userActionMgs.getFileGroupId());
+					// TODO add log
+					_log.info("####################MsgOutFrontOffice: Sended Synchronized JMSCancelDossierMessage");
 				}
 				else {
 					SubmitDossierMessage submitDossierMessage =
@@ -99,6 +116,8 @@ public class MsgOutFrontOffice implements MessageListener {
 					submitDossierMessage.sendMessageByHornetq(
 						userActionMgs.getDossierId(),
 						userActionMgs.getFileGroupId());
+					// TODO add log
+					_log.info("####################MsgOutFrontOffice: Sended Synchronized JMSDossierMessage");
 				}
 
 			}

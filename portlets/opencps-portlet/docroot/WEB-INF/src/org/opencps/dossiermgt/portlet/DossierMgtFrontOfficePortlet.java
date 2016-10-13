@@ -2933,7 +2933,8 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 				displayName = dossierPart.getPartName();
 			}
 
-			if (dossierFileId == 0) {
+			//#/issues/1112 create new dossierFile any case
+//			if (dossierFileId == 0) {
 				dossierFile =
 					DossierFileLocalServiceUtil.addDossierFile(
 						serviceContext.getUserId(), dossierId, dossierPartId,
@@ -2943,35 +2944,35 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 						formData, fileEntryId, dossierFileMark,
 						dossierFileType, dossierFileNo, dossierFileDate,
 						original, syncStatus, serviceContext);
-			}
-			else {
-				dossierFile =
-					DossierFileLocalServiceUtil.getDossierFile(dossierFileId);
-				dossierFileMark = dossierFile.getDossierFileMark();
-				dossierFileType = dossierFile.getDossierFileType();
-				syncStatus = dossierFile.getSyncStatus();
-				original = dossierFile.getOriginal();
-
-				dossierFileNo =
-					Validator.isNotNull(dossierFile.getDossierFileNo())
-						? dossierFile.getDossierFileNo() : StringPool.BLANK;
-				templateFileNo =
-					Validator.isNotNull(dossierFile.getTemplateFileNo())
-						? dossierFile.getTemplateFileNo() : StringPool.BLANK;
-				displayName =
-					Validator.isNotNull(dossierFile.getDisplayName())
-						? dossierFile.getDisplayName() : StringPool.BLANK;
-
-				dossierFile =
-					DossierFileLocalServiceUtil.updateDossierFile(
-						dossierFileId, serviceContext.getUserId(), dossierId,
-						dossierPartId, templateFileNo, fileGroupId,
-						accountBean.getOwnerUserId(),
-						accountBean.getOwnerOrganizationId(), displayName,
-						formData, fileEntryId, dossierFileMark,
-						dossierFileType, dossierFileNo, dossierFileDate,
-						original, syncStatus, serviceContext);
-			}
+//			}
+//			else {
+//				dossierFile =
+//					DossierFileLocalServiceUtil.getDossierFile(dossierFileId);
+//				dossierFileMark = dossierFile.getDossierFileMark();
+//				dossierFileType = dossierFile.getDossierFileType();
+//				syncStatus = dossierFile.getSyncStatus();
+//				original = dossierFile.getOriginal();
+//
+//				dossierFileNo =
+//					Validator.isNotNull(dossierFile.getDossierFileNo())
+//						? dossierFile.getDossierFileNo() : StringPool.BLANK;
+//				templateFileNo =
+//					Validator.isNotNull(dossierFile.getTemplateFileNo())
+//						? dossierFile.getTemplateFileNo() : StringPool.BLANK;
+//				displayName =
+//					Validator.isNotNull(dossierFile.getDisplayName())
+//						? dossierFile.getDisplayName() : StringPool.BLANK;
+//
+//				dossierFile =
+//					DossierFileLocalServiceUtil.updateDossierFile(
+//						dossierFileId, serviceContext.getUserId(), dossierId,
+//						dossierPartId, templateFileNo, fileGroupId,
+//						accountBean.getOwnerUserId(),
+//						accountBean.getOwnerOrganizationId(), displayName,
+//						formData, fileEntryId, dossierFileMark,
+//						dossierFileType, dossierFileNo, dossierFileDate,
+//						original, syncStatus, serviceContext);
+//			}
 
 			SessionMessages.add(actionRequest, MessageKeys.DEFAULT_SUCCESS_KEY);
 

@@ -982,9 +982,7 @@ public class PortletUtil {
 		Dossier dossier, Locale locale) {
 
 		String statusLabel = StringPool.BLANK;
-
-		if (Validator.isNotNull(dossier.getFinishDatetime()) &&
-			Validator.isNotNull(dossier.getEstimateDatetime())) {
+		if (Validator.isNotNull(dossier.getFinishDatetime()) && Validator.isNotNull(dossier.getEstimateDatetime())) {
 			if (dossier.getFinishDatetime().after(dossier.getEstimateDatetime())) {
 				statusLabel = LanguageUtil.get(locale, "status-late");
 			}
@@ -1007,9 +1005,16 @@ public class PortletUtil {
 				else if (dossier.getEstimateDatetime().after(now)) {
 					statusLabel = LanguageUtil.get(locale, "status-toolate");
 				}
+			}else{
+				if (Validator.isNull(dossier.getEstimateDatetime()) && Validator.isNotNull(dossier.getFinishDatetime())) {
+					statusLabel = LanguageUtil.get(locale, "status-ontime");
+				}else{
+					if (Validator.isNull(dossier.getEstimateDatetime()) && Validator.isNull(dossier.getFinishDatetime())) {
+						statusLabel = LanguageUtil.get(locale, "status-toosoon");
+					}
+				}
 			}
-		}
-
+		}			
 		return statusLabel;
 	}
 

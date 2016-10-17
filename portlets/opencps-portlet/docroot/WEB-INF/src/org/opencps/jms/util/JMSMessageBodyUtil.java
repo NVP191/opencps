@@ -31,7 +31,6 @@ import javax.jms.StreamMessage;
 import javax.jms.TextMessage;
 import javax.naming.NamingException;
 
-import org.opencps.backend.sync.SyncFromFrontOffice;
 import org.opencps.dossiermgt.model.Dossier;
 import org.opencps.dossiermgt.model.DossierFile;
 import org.opencps.dossiermgt.model.DossierPart;
@@ -178,7 +177,7 @@ public class JMSMessageBodyUtil {
 				Dossier syncDossier = (Dossier) object;
 				_log.info("####################JMSMessageBodyUtil: Starting receive Dossier object");
 				Dossier dossier =
-					DossierLocalServiceUtil.getByoid(syncDossier.getOid());
+					DossierLocalServiceUtil.getDossierByOId(syncDossier.getOid());
 
 				ActorBean actorBean = new ActorBean(1, dossier.getUserId());
 

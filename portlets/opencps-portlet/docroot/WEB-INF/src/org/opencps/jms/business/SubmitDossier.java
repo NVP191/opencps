@@ -103,7 +103,7 @@ public class SubmitDossier {
 
 			try {
 				dossierBackend =
-					DossierLocalServiceUtil.getByoid(syncDossier.getOid());
+					DossierLocalServiceUtil.getDossierByOId(syncDossier.getOid());
 			}
 			catch (Exception e) {
 

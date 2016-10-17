@@ -32,6 +32,8 @@ import org.opencps.paymentmgt.service.PaymentConfigLocalServiceUtil;
 import org.opencps.paymentmgt.service.PaymentFileLocalServiceUtil;
 import org.opencps.util.PortletPropsValues;
 
+import com.liferay.counter.service.CounterLocalServiceUtil;
+import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.util.GetterUtil;
@@ -64,8 +66,7 @@ public class KeypayUrlGenerator {
 		if (Validator.isNotNull(paymentConfig) &&
 			Validator.isNotNull(paymentFile)) {
 
-			String merchant_trans_id =
-				Long.toString(_genetatorTransactionId(paymentFile));
+			long merchant_trans_id = _genetatorTransactionId();
 
 			String merchant_code = paymentConfig.getKeypayMerchantCode();
 
@@ -112,14 +113,15 @@ public class KeypayUrlGenerator {
 
 			KeyPay keypay =
 				new KeyPay(
-					merchant_trans_id, merchant_code, good_code, net_cost,
-					ship_fee, tax, bank_code, service_code, version, command,
-					currency_code, desc_1, desc_2, desc_3, desc_4, desc_5,
-					xml_description, current_locale, country_code, return_url,
-					internal_bank, merchant_secure_key);
+					String.valueOf(merchant_trans_id), merchant_code,
+					good_code, net_cost, ship_fee, tax, bank_code,
+					service_code, version, command, currency_code, desc_1,
+					desc_2, desc_3, desc_4, desc_5, xml_description,
+					current_locale, country_code, return_url, internal_bank,
+					merchant_secure_key);
 			keypay.setKeypay_url(paymentConfig.getKeypayDomain());
 
-			String param = "";
+			String param = StringPool.BLANK;
 			param +=
 				"merchant_code=" +
 					URLEncoder.encode(keypay.getMerchant_code(), "UTF-8") + "&";
@@ -252,14 +254,18 @@ public class KeypayUrlGenerator {
 	 * @param paymentFile
 	 * @return
 	 */
-	private static long _genetatorTransactionId(PaymentFile paymentFile) {
+	private static long _genetatorTransactionId() {
 
-		if (Validator.isNotNull(paymentFile)) {
-			return paymentFile.getDossierId();
+		long transactionId = 0;
+		try {
+			transactionId =
+				CounterLocalServiceUtil.increment(PaymentFile.class.getName() +
+					".genetatorTransactionId");
 		}
-		else {
-			return 0l;
+		catch (SystemException e) {
+			_log.error(e);
 		}
+		return transactionId;
 	}
 
 	/**

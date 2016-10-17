@@ -30,6 +30,7 @@ import org.opencps.backend.util.DossierNoGenerator;
 import org.opencps.backend.util.KeypayUrlGenerator;
 import org.opencps.backend.util.PaymentRequestGenerator;
 import org.opencps.dossiermgt.model.Dossier;
+import org.opencps.dossiermgt.model.DossierLog;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.service.DossierLogLocalServiceUtil;
 import org.opencps.dossiermgt.service.ServiceConfigLocalServiceUtil;
@@ -191,17 +192,22 @@ public class BackOfficeProcessEngine implements MessageListener {
 
 					ActorBean actorBean = new ActorBean(0, 0);
 
-					DossierLogLocalServiceUtil.addDossierLog(
-						toEngineMsg.getUserId(), toEngineMsg.getGroupId(),
-						toEngineMsg.getCompanyId(), toEngineMsg.getDossierId(),
-						toEngineMsg.getFileGroupId(),
-						PortletConstants.DOSSIER_STATUS_SYSTEM,
-						PortletConstants.DOSSIER_ACTION_CREATE_PROCESS_ORDER,
-						PortletConstants.DOSSIER_ACTION_CREATE_PROCESS_ORDER,
-						new Date(), 0, 0, actorBean.getActor(),
-						actorBean.getActorId(), actorBean.getActorName(),
-						BackOfficeProcessEngine.class.getName() +
-							".createProcessOrder()");
+					DossierLog dossierLog =
+						DossierLogLocalServiceUtil.addDossierLog(
+							toEngineMsg.getUserId(),
+							toEngineMsg.getGroupId(),
+							toEngineMsg.getCompanyId(),
+							toEngineMsg.getDossierId(),
+							toEngineMsg.getFileGroupId(),
+							PortletConstants.DOSSIER_STATUS_SYSTEM,
+							PortletConstants.DOSSIER_ACTION_CREATE_PROCESS_ORDER,
+							PortletConstants.DOSSIER_ACTION_CREATE_PROCESS_ORDER,
+							new Date(), 0, 0, actorBean.getActor(),
+							actorBean.getActorId(), actorBean.getActorName(),
+							BackOfficeProcessEngine.class.getName() +
+								".createProcessOrder()");
+
+					toBackOffice.setDossierLogOId(dossierLog.getOId());
 				}
 
 				processOrderId = processOrder.getProcessOrderId();
@@ -227,6 +233,9 @@ public class BackOfficeProcessEngine implements MessageListener {
 				processWorkflow =
 					ProcessWorkflowLocalServiceUtil.getProcessWorkflowByEvent(
 						serviceProcessId, toEngineMsg.getEvent(), curStepId);
+				
+				
+				_log.error("ProcessWorkflow" + processWorkflow.getActionName() + processWorkflow.getPostProcessStepId());
 			}
 			else {
 
@@ -258,6 +267,8 @@ public class BackOfficeProcessEngine implements MessageListener {
 				long changeStepId = processWorkflow.getPostProcessStepId();
 
 				String changeStatus = StringPool.BLANK;
+				
+				boolean isResubmit = false;
 
 				if (changeStepId != 0) {
 					ProcessStep changeStep =
@@ -265,6 +276,15 @@ public class BackOfficeProcessEngine implements MessageListener {
 
 					if (Validator.isNotNull(changeStep)) {
 						changeStatus = changeStep.getDossierStatus();
+						
+
+						if (Validator.equals(
+						    changeStep.getDossierStatus(),
+						    PortletConstants.DOSSIER_STATUS_RECEIVING)) {
+							
+							isResubmit = true;
+						}
+						
 
 						// Get AutoEvent of change step
 						_updateSchedulerJob(
@@ -355,7 +375,9 @@ public class BackOfficeProcessEngine implements MessageListener {
 				else {
 					ownerUserId = dossier.getUserId();
 				}
-
+				
+				boolean isPayment = false;
+				
 				// Update Paying
 				if (processWorkflow.getRequestPayment()) {
 
@@ -394,6 +416,8 @@ public class BackOfficeProcessEngine implements MessageListener {
 								toEngineMsg.getDossierId());
 
 					}
+					
+					isPayment = true;
 
 					toBackOffice.setRequestCommand(WebKeys.DOSSIER_LOG_PAYMENT_REQUEST);
 					toBackOffice.setPaymentFile(paymentFile);
@@ -421,6 +445,9 @@ public class BackOfficeProcessEngine implements MessageListener {
 					toBackOffice.setRequestPayment(0);
 					toBackOffice.setMessageInfo(toEngineMsg.getActionNote());
 				}
+				
+				toBackOffice.setPayment(isPayment);
+				toBackOffice.setResubmit(isResubmit);
 
 				Message sendToBackOffice = new Message();
 

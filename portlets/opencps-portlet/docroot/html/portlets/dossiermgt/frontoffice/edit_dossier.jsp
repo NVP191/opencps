@@ -1,4 +1,5 @@
 
+<%@page import="org.opencps.backend.util.BackendUtils"%>
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -148,6 +149,11 @@
 	/>
 	<portlet:param 
 		name="backURL" 
+		value="<%=backDossierList %>"
+	/>
+	
+	<portlet:param 
+		name="redirectURL" 
 		value="<%=currentURL %>"
 	/>
 	<portlet:param 
@@ -373,7 +379,7 @@
 				value="<%= scopeGroupId%>" 
 			/>
 			
-			<aui:input 
+			<aui:input
 				name="<%=DossierDisplayTerms.COMPANY_ID %>" type="hidden"
 				value="<%= company.getCompanyId()%>"
 			/>

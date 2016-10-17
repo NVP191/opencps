@@ -746,7 +746,7 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 					PortletConstants.DOSSIER_ACTION_CANCEL_DOSSER_REQUEST,
 					new Date(), 0, 0, actorBean.getActor(),
 					actorBean.getActorId(), actorBean.getActorName(),
-					ProcessOrderPortlet.class.getName() + ".cencelDossier()");
+					ProcessOrderPortlet.class.getName() + ".cancelDossier()");
 
 				MessageBusUtil.sendMessage(
 					"opencps/frontoffice/out/destination", message);
@@ -762,6 +762,102 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 				actionRequest, "user-not-have-permission-cancel-dossier");
 		}
 	}
+	
+	/**
+	 * @param actionRequest
+	 * @param actionResponse
+	 * @throws IOException
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public void changeDossier(
+		ActionRequest actionRequest, ActionResponse actionResponse)
+		throws IOException, PortalException, SystemException {
+
+		long dossierId =
+			ParamUtil.getLong(actionRequest, DossierDisplayTerms.DOSSIER_ID);
+
+		try {
+			ServiceContext serviceContext =
+				ServiceContextFactory.getInstance(actionRequest);
+
+			AccountBean accountBean = AccountUtil.getAccountBean(actionRequest);
+
+			if (accountBean != null &&
+				(accountBean.isBusiness() || accountBean.isCitizen())) {
+
+				Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+
+				UserActionMsg actionMsg = new UserActionMsg();
+
+				Message message = new Message();
+
+				actionMsg.setAction(WebKeys.ACTION_REPAIR_VALUE);
+
+				actionMsg.setDossierId(dossierId);
+
+				// actionMsg.setFileGroupId(fileGroupId);
+
+				actionMsg.setLocale(serviceContext.getLocale());
+
+				actionMsg.setUserId(serviceContext.getUserId());
+
+				actionMsg.setGroupId(serviceContext.getScopeGroupId());
+
+				actionMsg.setGovAgencyCode(dossier.getGovAgencyCode());
+
+				actionMsg.setCompanyId(dossier.getCompanyId());
+
+				// actionMsg.setDossierStatus(dossierStatus);
+
+				message.put("msgToEngine", actionMsg);
+
+
+				SessionMessages.add(actionRequest, "change-dossier-success");
+
+				// Add DossierLog for cancelDossier
+
+				int actor = 0;
+
+				if (accountBean.isEmployee()) {
+					actor = 2;
+				}
+				else if (accountBean.isBusiness() || accountBean.isCitizen()) {
+					actor = 1;
+				}
+
+				ActorBean actorBean =
+					new ActorBean(actor, serviceContext.getUserId());
+
+				long fileGroupId = 0;
+
+				DossierLogLocalServiceUtil.addDossierLog(
+					serviceContext.getUserId(),
+					serviceContext.getScopeGroupId(),
+					serviceContext.getCompanyId(), dossierId, fileGroupId,
+					dossier.getDossierStatus(),
+					PortletConstants.DOSSIER_ACTION_CHANGE_DOSSER_REQUEST,
+					PortletConstants.DOSSIER_ACTION_CHANGE_DOSSER_REQUEST,
+					new Date(), 0, 0, actorBean.getActor(),
+					actorBean.getActorId(), actorBean.getActorName(),
+					ProcessOrderPortlet.class.getName() + ".changeDossier()");
+
+				MessageBusUtil.sendMessage(
+					"opencps/frontoffice/out/destination", message);
+
+			}
+			else {
+				SessionErrors.add(
+					actionRequest, "user-not-have-permission-cancel-dossier");
+			}
+		}
+		catch (Exception e) {
+			_log.error(e);
+			SessionErrors.add(
+				actionRequest, "user-not-have-permission-cancel-dossier");
+		}
+	}
+
 
 	/**
 	 * @param actionRequest
@@ -2712,10 +2808,15 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 				actionRequest, DossierDisplayTerms.DOSSIER_STATUS);
 
 		String redirectURL = ParamUtil.getString(actionRequest, "redirectURL");
+		
+		String backURL =
+						ParamUtil.getString(actionRequest, "backURL");
 
 		// String holdPosition = ParamUtil.getString(actionRequest, "hold");
 
 		Dossier dossier = DossierLocalServiceUtil.getDossier(dossierId);
+		
+		boolean isUpdateStatusSuccessFlag = false;
 
 		try {
 			ServiceContext serviceContext =
@@ -2843,7 +2944,8 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 					themeDisplay.getLocale(),
 					MessageKeys.DEFAULT_SUCCESS_KEY_X,
 					String.valueOf(dossier.getDossierId())));
-
+			//lat co
+			isUpdateStatusSuccessFlag = true;
 		}
 		catch (Exception e) {
 
@@ -2863,8 +2965,17 @@ public class DossierMgtFrontOfficePortlet extends MVCPortlet {
 			_log.error(e);
 		}
 		finally {
-			if (Validator.isNotNull(redirectURL)) {
-				actionResponse.sendRedirect(redirectURL);
+			if (!isUpdateStatusSuccessFlag) {
+				
+				if(Validator.isNotNull(redirectURL)) {
+					actionResponse.sendRedirect(redirectURL);
+				}
+				
+			} else {
+				
+				if(Validator.isNotNull(backURL)) {
+					actionResponse.sendRedirect(backURL);
+				}
 			}
 		}
 	}

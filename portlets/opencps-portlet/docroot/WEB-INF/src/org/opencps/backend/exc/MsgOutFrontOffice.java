@@ -22,6 +22,7 @@ import javax.naming.NamingException;
 
 import org.opencps.backend.message.UserActionMsg;
 import org.opencps.backend.util.BackendUtils;
+import org.opencps.dossiermgt.service.DossierFileLocalServiceUtil;
 import org.opencps.jms.context.JMSHornetqContext;
 import org.opencps.jms.message.CancelDossierMessage;
 import org.opencps.jms.message.SubmitDossierMessage;
@@ -29,6 +30,7 @@ import org.opencps.jms.message.SubmitPaymentFileMessage;
 import org.opencps.jms.util.JMSMessageUtil;
 import org.opencps.paymentmgt.model.PaymentFile;
 import org.opencps.paymentmgt.service.PaymentFileLocalServiceUtil;
+import org.opencps.util.PortletConstants;
 import org.opencps.util.WebKeys;
 
 import com.liferay.portal.kernel.log.Log;
@@ -118,6 +120,15 @@ public class MsgOutFrontOffice implements MessageListener {
 						userActionMgs.getFileGroupId());
 					// TODO add log
 					_log.info("####################MsgOutFrontOffice: Sended Synchronized JMSDossierMessage");
+
+					// Dong bo trang thai giay to
+
+					DossierFileLocalServiceUtil.updateDossierFileSyncStatus(
+						userActionMgs.getUserId(),
+						userActionMgs.getDossierId(),
+						PortletConstants.DOSSIER_FILE_SYNC_STATUS_REQUIREDSYNC,
+						PortletConstants.DOSSIER_FILE_SYNC_STATUS_SYNCSUCCESS,
+						0);
 				}
 
 			}

@@ -17,6 +17,7 @@
 
 package org.opencps.backend.util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.opencps.dossiermgt.model.Dossier;
@@ -31,6 +32,7 @@ import org.opencps.processmgt.model.ProcessWorkflow;
 import org.opencps.processmgt.service.ProcessOrderLocalServiceUtil;
 import org.opencps.processmgt.service.ProcessStepLocalServiceUtil;
 import org.opencps.processmgt.service.ProcessWorkflowLocalServiceUtil;
+import org.opencps.util.PortletConstants;
 import org.opencps.util.WebKeys;
 
 import com.liferay.portal.kernel.log.Log;
@@ -465,6 +467,77 @@ public class BackendUtils {
 
 		return trustServiceMode;
 	}
+	
+	/**
+	 * @param dossierId
+	 * @return
+	 */
+	public static boolean isDossierCancel(long dossierId) {
+
+		boolean isCancel = false;
+
+		if (dossierId != 0) {
+			try {
+				ProcessOrder processOrder =
+				    ProcessOrderLocalServiceUtil.getProcessOrder(dossierId, 0);
+
+				long processStepId = processOrder.getProcessStepId();
+				long serviceProcessId = processOrder.getServiceProcessId();
+
+				List<ProcessWorkflow> lsPRC_WFL =
+				    new ArrayList<ProcessWorkflow>();
+
+				lsPRC_WFL =
+				    ProcessWorkflowLocalServiceUtil.getPostProcessWorkflow(
+				        serviceProcessId, processStepId);
+
+				for (ProcessWorkflow prc_wf : lsPRC_WFL) {
+					if (Validator.equals(
+					    prc_wf.getPreCondition(), WebKeys.ACTION_CANCEL_VALUE)) {
+						isCancel = true;
+						break;
+					}
+				}
+			}
+			catch (Exception e) {
+			}
+		}
+
+		return isCancel;
+
+	}
+	
+	/**
+	 * @param dossierId
+	 * @return
+	 */
+	public static boolean isDossierChange(long dossierId) {
+
+		boolean isChange = false;
+
+		if (dossierId != 0) {
+			try {
+				ProcessOrder processOrder =
+				    ProcessOrderLocalServiceUtil.getProcessOrder(dossierId, 0);
+				
+			
+				
+				String dossierStatus = processOrder.getDossierStatus();
+				
+				
+				if (Validator.equals(dossierStatus, PortletConstants.DOSSIER_STATUS_DONE)) {
+					isChange = true;
+				}
+				
+			}
+			catch (Exception e) {
+			}
+		}
+
+		return isChange;
+
+	}
+
 
 	private static Log _log = LogFactoryUtil.getLog(BackendUtils.class);
 }

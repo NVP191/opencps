@@ -31,6 +31,7 @@ import org.opencps.dossiermgt.util.ActorBean;
 import org.opencps.processmgt.model.WorkflowOutput;
 import org.opencps.processmgt.service.WorkflowOutputLocalServiceUtil;
 import org.opencps.util.PortletConstants;
+import org.opencps.util.WebKeys;
 
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
@@ -98,20 +99,58 @@ public class SyncFromBackOffice implements MessageListener {
 				
 				//Update DossierLog 
 				
-				Dossier dossier = DossierLocalServiceUtil.fetchDossier(toBackOffice.getDossierId());
+				Dossier dossier =
+				    DossierLocalServiceUtil.fetchDossier(toBackOffice.getDossierId());
+
+				ActorBean actorBean =
+				    new ActorBean(
+				        toBackOffice.getActor(), toBackOffice.getActorId());				
 				
-				ActorBean actorBean = new ActorBean(toBackOffice.getActor(), toBackOffice.getActorId());
+				boolean isPayment = toBackOffice.isPayment();
 				
-				DossierLogLocalServiceUtil.addDossierLog(
-				    dossier.getUserId(), dossier.getGroupId(),
-				    dossier.getCompanyId(), toBackOffice.getDossierId(),
-				    toBackOffice.getFileGroupId(),
-				    toBackOffice.getDossierStatus(),
-				    toBackOffice.getActionInfo(),
-				    toBackOffice.getMessageInfo(), new Date(), 0,
-				    toBackOffice.getSyncStatus(), actorBean.getActor(),
-				    actorBean.getActorId(), actorBean.getActorName(),
-				    SyncFromBackOffice.class.getName());
+				boolean isResubmit = toBackOffice.isResubmit();
+				
+				if (isPayment) {
+					DossierLogLocalServiceUtil.addCommandRequest(
+					    dossier.getUserId(), dossier.getGroupId(),
+					    dossier.getCompanyId(), toBackOffice.getDossierId(),
+					    toBackOffice.getFileGroupId(),
+					    toBackOffice.getDossierStatus(),
+					    toBackOffice.getActionInfo(),
+					    toBackOffice.getMessageInfo(), new Date(), 0,
+					    toBackOffice.getSyncStatus(), actorBean.getActor(),
+					    actorBean.getActorId(), actorBean.getActorName(),
+					    SyncFromBackOffice.class.getName(),
+					    WebKeys.DOSSIER_LOG_PAYMENT_REQUEST);
+
+				}
+
+				if (isResubmit) {
+					DossierLogLocalServiceUtil.addCommandRequest(
+					    dossier.getUserId(), dossier.getGroupId(),
+					    dossier.getCompanyId(), toBackOffice.getDossierId(),
+					    toBackOffice.getFileGroupId(),
+					    toBackOffice.getDossierStatus(),
+					    toBackOffice.getActionInfo(),
+					    toBackOffice.getMessageInfo(), new Date(), 0,
+					    toBackOffice.getSyncStatus(), actorBean.getActor(),
+					    actorBean.getActorId(), actorBean.getActorName(),
+					    SyncFromBackOffice.class.getName(),
+					    WebKeys.DOSSIER_LOG_RESUBMIT_REQUEST);
+				}
+				
+				if (!isResubmit && !isPayment) {
+					DossierLogLocalServiceUtil.addDossierLog(
+					    dossier.getUserId(), dossier.getGroupId(),
+					    dossier.getCompanyId(), toBackOffice.getDossierId(),
+					    toBackOffice.getFileGroupId(),
+					    toBackOffice.getDossierStatus(),
+					    toBackOffice.getActionInfo(),
+					    toBackOffice.getMessageInfo(), new Date(), 0,
+					    toBackOffice.getSyncStatus(), actorBean.getActor(),
+					    actorBean.getActorId(), actorBean.getActorName(),
+					    SyncFromBackOffice.class.getName());
+				}
 			}
 			catch (Exception e) {
 				_log.error(e);

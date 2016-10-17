@@ -139,6 +139,8 @@ public class PortletConstants {
 	public static final String DOSSIER_ACTION_RESEND = "resend-dossier";
 	public static final String DOSSIER_ACTION_REVICE = "revice-dossier";
 	public static final String DOSSIER_ACTION_CANCEL_DOSSER_REQUEST = "cancel-dossier-request";
+	public static final String DOSSIER_ACTION_CHANGE_DOSSER_REQUEST = "change-dossier-request";
+
 	public static final String DOSSIER_ACTION_REPAIR_DOSSIER = "repair";
 	public static final String DOSSIER_ACTION_CANCEL_DOSSIER = "cancel";
 	public static final String DOSSIER_ACTION_REQUEST_PAYMENT = "request-payment";

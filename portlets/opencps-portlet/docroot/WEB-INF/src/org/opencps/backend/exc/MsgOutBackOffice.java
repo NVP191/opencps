@@ -51,6 +51,7 @@ import com.liferay.portal.kernel.messaging.Message;
 import com.liferay.portal.kernel.messaging.MessageBusUtil;
 import com.liferay.portal.kernel.messaging.MessageListener;
 import com.liferay.portal.kernel.messaging.MessageListenerException;
+import com.liferay.portal.kernel.util.Validator;
 
 /**
  * @author khoavd
@@ -177,6 +178,13 @@ public class MsgOutBackOffice implements MessageListener {
 					syncFromBackOfficeMsgBody.setMessageInfo(toBackOffice.getMessageInfo());
 					syncFromBackOfficeMsgBody.setFileGroupId(toBackOffice.getFileGroupId());
 					syncFromBackOfficeMsgBody.setRequestCommand(toBackOffice.getRequestCommand());
+					
+					if(Validator.isNotNull(toBackOffice.getDossierLogOId())){
+						
+					}
+					//syncFromBackOfficeMsgBody.setActionHistory(actionHistory);
+					//syncFromBackOfficeMsgBody.setDossierLog(dossierLog);
+					
 					syncFromBackoffice.sendMessageByHornetq(syncFromBackOfficeMsgBody);
 
 					// Send to Callback

@@ -15,7 +15,6 @@
  * along with this program. If not, see <http://www.gnu.org/licenses/>
  */
 
-
 package org.opencps.backend.message;
 
 import java.util.Date;
@@ -25,8 +24,7 @@ import org.opencps.paymentmgt.model.PaymentFile;
 /**
  * @author khoavd
  */
-public class SendToBackOfficeMsg{
-	
+public class SendToBackOfficeMsg {
 
 	/**
 	 * @return the processOrderId
@@ -350,95 +348,147 @@ public class SendToBackOfficeMsg{
 
 		this.requestCommand = requestCommand;
 	}
-	
-    /**
-     * @return the userActorAction
-     */
-    public long getUserActorAction() {
-    
-    	return userActorAction;
-    }
 
-	
-    /**
-     * @param userActorAction the userActorAction to set
-     */
-    public void setUserActorAction(long userActorAction) {
-    
-    	this.userActorAction = userActorAction;
-    }
-	
-    /**
-     * @return the actor
-     */
-    public int getActor() {
-    
-    	return actor;
-    }
+	/**
+	 * @return the userActorAction
+	 */
+	public long getUserActorAction() {
 
-	
-    /**
-     * @param actor the actor to set
-     */
-    public void setActor(int actor) {
-    
-    	this.actor = actor;
-    }
+		return userActorAction;
+	}
 
-	
-    /**
-     * @return the actorId
-     */
-    public long getActorId() {
-    
-    	return actorId;
-    }
+	/**
+	 * @param userActorAction
+	 *            the userActorAction to set
+	 */
+	public void setUserActorAction(long userActorAction) {
 
-	
-    /**
-     * @param actorId the actorId to set
-     */
-    public void setActorId(long actorId) {
-    
-    	this.actorId = actorId;
-    }
+		this.userActorAction = userActorAction;
+	}
 
-	
-    /**
-     * @return the actorName
-     */
-    public String getActorName() {
-    
-    	return actorName;
-    }
+	/**
+	 * @return the actor
+	 */
+	public int getActor() {
 
-	
-    /**
-     * @param actorName the actorName to set
-     */
-    public void setActorName(String actorName) {
-    
-    	this.actorName = actorName;
-    }
-	
-    /**
-     * @return the syncStatus
-     */
-    public int getSyncStatus() {
-    
-    	return syncStatus;
-    }
+		return actor;
+	}
 
-	
-    /**
-     * @param syncStatus the syncStatus to set
-     */
-    public void setSyncStatus(int syncStatus) {
-    
-    	this.syncStatus = syncStatus;
-    }
+	/**
+	 * @param actor
+	 *            the actor to set
+	 */
+	public void setActor(int actor) {
+
+		this.actor = actor;
+	}
+
+	/**
+	 * @return the actorId
+	 */
+	public long getActorId() {
+
+		return actorId;
+	}
+
+	/**
+	 * @param actorId
+	 *            the actorId to set
+	 */
+	public void setActorId(long actorId) {
+
+		this.actorId = actorId;
+	}
+
+	/**
+	 * @return the actorName
+	 */
+	public String getActorName() {
+
+		return actorName;
+	}
+
+	/**
+	 * @param actorName
+	 *            the actorName to set
+	 */
+	public void setActorName(String actorName) {
+
+		this.actorName = actorName;
+	}
+
+	/**
+	 * @return the syncStatus
+	 */
+	public int getSyncStatus() {
+
+		return syncStatus;
+	}
+
+	/**
+	 * @param syncStatus
+	 *            the syncStatus to set
+	 */
+	public void setSyncStatus(int syncStatus) {
+
+		this.syncStatus = syncStatus;
+	}
+
+	public String getDossierLogOId() {
+
+		return dossierLogOId;
+	}
+
+	/**
+	 * @return the isPayment
+	 */
+	public boolean isPayment() {
+
+		return isPayment;
+	}
+
+	/**
+	 * @param isPayment
+	 *            the isPayment to set
+	 */
+	public void setPayment(boolean isPayment) {
+
+		this.isPayment = isPayment;
+	}
+
+	/**
+	 * @return the isResubmit
+	 */
+	public boolean isResubmit() {
+
+		return isResubmit;
+	}
+
+	/**
+	 * @param isResubmit
+	 *            the isResubmit to set
+	 */
+	public void setResubmit(boolean isResubmit) {
+
+		this.isResubmit = isResubmit;
+	}
+
+	public void setDossierLogOId(String dossierLogOId) {
+
+		this.dossierLogOId = dossierLogOId;
+	}
+
+	public String getActionHistoryOId() {
+
+		return actionHistoryOId;
+	}
+
+	public void setActionHistoryOId(String actionHistoryOId) {
+
+		this.actionHistoryOId = actionHistoryOId;
+	}
+
 	protected String requestCommand;
-
 	protected long processOrderId;
 	protected long dossierId;
 	protected long fileGroupId;
@@ -462,5 +512,9 @@ public class SendToBackOfficeMsg{
 	protected long actorId;
 	protected String actorName;
 	protected int syncStatus;
+	protected String dossierLogOId;
+	protected String actionHistoryOId;
+	protected boolean isPayment;
+	protected boolean isResubmit;
 
 }

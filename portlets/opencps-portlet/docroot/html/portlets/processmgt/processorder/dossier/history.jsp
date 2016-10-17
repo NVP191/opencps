@@ -147,6 +147,7 @@
 								<%=date%>
 							</span>
 						</aui:row>
+						
 					</aui:col>
 					<aui:col width="50">
 						<aui:row>

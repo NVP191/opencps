@@ -310,6 +310,7 @@
 		<column name="actionUserId" type="long"/>
 		<column name="daysDoing" type="int"/>
 		<column name="daysDelay" type="int"/>
+        <column name="oId" type="String"></column>
 
         <order >
             <order-column name="createDate" order-by="desc"></order-column>
@@ -331,6 +332,9 @@
 		<finder return-type="Collection" name="ProcessOrderId" where="stepName != ''">
 			<finder-column name="processOrderId"/>
 		</finder>
+        <finder name="OId" return-type="ActionHistory">
+            <finder-column name="oId"></finder-column>
+        </finder>
 		
 		
 	</entity>

@@ -39,6 +39,7 @@
         <column name="invoiceNo" type="String"></column>
         <column name="syncStatus" type="int"></column>
         <column name="oid" type="String"/>
+        <column name="dossierOId" type="String"></column>
         <finder name="GoodCode" return-type="PaymentFile">
             <finder-column name="groupId"></finder-column>
             <finder-column name="keypayGoodCode"></finder-column>

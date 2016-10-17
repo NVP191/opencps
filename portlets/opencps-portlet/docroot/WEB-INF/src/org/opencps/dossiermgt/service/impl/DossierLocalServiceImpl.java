@@ -38,7 +38,6 @@ import org.opencps.util.DLFolderUtil;
 import org.opencps.util.PortletConstants;
 import org.opencps.util.PortletUtil;
 import org.opencps.util.PortletUtil.SplitDate;
-import org.opencps.util.WebKeys;
 
 import com.liferay.portal.NoSuchUserException;
 import com.liferay.portal.kernel.exception.PortalException;
@@ -195,14 +194,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		dossier = dossierPersistence.update(dossier);
 
-		int actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
-		long actorId = userId;
-		String actorName = StringPool.BLANK;
+		// int actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
+		// long actorId = userId;
+		// String actorName = StringPool.BLANK;
 
-		if (actorId != 0) {
-			User user = userPersistence.fetchByPrimaryKey(actorId);
-			actorName = user.getFullName();
-		}
+		// if (actorId != 0) {
+		// User user = userPersistence.fetchByPrimaryKey(actorId);
+		// actorName = user.getFullName();
+		// }
 
 		dossierStatusLocalService.addDossierStatus(
 			userId,
@@ -292,6 +291,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			userId, dossierStatus, serviceNo, fromDate, toDate);
 	}
 
+	public int countDossierByG_DS_U(
+		long groupId, String dossierStatus, long userId)
+		throws SystemException {
+
+		return dossierPersistence.countByG_DS_U(groupId, dossierStatus, userId);
+	};
+
 	/**
 	 * @param groupId
 	 * @param keyword
@@ -343,7 +349,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		}
 		return dossierFinder.countDossierByP_PS_U(
 			processNo, processStepNo, userId);
-	};
+	}
 
 	/**
 	 * @param processNo
@@ -460,6 +466,16 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			throw new NoSuchUserException();
 		}
 		return dossierFinder.countDossierByUserAssignProcessOrder(userId);
+	}
+
+	/**
+	 * @param groupId
+	 * @param userId
+	 * @return
+	 */
+	public int countDossierByUserNewRequest(long groupId, long userId) {
+
+		return dossierFinder.countDossierByUserNewRequest(groupId, userId);
 	}
 
 	/**
@@ -634,12 +650,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossierPersistence.update(dossier);
 	}
 
-	public Dossier getByoid(String oid)
-		throws SystemException {
-
-		return dossierPersistence.fetchByOID(oid);
-	}
-
 	/**
 	 * @param dossier
 	 * @param userId
@@ -686,6 +696,14 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			delayStatus, dossierStatus);
 	}
 
+	public List<Dossier> getDossierByG_DS_U(
+		long groupId, String dossierStatus, long userId, int start, int end)
+		throws SystemException {
+
+		return dossierPersistence.findByG_DS_U(
+			groupId, dossierStatus, userId, start, end);
+	}
+
 	/**
 	 * @param groupId
 	 * @return
@@ -698,6 +716,18 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	/**
+	 * @param oId
+	 * @return
+	 * @throws NoSuchDossierException
+	 * @throws SystemException
+	 */
+	public Dossier getDossierByOId(String oId)
+		throws NoSuchDossierException, SystemException {
+
+		return dossierPersistence.findByOID(oId);
+	}
+
+	/**
 	 * @param receptionNo
 	 * @return
 	 * @throws SystemException
@@ -706,6 +736,12 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		throws SystemException {
 
 		return dossierPersistence.fetchByReceptionNo(receptionNo);
+	}
+
+	public List<Dossier> getDossierByStatus(long groupId, String dossierStatus)
+		throws SystemException {
+
+		return dossierPersistence.filterFindByG_DS(groupId, dossierStatus);
 	}
 
 	/**
@@ -724,12 +760,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		return dossierPersistence.findByG_DS(
 			groupId, dossierStatus, start, end, obc);
-	}
-
-	public List<Dossier> getDossierByStatus(long groupId, String dossierStatus)
-		throws SystemException {
-
-		return dossierPersistence.filterFindByG_DS(groupId, dossierStatus);
 	}
 
 	/**
@@ -751,6 +781,32 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		return dossierFinder.searchDossierByUser(
 			groupId, userId, keyword, serviceDomainTreeIndex, dossierStatus,
 			start, end, obc);
+	}
+
+	/**
+	 * @param groupId
+	 * @param userId
+	 * @param start
+	 * @param end
+	 * @param obc
+	 * @return
+	 */
+	public List getDossierByUserNewRequest(
+		long groupId, long userId, int start, int end, OrderByComparator obc) {
+
+		return dossierFinder.searchDossierByUserNewRequest(
+			groupId, userId, start, end, obc);
+	}
+
+	/**
+	 * @param serviceinfoId
+	 * @return
+	 * @throws SystemException
+	 */
+	public List<Dossier> getDossiersByServiceInfo(long serviceinfoId)
+		throws SystemException {
+
+		return dossierPersistence.findByServiceInfoId(serviceinfoId);
 	}
 
 	/**
@@ -1040,7 +1096,10 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		dossier.setGovAgencyName(syncDossier.getGovAgencyName());
 		dossier.setGovAgencyOrganizationId(syncDossier.getGovAgencyOrganizationId());
 		dossier.setNote(syncDossier.getNote());
-		dossier.setOwnerOrganizationId(syncDossier.getOwnerOrganizationId());// Sync from another system
+		dossier.setOwnerOrganizationId(syncDossier.getOwnerOrganizationId());// Sync
+																				// from
+																				// another
+																				// system
 		dossier.setReceptionNo(syncDossier.getReceptionNo());
 		// dossier.setReceiveDatetime(receiveDatetime);
 		dossier.setServiceAdministrationIndex(syncDossier.getServiceAdministrationIndex());
@@ -1649,13 +1708,13 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		Indexer indexer = IndexerRegistryUtil.nullSafeGetIndexer(Dossier.class);
 
 		indexer.reindex(dossier);
-		int actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
+		// int actor = WebKeys.DOSSIER_ACTOR_CITIZEN;
 		long actorId = userId;
-		String actorName = StringPool.BLANK;
+		// String actorName = StringPool.BLANK;
 
 		if (actorId != 0) {
-			User user = userPersistence.fetchByPrimaryKey(actorId);
-			actorName = user.getFullName();
+			// User user = userPersistence.fetchByPrimaryKey(actorId);
+			// actorName = user.getFullName();
 		}
 		/*
 		 * dossierLogLocalService.addDossierLog( userId, dossierId, 0,
@@ -1666,6 +1725,29 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 		 */
 
 		return dossier;
+	}
+
+	/**
+	 * @param dossierId
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public Dossier updateDossierNote(long dossierId, String note)
+		throws PortalException, SystemException {
+
+		Dossier dossier = null;
+
+		if (dossierId != 0) {
+			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
+
+			dossier.setNote(note);
+
+			dossierPersistence.update(dossier);
+		}
+
+		return dossier;
+
 	}
 
 	/**
@@ -1861,77 +1943,6 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	 * @param dossierId
 	 * @param fileGroupId
 	 * @param dossierStatus
-	 * @param receptionNo
-	 * @param estimateDatetime
-	 * @param receiveDatetime
-	 * @param finishDatetime
-	 * @param actor
-	 * @param requestCommand
-	 * @param actionInfo
-	 * @param messageInfo
-	 * @return
-	 */
-	public boolean updateDossierStatus(
-		long dossierId, long fileGroupId, String dossierStatus,
-		String receptionNo, Date submitDatetime, Date estimateDatetime,
-		Date receiveDatetime, Date finishDatetime, int actor, long actorId,
-		String actorName, String requestCommand, String actionInfo,
-		String messageInfo) {
-
-		boolean result = false;
-		try {
-
-			Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
-			dossier.setReceptionNo(receptionNo);
-			dossier.setEstimateDatetime(estimateDatetime);
-
-			if (Validator.isNull(dossier.getReceiveDatetime())) {
-				dossier.setReceiveDatetime(receiveDatetime);
-			}
-
-			if (Validator.isNull(dossier.getSubmitDatetime())) {
-				dossier.setSubmitDatetime(submitDatetime);
-			}
-
-			dossier.setFinishDatetime(finishDatetime);
-
-			dossier.setDossierStatus(dossierStatus);
-
-			int level = 0;
-			if (dossier.getDossierStatus().equals(
-				PortletConstants.DOSSIER_STATUS_ERROR)) {
-				level = 2;
-			}
-			else if (dossier.getDossierStatus().equals(
-				PortletConstants.DOSSIER_STATUS_WAITING) ||
-				dossier.getDossierStatus().equals(
-					PortletConstants.DOSSIER_STATUS_PAYING)) {
-				level = 1;
-			}
-
-			// Remove DossierLog
-
-			/*
-			 * dossierLogLocalService.addDossierLog( dossier.getUserId(),
-			 * dossier.getGroupId(), dossier.getCompanyId(), dossierId,
-			 * fileGroupId, dossierStatus, actor, actorId, actorName,
-			 * requestCommand, actionInfo, messageInfo, level);
-			 */
-			dossierPersistence.update(dossier);
-
-			result = true;
-		}
-		catch (Exception e) {
-			result = false;
-		}
-
-		return result;
-	}
-
-	/**
-	 * @param dossierId
-	 * @param fileGroupId
-	 * @param dossierStatus
 	 * @param actor
 	 * @param requestCommand
 	 * @param actionInfo
@@ -2012,6 +2023,77 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 	}
 
 	/**
+	 * @param dossierId
+	 * @param fileGroupId
+	 * @param dossierStatus
+	 * @param receptionNo
+	 * @param estimateDatetime
+	 * @param receiveDatetime
+	 * @param finishDatetime
+	 * @param actor
+	 * @param requestCommand
+	 * @param actionInfo
+	 * @param messageInfo
+	 * @return
+	 */
+	public boolean updateDossierStatus(
+		long dossierId, long fileGroupId, String dossierStatus,
+		String receptionNo, Date submitDatetime, Date estimateDatetime,
+		Date receiveDatetime, Date finishDatetime, int actor, long actorId,
+		String actorName, String requestCommand, String actionInfo,
+		String messageInfo) {
+
+		boolean result = false;
+		try {
+
+			Dossier dossier = dossierPersistence.findByPrimaryKey(dossierId);
+			dossier.setReceptionNo(receptionNo);
+			dossier.setEstimateDatetime(estimateDatetime);
+
+			if (Validator.isNull(dossier.getReceiveDatetime())) {
+				dossier.setReceiveDatetime(receiveDatetime);
+			}
+
+			if (Validator.isNull(dossier.getSubmitDatetime())) {
+				dossier.setSubmitDatetime(submitDatetime);
+			}
+
+			dossier.setFinishDatetime(finishDatetime);
+
+			dossier.setDossierStatus(dossierStatus);
+
+			// int level = 0;
+			// if (dossier.getDossierStatus().equals(
+			// PortletConstants.DOSSIER_STATUS_ERROR)) {
+			// level = 2;
+			// }
+			// else if (dossier.getDossierStatus().equals(
+			// PortletConstants.DOSSIER_STATUS_WAITING) ||
+			// dossier.getDossierStatus().equals(
+			// PortletConstants.DOSSIER_STATUS_PAYING)) {
+			// level = 1;
+			// }
+
+			// Remove DossierLog
+
+			/*
+			 * dossierLogLocalService.addDossierLog( dossier.getUserId(),
+			 * dossier.getGroupId(), dossier.getCompanyId(), dossierId,
+			 * fileGroupId, dossierStatus, actor, actorId, actorName,
+			 * requestCommand, actionInfo, messageInfo, level);
+			 */
+			dossierPersistence.update(dossier);
+
+			result = true;
+		}
+		catch (Exception e) {
+			result = false;
+		}
+
+		return result;
+	}
+
+	/**
 	 * @param oId
 	 * @param fileGroupIds
 	 * @param syncStatus
@@ -2025,7 +2107,7 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 
 		Date now = new Date();
 
-		Dossier dossier = dossierLocalService.getByoid(oId);
+		Dossier dossier = dossierPersistence.findByOID(oId);
 
 		int flagStatus = PortletConstants.DOSSIER_FILE_SYNC_STATUS_NOSYNC;
 
@@ -2066,79 +2148,5 @@ public class DossierLocalServiceImpl extends DossierLocalServiceBaseImpl {
 			}
 		}
 
-	}
-
-	/**
-	 * @param serviceinfoId
-	 * @return
-	 * @throws SystemException
-	 */
-	public List<Dossier> getDossiersByServiceInfo(long serviceinfoId)
-		throws SystemException {
-
-		return dossierPersistence.findByServiceInfoId(serviceinfoId);
-	}
-
-	public List<Dossier> getDossierByG_DS_U(
-		long groupId, String dossierStatus, long userId, int start, int end)
-		throws SystemException {
-
-		return dossierPersistence.findByG_DS_U(
-			groupId, dossierStatus, userId, start, end);
-	}
-
-	public int countDossierByG_DS_U(
-		long groupId, String dossierStatus, long userId)
-		throws SystemException {
-
-		return dossierPersistence.countByG_DS_U(groupId, dossierStatus, userId);
-	}
-
-	/**
-	 * @param groupId
-	 * @param userId
-	 * @return
-	 */
-	public int countDossierByUserNewRequest(long groupId, long userId) {
-
-		return dossierFinder.countDossierByUserNewRequest(groupId, userId);
-	}
-
-	/**
-	 * @param groupId
-	 * @param userId
-	 * @param start
-	 * @param end
-	 * @param obc
-	 * @return
-	 */
-	public List getDossierByUserNewRequest(
-		long groupId, long userId, int start, int end, OrderByComparator obc) {
-
-		return dossierFinder.searchDossierByUserNewRequest(
-			groupId, userId, start, end, obc);
-	}
-	
-	/**
-	 * @param dossierId
-	 * @return
-	 * @throws PortalException
-	 * @throws SystemException
-	 */
-	public Dossier updateDossierNote(long dossierId, String note)
-	    throws PortalException, SystemException {
-		
-		Dossier dossier = null;
-		
-		if (dossierId != 0) {
-			dossier = dossierPersistence.fetchByPrimaryKey(dossierId);
-			
-			dossier.setNote(note);
-			
-			dossierPersistence.update(dossier);
-		}
-		
-		return dossier;
-		
 	}
 }

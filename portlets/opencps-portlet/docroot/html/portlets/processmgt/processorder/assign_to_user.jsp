@@ -92,9 +92,11 @@
 	
 	Date estimateDate = null;
 	
-	if(workflow != null && workflow.getGenerateDeadline() && receiveDate != null && Validator.isNotNull(deadlinePattern)){
+	if(workflow != null && workflow.getGenerateDeadline() && Validator.isNotNull(receiveDate) && Validator.isNotNull(deadlinePattern)){
 		estimateDate = BookingDateGenerator.dateGenerator(receiveDate, deadlinePattern);
 	}
+	
+	System.out.println("ESIMATEEEEEEEEEEEEEEEEEEEEEEE DATE _______________________ = "+ estimateDate);
 	
 	PortletUtil.SplitDate spd = null;
 	

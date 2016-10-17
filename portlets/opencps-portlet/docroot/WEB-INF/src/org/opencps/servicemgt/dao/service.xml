@@ -82,6 +82,11 @@
 			<finder-column name="domainCode"/>
 			<finder-column name="activeStatus"/>
 		</finder>
+		
+		<finder name="C_SN" return-type="ServiceInfo">
+			<finder-column name="companyId" />
+			<finder-column name="serviceNo"/>
+		</finder>
 		<reference package-path="com.liferay.portlet.asset" entity="AssetEntry" />
 	</entity>
 

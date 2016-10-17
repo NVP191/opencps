@@ -1,5 +1,4 @@
 
-<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
 <%
 /**
  * OpenCPS is the open source Core Public Services software
@@ -20,6 +19,8 @@
 %>
 <%@page import="org.opencps.servicemgt.service.ServiceInfoLocalServiceUtil"%>
 <%@page import="org.opencps.servicemgt.model.ServiceInfo"%>
+<%@page import="org.opencps.dossiermgt.search.DossierSearchUtil"%>
+<%@page import="com.liferay.portal.kernel.dao.orm.QueryUtil"%>
 <%@page import="com.liferay.portlet.documentlibrary.util.DLUtil"%>
 <%@page import="org.opencps.util.DLFileEntryUtil"%>
 <%@page import="com.liferay.portal.kernel.repository.model.FileEntry"%>
@@ -39,15 +40,16 @@
 <%@page import="org.opencps.util.DateTimeUtil"%>
 <%@page import="org.opencps.util.PortletConstants"%>
 <%@page import="org.opencps.util.PortletUtil"%>
+<%@page import="com.liferay.portal.kernel.util.OrderByComparator"%>
+
 <%@ include file="../../init.jsp"%>
 
 <%
-    Dossier dossier = (Dossier) request.getAttribute(WebKeys.DOSSIER_ENTRY);
-    DossierTemplate dossierTemplate = (DossierTemplate) request.getAttribute(WebKeys.DOSSIER_TEMPLATE_ENTRY);
+	Dossier dossier = (Dossier) request.getAttribute(WebKeys.DOSSIER_ENTRY);
+	DossierTemplate dossierTemplate = (DossierTemplate) request.getAttribute(WebKeys.DOSSIER_TEMPLATE_ENTRY);
 %>
 
 <c:choose>
-<<<<<<< HEAD
 	<c:when test="<%=dossier != null && dossier.getDossierStatus() != PortletConstants.DOSSIER_STATUS_NEW %>">
 		<%
 			String[] actors = new String[]{};
@@ -84,6 +86,10 @@
 				
 				
 			}
+			
+			request.setAttribute("dossierPartsLevel1", dossierPartsLevel1);
+			request.setAttribute("dossier", dossier);
+		
 		%>
 		
 		<aui:row cssClass="pd_b20">
@@ -257,20 +263,34 @@
 				
 			</aui:row>
 		</c:if>
+		
 		<!-- cau hinh hien thi sap xep giay to ket qua -->
 		<c:choose>
 			<c:when test="<%=Validator.isNotNull(orderFieldDossierFile) %>">
-				<%@ include file="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_order.jsp" %>
+			<%-- 	<%@ include file="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_order.jsp" %>
+			 --%>
+			 
+			<liferay-util:include 
+				page="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_order.jsp" 
+				servletContext="<%=application %>" 
+			/>
 			</c:when>
 			
 			<c:otherwise>
-				<%@ include file="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_default.jsp" %>
+				<%-- <%@ include file="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_default.jsp" %> --%>
+				<liferay-util:include 
+					page="/html/portlets/dossiermgt/frontoffice/dossier/result_display/result_order.jsp" 
+					servletContext="<%=application %>" 
+			/>
 			</c:otherwise>
 		</c:choose>
+
 	</c:when>
+	
 	<c:otherwise>
 		<div class="portlet-msg-info">
 			<liferay-ui:message key="no-dossier-result-info"/>
 		</div>
 	</c:otherwise>
+	
 </c:choose>

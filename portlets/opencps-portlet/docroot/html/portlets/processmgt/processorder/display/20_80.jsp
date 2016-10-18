@@ -189,7 +189,8 @@
 				'normal',
 				'<%=menuCounterServiceInfoIdUrl.toString() %>',
 				serviceInfoId,
-				'<%=renderResponse.getNamespace() %>');
+				'<%=renderResponse.getNamespace() %>',
+				'<%=hiddenTreeNodeEqualNone%>');
 		buildTreeView("processStepIdTree", 
 				'processStepId', 
 				processStepIdJsonData, 
@@ -200,7 +201,8 @@
 				'normal',
 				'<%=menuCounterUrl.toString() %>',
 				processStepId,
-				'<%=renderResponse.getNamespace() %>');
+				'<%=renderResponse.getNamespace() %>',
+				'<%=hiddenTreeNodeEqualNone%>');
 		
 	});
 	

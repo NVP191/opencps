@@ -119,7 +119,8 @@
 				'normal',
 				null,
 				serviceDomainId,
-				'<%=renderResponse.getNamespace() %>');
+				'<%=renderResponse.getNamespace() %>',
+				'<%=hiddenTreeNodeEqualNone%>');
 	});
 	
 </aui:script>

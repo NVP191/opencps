@@ -161,7 +161,8 @@
 				'normal',
 				'<%=menuCounterUrl.toString() %>',
 				dossierStatus,
-				'<%=renderResponse.getNamespace() %>');
+				'<%=renderResponse.getNamespace() %>',
+				'<%=hiddenTreeNodeEqualNone%>');
 		if (showServiceDomainIdTree){
 			buildTreeView("serviceDomainIdTree", 
 					"<%=DossierDisplayTerms.SERVICE_DOMAIN_ID %>", 
@@ -173,7 +174,8 @@
 					'normal',
 					null,
 					serviceDomainId,
-					'<%=renderResponse.getNamespace() %>');
+					'<%=renderResponse.getNamespace() %>',
+					'<%=hiddenTreeNodeEqualNone%>');
 		}
 	});
 	

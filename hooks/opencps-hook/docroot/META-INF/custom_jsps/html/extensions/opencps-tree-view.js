@@ -1,4 +1,4 @@
-Liferay.provide(window, 'buildTreeView', function(boundingBox, nameControl, data, arrayParam, portletURL, mvcPath, windowState, portletMode, url, active, nameSpace) {
+Liferay.provide(window, 'buildTreeView', function(boundingBox, nameControl, data, arrayParam, portletURL, mvcPath, windowState, portletMode, url, active, nameSpace, isHidden) {
 	var A = AUI();
 	if(A.one("#"+boundingBox) != "undefined" &&
 			A.one("#"+boundingBox) != null){
@@ -57,9 +57,15 @@ Liferay.provide(window, 'buildTreeView', function(boundingBox, nameControl, data
 			                				}
 			                            	elementOBJ.appendChild("<span class='badge pull-right'>"+sub_val+"</span>");
 			                            	
-			                            	if(sub_val === '0'){
-			                            		elementOBJ.setStyle('display', 'none');
+			                            	if(isHidden == 'true'){
+			                            		
+			                            		if(sub_val === '0'){
+				                            		elementOBJ.setStyle('display', 'none');
+				                            	}
+			                            	}else{
+			                            		
 			                            	}
+			                            	
 			                            }
 			                        }
 								}

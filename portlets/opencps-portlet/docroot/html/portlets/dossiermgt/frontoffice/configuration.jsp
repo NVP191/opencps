@@ -171,6 +171,11 @@
 		value="<%=showTabDossierResultFirst %>"
 	/>
 	
+	<aui:input 
+		type="checkbox"
+		name="hiddenTreeNodeEqualNone" 
+		value="<%=hiddenTreeNodeEqualNone %>"
+	/>
 	<aui:button type="submit" name="Save" value="save"></aui:button>
 
 </aui:form>

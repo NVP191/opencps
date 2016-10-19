@@ -226,7 +226,7 @@
 	</aui:col>
 </aui:row>
 
-<aui:row cssClass="nav-content-row">
+<aui:row cssClass="nav-content-row hidden-option">
 	<datamgt:ddr 
 		depthLevel="3" 
 		dictCollectionCode="<%=PortletPropsValues.DATAMGT_MASTERDATA_ADMINISTRATIVE_REGION %>"
@@ -234,7 +234,7 @@
 		itemsEmptyOption="true,true,true"
 		showLabel="true"
 		selectedItems="<%=itemSelected %>"
-		displayStyle="vertical"
+		displayStyle="vertical" 
 	/>
 </aui:row>
 

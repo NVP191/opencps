@@ -45,6 +45,8 @@
 	
 	long govAgencyId = ParamUtil.getLong(request, "govAgencyId");
 	
+	String selectDossierAction = ParamUtil.getString(request, "selectDossierAction");
+	
 	String dossierStatus = ParamUtil.getString(request, "dossierStatus", StringPool.BLANK);
 
 	String tabs1 = ParamUtil.getString(request, "tabs1", DossierMgtUtil.TOP_TABS_DOSSIER);
@@ -133,8 +135,8 @@
 											<liferay-ui:input-search 
 												id="keywords1"
 												name="keywords"
-												title='<%= LanguageUtil.get(locale, "keywords") %>'
-												placeholder='<%=LanguageUtil.get(locale, "keywords") %>'
+												title='<%= LanguageUtil.get(locale, "entering-dossier-name-keyword") %>'
+												placeholder='<%=LanguageUtil.get(locale, "entering-dossier-name-keyword") %>'
 												cssClass="search-input input-keyword"
 											/>
 										</aui:col>

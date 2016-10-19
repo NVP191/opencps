@@ -175,7 +175,7 @@
 							row.setClassName("opencps-searchcontainer-row");
 							row.addText(String.valueOf(row.getPos() + 1 + searchContainer.getStart()));
 							row.addText(serviceInfo.getServiceName());
-							row.addText("<a class=\"button\" href=\""+linkURL.toString()+"\" >" + LanguageUtil.get(pageContext, "service-description") +"</a>");
+							row.addText("<a class=\"button\" href=\""+linkURL.toString()+"\" >" + LanguageUtil.get(pageContext, "declaring-dossier") +"</a>");
 							row.addText("");
 						%>
 					</liferay-ui:search-container-row> 

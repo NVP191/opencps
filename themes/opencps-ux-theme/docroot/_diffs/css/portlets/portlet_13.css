@@ -259,3 +259,7 @@
     top: 0%;
     opacity: 1;
 }
+
+.opencps-theme.ux .opencps-form-navigator-container .nav-content-row.hidden-option {
+    display: none;
+}

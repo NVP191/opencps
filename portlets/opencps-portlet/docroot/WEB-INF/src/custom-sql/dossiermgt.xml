@@ -350,9 +350,9 @@
 			WHERE
 				opencps_service_config.groupId = ?
 			AND 
-				(lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])
+				((lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])
 			OR 
-				(lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$])
+				(lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$]))
 			AND 
 				opencps_service_config.servicePortal = ?
 			AND 
@@ -367,6 +367,8 @@
 				(opencps_service_config.serviceDomainIndex LIKE ? OR opencps_service_config.serviceDomainIndex = ?)
 			AND 
 				(opencps_service_config.govAgencyIndex LIKE ? OR opencps_service_config.govAgencyIndex = ?)
+			AND 
+				opencps_serviceinfo.activeStatus = ?
 			
 		]]>
 	</sql>
@@ -388,9 +390,9 @@
 			WHERE
 				opencps_service_config.groupId = ?
 			AND 
-				(lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])
+				((lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])
 			OR 
-				(lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$])
+				(lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$]))
 			AND 
 				opencps_service_config.servicePortal = ?
 			AND 
@@ -405,6 +407,8 @@
 				(opencps_service_config.serviceDomainIndex LIKE ? OR opencps_service_config.serviceDomainIndex = ?)
 			AND 
 				(opencps_service_config.govAgencyIndex LIKE ? OR opencps_service_config.govAgencyIndex = ?)
+			AND 
+				opencps_serviceinfo.activeStatus = ?	
 			ORDER BY
 				opencps_service_config.govAgencyName ASC, opencps_serviceinfo.serviceName ASC
 		]]>

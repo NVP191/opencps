@@ -76,6 +76,28 @@ public class ServiceInfoLocalServiceImpl
 		return serviceInfoFinder.searchService(
 		    groupId, keywords, administrationCode, domainCode, start, end);
 	}
+	
+	/**
+	 * Search ServiceInfo
+	 * 
+	 * @param groupId
+	 * @param keywords
+	 * @param administrationCode
+	 * @param domainCode
+	 * @param start
+	 * @param end
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public List<ServiceInfo> searchService(
+	    long groupId, String keywords, String administrationCode,
+	    String domainCode, int start, int end, int activeStatus)
+	    throws PortalException, SystemException {
+
+		return serviceInfoFinder.searchService(
+		    groupId, keywords, administrationCode, domainCode, start, end, activeStatus);
+	}
 
 	/**
 	 * Count service info
@@ -95,6 +117,27 @@ public class ServiceInfoLocalServiceImpl
 
 		return serviceInfoFinder.countService(
 		    groupId, keywords, administrationCode, domainCode);
+
+	}
+	
+	/**
+	 * Count service info
+	 * 
+	 * @param groupId
+	 * @param keywords
+	 * @param administrationCode
+	 * @param domainCode
+	 * @return
+	 * @throws PortalException
+	 * @throws SystemException
+	 */
+	public int countService(
+	    long groupId, String keywords, String administrationCode,
+	    String domainCode, int activeStatus)
+	    throws PortalException, SystemException {
+
+		return serviceInfoFinder.countService(
+		    groupId, keywords, administrationCode, domainCode, activeStatus);
 
 	}
 
@@ -432,11 +475,9 @@ public class ServiceInfoLocalServiceImpl
 		//TODO
 		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
 		if(Validator.isNotNull(treeIndex) || Validator.isNotNull(administrationIndex)){
-			
 			results = serviceInfoPersistence.findByG_DI_Status(groupId, treeIndex + StringPool.PERCENT, StringPool.PERCENT + keyword + StringPool.PERCENT, status, administrationIndex + StringPool.PERCENT, start, end, orderByComparator);
 			
 		}else{
-			
 			results = getServiceInFosG_FullName_Status(groupId, status, keyword, start, end, orderByComparator);
 			
 		}

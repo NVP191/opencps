@@ -160,11 +160,11 @@
 				ServiceSearchTerms searchTerms = (ServiceSearchTerms) searchContainer.getSearchTerms();
 	
 				total = ServiceInfoLocalServiceUtil.countService(scopeGroupId, searchTerms.getKeywords(), 
-					searchTerms.getAdministrationCode(), searchTerms.getDomainCode());
+					searchTerms.getAdministrationCode(), searchTerms.getDomainCode(), ServiceDisplayTerms.SEARCH_BY_ACTIVE_STATUS);
 	
 				results = ServiceInfoLocalServiceUtil.searchService(scopeGroupId, searchTerms.getKeywords(), 
 					searchTerms.getAdministrationCode(), searchTerms.getDomainCode(),
-					searchContainer.getStart(), searchContainer.getEnd());
+					searchContainer.getStart(), searchContainer.getEnd(), ServiceDisplayTerms.SEARCH_BY_ACTIVE_STATUS);
 				
 				pageContext.setAttribute("results", results);
 				pageContext.setAttribute("total", total);

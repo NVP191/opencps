@@ -24,6 +24,7 @@ import java.util.List;
 import org.opencps.dossiermgt.bean.ServiceBean;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.impl.ServiceConfigImpl;
+import org.opencps.servicemgt.search.ServiceDisplayTerms;
 
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -222,7 +223,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	private int _countServiceConfigAdvance(
 		long groupId, String[] keywords, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex, boolean andOperator) {
+		String serviceDomainIndex, String govAgencyIndex, int activeStatus, boolean andOperator) {
 
 		Session session = null;
 
@@ -246,12 +247,12 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 			else {
 				sql = StringUtil
 					.replace(sql,
-						"AND (lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"AND ((lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
 						StringPool.BLANK);
 				
 				sql = StringUtil
 					.replace(sql,
-						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$]))",
 						StringPool.BLANK);
 			}
 
@@ -342,6 +343,12 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 			}
 			
+			if(activeStatus == ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				sql = StringUtil
+						.replace(sql,
+							"AND opencps_serviceinfo.activeStatus = ?",
+							"");
+			}
 			sql = CustomSQLUtil
 				.replaceAndOperator(sql, andOperator);
 
@@ -437,6 +444,10 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 						StringPool.PERCENT);
 				qPos
 					.add(govAgencyIndex);
+			}
+			
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				qPos.add(activeStatus);
 			}
 
 			Iterator<Integer> itr = q
@@ -603,7 +614,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	private List<ServiceBean> _searchServiceConfigAdvance(
 		long groupId, String[] keywords, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex, int start, int end,
+		String serviceDomainIndex, String govAgencyIndex, int start, int end, int activeStatus,
 		OrderByComparator orderByComparator, boolean andOperator) {
 
 		Session session = null;
@@ -627,12 +638,12 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 			else {
 				sql = StringUtil
 					.replace(sql,
-						"AND (lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"AND ((lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
 						StringPool.BLANK);
 				
 				sql = StringUtil
 					.replace(sql,
-						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$]))",
 						StringPool.BLANK);
 			}
 
@@ -723,7 +734,13 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 				}
 
 			}
-
+			
+			if(activeStatus == ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				sql = StringUtil
+						.replace(sql,
+							"AND opencps_serviceinfo.activeStatus = ?",
+							"");
+			}
 			sql = CustomSQLUtil
 				.replaceAndOperator(sql, andOperator);
 			
@@ -826,6 +843,10 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 						StringPool.PERCENT);
 				qPos
 					.add(govAgencyIndex);
+			}
+			
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				qPos.add(activeStatus);
 			}
 
 			Iterator<Object[]> itr = (Iterator<Object[]>) QueryUtil
@@ -964,7 +985,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	public int countServiceConfigAdvance(
 		long groupId, String keyword, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex) {
+		String serviceDomainIndex, String govAgencyIndex, int activeStatus) {
 
 		String[] keywords = null;
 		boolean andOperator = false;
@@ -981,7 +1002,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 		return _countServiceConfigAdvance(groupId, keywords, servicePortal,
 			serviceOnegate, serviceBackoffice, serviceCitizen, serviceBusinees,
-			serviceDomainIndex, govAgencyIndex, andOperator);
+			serviceDomainIndex, govAgencyIndex, activeStatus, andOperator);
 	}
 
 	public int countServiceConfigByServiceMode(
@@ -1091,7 +1112,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	public List searchServiceConfigAdvance(
 		long groupId, String keyword, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex, int start, int end,
+		String serviceDomainIndex, String govAgencyIndex, int start, int end, int activeStatus,
 		OrderByComparator orderByComparator) {
 
 		String[] keywords = null;
@@ -1109,7 +1130,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 		return _searchServiceConfigAdvance(groupId, keywords, servicePortal,
 			serviceOnegate, serviceBackoffice, serviceCitizen, serviceBusinees,
-			serviceDomainIndex, govAgencyIndex, start, end, orderByComparator,
+			serviceDomainIndex, govAgencyIndex, start, end, activeStatus, orderByComparator,
 			andOperator);
 	}
 

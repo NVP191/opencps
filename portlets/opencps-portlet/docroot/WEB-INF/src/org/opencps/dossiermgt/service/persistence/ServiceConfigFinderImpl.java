@@ -24,6 +24,7 @@ import java.util.List;
 import org.opencps.dossiermgt.bean.ServiceBean;
 import org.opencps.dossiermgt.model.ServiceConfig;
 import org.opencps.dossiermgt.model.impl.ServiceConfigImpl;
+import org.opencps.servicemgt.search.ServiceDisplayTerms;
 
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -246,12 +247,12 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 			else {
 				sql = StringUtil
 					.replace(sql,
-						"AND (lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"AND ((lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
 						StringPool.BLANK);
 				
 				sql = StringUtil
 					.replace(sql,
-						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$]))",
 						StringPool.BLANK);
 			}
 
@@ -342,13 +343,12 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 			}
 			
-			if(activeStatus == -1){
+			if(activeStatus == ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
 				sql = StringUtil
 						.replace(sql,
 							"AND opencps_serviceinfo.activeStatus = ?",
 							"");
 			}
-			
 			sql = CustomSQLUtil
 				.replaceAndOperator(sql, andOperator);
 
@@ -446,7 +446,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 					.add(govAgencyIndex);
 			}
 			
-			if(activeStatus == -1){
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
 				qPos.add(activeStatus);
 			}
 
@@ -638,12 +638,12 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 			else {
 				sql = StringUtil
 					.replace(sql,
-						"AND (lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"AND ((lower(opencps_serviceinfo.serviceName) LIKE ? [$AND_OR_NULL_CHECK$])",
 						StringPool.BLANK);
 				
 				sql = StringUtil
 					.replace(sql,
-						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$])",
+						"OR (lower(opencps_serviceinfo.serviceNo) LIKE ? [$AND_OR_NULL_CHECK$]))",
 						StringPool.BLANK);
 			}
 
@@ -735,13 +735,12 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 			}
 			
-			if(activeStatus == -1){
+			if(activeStatus == ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
 				sql = StringUtil
 						.replace(sql,
 							"AND opencps_serviceinfo.activeStatus = ?",
 							"");
 			}
-
 			sql = CustomSQLUtil
 				.replaceAndOperator(sql, andOperator);
 			
@@ -846,7 +845,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 					.add(govAgencyIndex);
 			}
 			
-			if(activeStatus!=-1){
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
 				qPos.add(activeStatus);
 			}
 

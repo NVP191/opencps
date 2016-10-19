@@ -518,11 +518,6 @@ public class AccountUtil {
 		AccountBean accountBean = null;
 
 		try {
-			if(Validator.isNotNull(session.getAttribute(WebKeys.ACCOUNT_BEAN))){
-				System.out.println("##### not null");
-			}else{
-				System.out.println("##### null");
-			}
 			accountBean =
 				(AccountBean) session.getAttribute(WebKeys.ACCOUNT_BEAN);
 		}

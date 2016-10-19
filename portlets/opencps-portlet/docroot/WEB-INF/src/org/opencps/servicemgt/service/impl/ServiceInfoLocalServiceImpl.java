@@ -475,11 +475,9 @@ public class ServiceInfoLocalServiceImpl
 		//TODO
 		//--> search: treeIndex + StringPool.PERIOD + StringPool.PERCENT
 		if(Validator.isNotNull(treeIndex) || Validator.isNotNull(administrationIndex)){
-			System.out.println("###### 111 treeIndex:"+treeIndex +" administrationIndex:"+administrationIndex +" status:"+status);
 			results = serviceInfoPersistence.findByG_DI_Status(groupId, treeIndex + StringPool.PERCENT, StringPool.PERCENT + keyword + StringPool.PERCENT, status, administrationIndex + StringPool.PERCENT, start, end, orderByComparator);
 			
 		}else{
-			System.out.println("###### 222 treeIndex:"+treeIndex +" administrationIndex:"+administrationIndex +" status:"+status);
 			results = getServiceInFosG_FullName_Status(groupId, status, keyword, start, end, orderByComparator);
 			
 		}

@@ -50,6 +50,8 @@ public class ServiceDisplayTerms extends DisplayTerms {
 	public static final String SERVICE_ONLINEURL = "onlineUrl";
 	public static final String GROUP_ID = "groupId";
 	public static final String COMPANY_ID = "companyId";
+	public static final int SEARCH_BY_ACTIVE_STATUS = 1;
+	public static final int NOT_SEARCH_BY_ACTIVE_STATUS = -1;
 
 	public static final String TEMPLATE_FILE_IDS =
 	    "templateSearchContainerPrimaryKeys";

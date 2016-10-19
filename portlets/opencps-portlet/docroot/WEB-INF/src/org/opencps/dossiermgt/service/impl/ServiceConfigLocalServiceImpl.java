@@ -188,12 +188,12 @@ public class ServiceConfigLocalServiceImpl extends
 	public int countServiceConfigAdvance(long groupId, String keyword,
 			int servicePortal, int serviceOnegate, int serviceBackoffice,
 			int serviceCitizen, int serviceBusinees, String serviceDomainIndex,
-			String govAgencyIndex) {
+			String govAgencyIndex, int activeStatus) {
 
 		return serviceConfigFinder.countServiceConfigAdvance(groupId, keyword,
 				servicePortal, serviceOnegate, serviceBackoffice,
 				serviceCitizen, serviceBusinees, serviceDomainIndex,
-				govAgencyIndex);
+				govAgencyIndex, activeStatus);
 	}
 
 	/**
@@ -248,13 +248,13 @@ public class ServiceConfigLocalServiceImpl extends
 	public List searchServiceConfigAdvance(long groupId, String keyword,
 			int servicePortal, int serviceOnegate, int serviceBackoffice,
 			int serviceCitizen, int serviceBusinees, String serviceDomainIndex,
-			String govAgencyIndex, int start, int end,
+			String govAgencyIndex, int start, int end, int activeStatus,
 			OrderByComparator orderByComparator) {
 
 		return serviceConfigFinder.searchServiceConfigAdvance(groupId, keyword,
 				servicePortal, serviceOnegate, serviceBackoffice,
 				serviceCitizen, serviceBusinees, serviceDomainIndex,
-				govAgencyIndex, start, end, orderByComparator);
+				govAgencyIndex, start, end, activeStatus, orderByComparator);
 	}
 
 	/**

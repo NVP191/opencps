@@ -222,7 +222,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	private int _countServiceConfigAdvance(
 		long groupId, String[] keywords, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex, boolean andOperator) {
+		String serviceDomainIndex, String govAgencyIndex, int activeStatus, boolean andOperator) {
 
 		Session session = null;
 
@@ -342,6 +342,13 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 			}
 			
+			if(activeStatus == -1){
+				sql = StringUtil
+						.replace(sql,
+							"AND opencps_serviceinfo.activeStatus = ?",
+							"");
+			}
+			
 			sql = CustomSQLUtil
 				.replaceAndOperator(sql, andOperator);
 
@@ -437,6 +444,10 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 						StringPool.PERCENT);
 				qPos
 					.add(govAgencyIndex);
+			}
+			
+			if(activeStatus == -1){
+				qPos.add(activeStatus);
 			}
 
 			Iterator<Integer> itr = q
@@ -603,7 +614,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	private List<ServiceBean> _searchServiceConfigAdvance(
 		long groupId, String[] keywords, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex, int start, int end,
+		String serviceDomainIndex, String govAgencyIndex, int start, int end, int activeStatus,
 		OrderByComparator orderByComparator, boolean andOperator) {
 
 		Session session = null;
@@ -723,6 +734,13 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 				}
 
 			}
+			
+			if(activeStatus == -1){
+				sql = StringUtil
+						.replace(sql,
+							"AND opencps_serviceinfo.activeStatus = ?",
+							"");
+			}
 
 			sql = CustomSQLUtil
 				.replaceAndOperator(sql, andOperator);
@@ -826,6 +844,10 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 						StringPool.PERCENT);
 				qPos
 					.add(govAgencyIndex);
+			}
+			
+			if(activeStatus!=-1){
+				qPos.add(activeStatus);
 			}
 
 			Iterator<Object[]> itr = (Iterator<Object[]>) QueryUtil
@@ -964,7 +986,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	public int countServiceConfigAdvance(
 		long groupId, String keyword, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex) {
+		String serviceDomainIndex, String govAgencyIndex, int activeStatus) {
 
 		String[] keywords = null;
 		boolean andOperator = false;
@@ -981,7 +1003,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 		return _countServiceConfigAdvance(groupId, keywords, servicePortal,
 			serviceOnegate, serviceBackoffice, serviceCitizen, serviceBusinees,
-			serviceDomainIndex, govAgencyIndex, andOperator);
+			serviceDomainIndex, govAgencyIndex, activeStatus, andOperator);
 	}
 
 	public int countServiceConfigByServiceMode(
@@ -1091,7 +1113,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 	public List searchServiceConfigAdvance(
 		long groupId, String keyword, int servicePortal, int serviceOnegate,
 		int serviceBackoffice, int serviceCitizen, int serviceBusinees,
-		String serviceDomainIndex, String govAgencyIndex, int start, int end,
+		String serviceDomainIndex, String govAgencyIndex, int start, int end, int activeStatus,
 		OrderByComparator orderByComparator) {
 
 		String[] keywords = null;
@@ -1109,7 +1131,7 @@ public class ServiceConfigFinderImpl extends BasePersistenceImpl<ServiceConfig>
 
 		return _searchServiceConfigAdvance(groupId, keywords, servicePortal,
 			serviceOnegate, serviceBackoffice, serviceCitizen, serviceBusinees,
-			serviceDomainIndex, govAgencyIndex, start, end, orderByComparator,
+			serviceDomainIndex, govAgencyIndex, start, end, activeStatus, orderByComparator,
 			andOperator);
 	}
 

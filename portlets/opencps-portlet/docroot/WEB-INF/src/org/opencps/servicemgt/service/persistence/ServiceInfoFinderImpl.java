@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.opencps.servicemgt.model.ServiceInfo;
 import org.opencps.servicemgt.model.impl.ServiceInfoImpl;
+import org.opencps.servicemgt.search.ServiceDisplayTerms;
 
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
@@ -40,9 +41,15 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 	public static final String SEARCH_SERVICE_SQL =
 	    ServiceInfoFinder.class.getName() + ".searchService";
 
+	public static final String SEARCH_SERVICE_SQL_NEW =
+		    ServiceInfoFinder.class.getName() + ".searchServiceNew";
+	
 	public static final String COUNT_SERVICE_SQL =
 	    ServiceInfoFinder.class.getName() + ".countService";
-
+	
+	public static final String COUNT_SERVICE_SQL_NEW =
+		    ServiceInfoFinder.class.getName() + ".countServiceNew";
+	
 	/**
 	 * @param groupId
 	 * @param keywords
@@ -65,7 +72,33 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 		}
 
 		return _countService(
-		    groupId, keywords, administrationCode, domainCode, andOperator);
+		    groupId, keywords, administrationCode, domainCode, andOperator, ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS);
+	}
+	
+	/**
+	 * @param groupId
+	 * @param keywords
+	 * @param administrationCode
+	 * @param domainCode
+	 * @param activeStatus
+	 * @return
+	 */
+	public int countService(
+	    long groupId, String keywords, String administrationCode,
+	    String domainCode, int activeStatus) {
+
+		//String[] names = null;
+		boolean andOperator = false;
+
+		if (Validator.isNotNull(keywords)) {
+			//names = CustomSQLUtil.keywords(keywords);
+		}
+		else {
+			andOperator = true;
+		}
+
+		return _countService(
+		    groupId, keywords, administrationCode, domainCode, andOperator, activeStatus);
 	}
 
 	/**
@@ -93,7 +126,37 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 
 		return _searchService(
 		    groupId, keywords, administrationCode, domainCode, andOperator, start,
-		    end);
+		    end, ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS);
+	}
+
+	
+	/**
+	 * @param groupId
+	 * @param keywords
+	 * @param administrationCode
+	 * @param domainCode
+	 * @param start
+	 * @param end
+	 * @param activeStatus
+	 * @return
+	 */
+	public List<ServiceInfo> searchService(
+	    long groupId, String keywords, String administrationCode,
+	    String domainCode, int start, int end, int activeStatus) {
+
+		//String[] names = null;
+		boolean andOperator = false;
+
+		if (Validator.isNotNull(keywords)) {
+			//names = CustomSQLUtil.keywords(keywords);
+		}
+		else {
+			andOperator = true;
+		}
+
+		return _searchService(
+		    groupId, keywords, administrationCode, domainCode, andOperator, start,
+		    end, activeStatus);
 	}
 
 	/**
@@ -108,15 +171,19 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 	 */
 	private List<ServiceInfo> _searchService(
 	    long groupId, String keyword, String adminCode, String domainCode,
-	    boolean andOperator, int start, int end) {
+	    boolean andOperator, int start, int end, int activeStatus) {
 
 		//keywords = CustomSQLUtil.keywords(keywords);
 
 		Session session = null;
 		try {
 			session = openSession();
-
-			String sql = CustomSQLUtil.get(SEARCH_SERVICE_SQL);
+			String sql = "";
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				sql = CustomSQLUtil.get(SEARCH_SERVICE_SQL_NEW);
+			}else{
+				sql = CustomSQLUtil.get(SEARCH_SERVICE_SQL);
+			}
 
 			/*sql =
 			    CustomSQLUtil.replaceKeywords(
@@ -177,6 +244,10 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 			if (!Validator.equals(domainCode, "0") && !Validator.equals(domainCode, StringPool.BLANK)) {
 				qPos.add(domainCode);
 			}
+			
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				qPos.add(activeStatus);
+			}
 
 			return (List<ServiceInfo>) QueryUtil.list(
 			    q, getDialect(), start, end);
@@ -207,7 +278,7 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 	 */
 	private int _countService(
 	    long groupId, String keyword, String adminCode, String domainCode,
-	    boolean andOperator) {
+	    boolean andOperator, int activeStatus) {
 
 		//keywords = CustomSQLUtil.keywords(keywords);
 
@@ -215,7 +286,12 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 		try {
 			session = openSession();
 
-			String sql = CustomSQLUtil.get(COUNT_SERVICE_SQL);
+			String sql = "";
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				sql = CustomSQLUtil.get(COUNT_SERVICE_SQL_NEW);
+			}else{
+				sql = CustomSQLUtil.get(COUNT_SERVICE_SQL);
+			}
 
 			/*sql =
 			    CustomSQLUtil.replaceKeywords(
@@ -274,7 +350,11 @@ public class ServiceInfoFinderImpl extends BasePersistenceImpl<ServiceInfo>
 			if (!Validator.equals(domainCode, "0") && !Validator.equals(domainCode, StringPool.BLANK)) {
 				qPos.add(domainCode);
 			}
-
+			
+			if(activeStatus != ServiceDisplayTerms.NOT_SEARCH_BY_ACTIVE_STATUS){
+				qPos.add(activeStatus);
+			}
+			
 			Iterator<Integer> itr = q.iterate();
 
 			if (itr.hasNext()) {

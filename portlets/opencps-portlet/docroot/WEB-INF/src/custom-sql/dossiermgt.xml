@@ -367,6 +367,8 @@
 				(opencps_service_config.serviceDomainIndex LIKE ? OR opencps_service_config.serviceDomainIndex = ?)
 			AND 
 				(opencps_service_config.govAgencyIndex LIKE ? OR opencps_service_config.govAgencyIndex = ?)
+			AND 
+				opencps_serviceinfo.activeStatus = ?
 			
 		]]>
 	</sql>
@@ -405,6 +407,8 @@
 				(opencps_service_config.serviceDomainIndex LIKE ? OR opencps_service_config.serviceDomainIndex = ?)
 			AND 
 				(opencps_service_config.govAgencyIndex LIKE ? OR opencps_service_config.govAgencyIndex = ?)
+			AND 
+				opencps_serviceinfo.activeStatus = ?	
 			ORDER BY
 				opencps_service_config.govAgencyName ASC, opencps_serviceinfo.serviceName ASC
 		]]>

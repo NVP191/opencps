@@ -70,6 +70,21 @@
 			AND (opencps_serviceinfo.domainCode = ?)
 		]]>
 	</sql>
+	<!-- searchServiceNew Bo sung them dieu kien activeStatus  -->
+	<sql id="org.opencps.servicemgt.service.persistence.ServiceInfoFinder.searchServiceNew">	
+		<![CDATA[
+			SELECT
+				opencps_serviceinfo.*
+			FROM
+				opencps_serviceinfo
+			WHERE
+				groupId = ?
+			AND ((lower(opencps_serviceinfo.serviceName) LIKE ?) OR (lower(opencps_serviceinfo.fullName) LIKE ?))
+			AND (opencps_serviceinfo.administrationCode = ?)
+			AND (opencps_serviceinfo.domainCode = ?)
+			AND (opencps_serviceinfo.activeStatus = ?)
+		]]>
+	</sql>
 
 	<sql id="org.opencps.servicemgt.service.persistence.ServiceInfoFinder.countService">	
 		<![CDATA[
@@ -82,6 +97,20 @@
 			AND ((lower(opencps_serviceinfo.serviceName) LIKE ?) OR (lower(opencps_serviceinfo.fullName) LIKE ?))
 			AND (opencps_serviceinfo.administrationCode = ?)
 			AND (opencps_serviceinfo.domainCode = ?)
+		]]>
+	</sql>
+	<!-- countServiceNew Bo sung them dieu kien activeStatus  -->
+	<sql id="org.opencps.servicemgt.service.persistence.ServiceInfoFinder.countServiceNew">	
+		<![CDATA[
+			SELECT
+				count(*) AS COUNT_VALUE
+			FROM
+				opencps_serviceinfo
+			WHERE
+				groupId = ?
+			AND ((lower(opencps_serviceinfo.serviceName) LIKE ?) OR (lower(opencps_serviceinfo.fullName) LIKE ?))
+			AND (opencps_serviceinfo.administrationCode = ?)
+			AND (opencps_serviceinfo.activeStatus = ?)
 		]]>
 	</sql>
 </custom-sql>
